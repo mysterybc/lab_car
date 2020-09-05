@@ -1,0 +1,31 @@
+<launch>
+  <arg name="x_pos" default="3"/> 
+  <arg name="y_pos" default="3"/>
+  <arg name="z_pos" default="0.1"/>
+<!-- 
+  <arg name="x_pos" default="0"/> 
+  <arg name="y_pos" default="0"/>
+  <arg name="z_pos" default="0"/> -->
+
+<!-- 加载静态世界，不包含小车，都是gazebo的sdf文件 -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find simulation)/worlds/play_field.world"/>
+    <arg name="paused" value="false"/>
+    <arg name="use_sim_time" value="false"/>
+    <arg name="gui" value="true"/>
+    <arg name="headless" value="false"/>
+    <arg name="debug" value="false"/>
+  </include>
+
+
+
+  <!-- 加载机器人 -->
+  
+  <param name="robot_description" command="$(find xacro)/xacro --inorder $(find robot)/urdf/my_robot.urdf.xacro" />
+  <node pkg="gazebo_ros" type="spawn_model" name="spawn_urdf"  args="-urdf -model my_robot -x $(arg x_pos) -y $(arg y_pos) -z $(arg z_pos) -param robot_description" />
+
+  <!-- 发布机器人信息 -->
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen">
+    <param name="publish_frequency" type="double" value="50.0" />
+  </node>
+</launch>

@@ -1,0 +1,24 @@
+<launch>
+  <!-- 仿真需要1、仿真模型 2、地图 3、rviz 4、tf（odom to map） 5、小车控制（planning&path_follow) -->
+  <!-- run simulation -->
+  <!-- 这个是gazebo模型 -->
+  <!-- <include file="$(find simulation)/launch/worlds.launch"/> -->
+  <node pkg="stage_ros" type="stageros" name="stageros" args="$(find simulation)/worlds/robot2020.world" respawn="false" >
+      <!-- <remap from="cmd_vel" to="cmd_vel" /> -->
+      <param name="base_watchdog_timeout" value="0.01" />
+  </node>
+  <!-- Run the map server -->
+  <node name="map_server" pkg="map_server" type="map_server" args="$(find simulation)/launch/planning_map.yaml" respawn="false" />
+  <node pkg="service_node"  name="global_planning"  type="global_planning" output="screen"/>
+  <!-- <node pkg="service_node"  name="test_global_planning"  type="test_global_planning" output="screen"/> -->
+  <!-- 发布tf -->
+  <node pkg="simulation"    type="tf_pub"             name="tf_pub"             />
+  <!-- task node -->
+  <node pkg="task_node"     type="build_up_task"      name="build_up_node"      />
+  <!-- control node -->
+  <node pkg="control_node"  type="path_tracking_node" name="path_tracking_node" />
+  <!-- behavior tree -->
+  <node pkg="decision_node" type="behavior_node"      name="bahevior_node"      output="screen"/>
+  <!-- Run the rviz -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find simulation)/rviz/test_planning.rviz" />
+</launch>

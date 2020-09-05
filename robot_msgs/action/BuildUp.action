@@ -1,0 +1,9 @@
+#goal
+geometry_msgs/Pose goal
+---
+#result
+bool succeed
+---
+#feedback
+bool error_occured
+

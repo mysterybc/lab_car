@@ -1,0 +1,7 @@
+1. AlgoTracking.hpp/cpp: Tracking/Path Following算法, 输出(vx, vy)
+2. vxy2vw.cpp: 将(vx, vy)转化为unicycle小车需要的(v, w)
+3. tkspline.h/cpp: 将离散路点差值成曲线(网上下的库)
+4. spline2D.hpp: 组合了两个tkspline称为一个spline2D的类
+3. helper.hpp: 一些当初写的辅助函数，主要包括一个pt2D的类(2维向量)，可以加减数乘等
+
+

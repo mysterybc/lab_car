@@ -1,0 +1,9 @@
+<launch>
+
+<node pkg="source_node"  name="encoder_source_node"     type="encoder_source_node"     output="screen"/>
+<node pkg="source_node"  name="navigation_source_node"  type="navigation_source_node"  output="screen"/>
+<node pkg="source_node"  name="driver_source_node"      type="encoder_source_node"     output="screen"/>
+
+
+
+</launch>
