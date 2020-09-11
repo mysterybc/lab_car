@@ -45,7 +45,11 @@ public:
         switch(state){
             case BehaviorState::FAILURE: ROS_INFO("build up state is FAILURE");break;
             case BehaviorState::IDLE:    ROS_INFO("build up state is IDLE");break;
-            case BehaviorState::RUNNING: ROS_INFO("build up state is RUNNING");break;
+            case BehaviorState::RUNNING: {
+                ROS_INFO("build up state is RUNNING");
+                blackboard_->PubDecisionState("build up task running");
+                break;
+            }
             case BehaviorState::SUCCESS: ROS_INFO("build up state is SUCCESS");break;
         }
         
@@ -70,6 +74,7 @@ public:
     void DoneCallback(const actionlib::SimpleClientGoalState &state, const robot_msgs::BuildUpResultConstPtr &result){
         if(result->succeed){
             this->state = BehaviorState::SUCCESS;
+            blackboard_->PubDecisionState("build up task done");
             blackboard_->SetMission(MissionType::SYSTEM_STANDBY);
         }
         else{

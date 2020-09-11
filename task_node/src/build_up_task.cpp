@@ -4,7 +4,7 @@
 BuildUpTask::BuildUpTask()
     :build_up_action(nh,"build_up_action",boost::bind(&BuildUpTask::ExcuteCallback,this,_1),false)
 {
-    car_number = 1;
+    car_id = 1;
     pub_path_flag = false;
     build_up_action.registerPreemptCallback(std::bind(&BuildUpTask::PreemptCallback,this));
     client = nh.serviceClient<robot_msgs::Planning>("global_planning");
@@ -32,9 +32,9 @@ void BuildUpTask::ExcuteCallback(const robot_msgs::BuildUpGoalConstPtr &goal){
     goal_point = goal.get()->goal;
     origin_goal = goal_point;
     float temp[4][2] = {{-1,-1},{-1,1},{1,1},{1,-1}};
-    goal_point.position.x += temp[car_number-1][0] * 0.5;
-    goal_point.position.y += temp[car_number-1][1] * 0.5;
-    ROS_INFO("target position is [%f,%f],the car number is %d, build up target position is [%f,%f]",origin_goal.position.x,origin_goal.position.y,car_number,goal_point.position.x,goal_point.position.y);
+    goal_point.position.x += temp[car_id-1][0] * 0.5;
+    goal_point.position.y += temp[car_id-1][1] * 0.5;
+    ROS_INFO("target position is [%f,%f],the car number is %d, build up target position is [%f,%f]",origin_goal.position.x,origin_goal.position.y,car_id,goal_point.position.x,goal_point.position.y);
     //1、call路径规划服务
     //2、发布path
     //3、开启path_tracking任务

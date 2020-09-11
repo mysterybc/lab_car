@@ -31,6 +31,17 @@ target_link_libraries(global_planning
   ${OpenCV_LIBS}
   
 )
+
+#散点节点
+add_executable(separate_goal 
+  src/separate_goal.cpp 
+)
+target_link_libraries(separate_goal 
+  ${catkin_LIBRARIES} 
+  /usr/local/lib/libyaml-cpp.so
+)
+
+
 #规划节点测试
 add_executable(test_global_planning src/test_global_planning.cpp)
 target_link_libraries(test_global_planning ${catkin_LIBRARIES} ${OpenCV_LIBS})

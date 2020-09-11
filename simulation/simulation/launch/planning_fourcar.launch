@@ -7,55 +7,74 @@
         <!-- <remap from="cmd_vel" to="cmd_vel" /> -->
         <param name="base_watchdog_timeout" value="0.01" />
     </node>
+    <!-- 上位机交互程序 -->
+    <node pkg="communication_node"  type="zmq_recv"     name="zmq_recv"    />
+    <node pkg="communication_node"  type="zmq_send"     name="zmq_send"    />
     <!-- Run the map server -->
     <node name="map_server" pkg="map_server" type="map_server" args="$(find simulation)/launch/planning_map.yaml" respawn="false" />    
     <group ns="robot_0">
+        <!-- param -->
+        <param name="car_id" 	  type="int" 			             value="0"                 />
         <!-- planning -->
-        <node pkg="service_node"  type="global_planning"    name="global_planning"    />
+        <node pkg="service_node"  type="global_planning"             name="global_planning"    />
         <!-- 发布tf -->
-        <node pkg="simulation"    type="tf_pub"             name="tf_pub"             />
+        <node pkg="simulation"    type="tf_pub"                      name="tf_pub"             />
         <!-- task node -->
-        <node pkg="task_node"     type="build_up_task1"     name="build_up_task1"     />
+        <node pkg="task_node"     type="build_up_task_multi_car"     name="build_up_task_multi_car"  />
         <!-- control node -->
-        <node pkg="control_node"  type="path_tracking_node" name="path_tracking_node" />
+        <node pkg="control_node"  type="path_tracking_node"          name="path_tracking_node" />
         <!-- behavior tree -->
-        <node pkg="decision_node" type="behavior_node"      name="bahevior_node"      />
+        <node pkg="decision_node" type="behavior_node"               name="bahevior_node"      />
+        <!-- separate node -->
+        <node pkg="service_node"  type="separate_goal"               name="separate_goal"      />
     </group>
     <group ns="robot_1">
+        <!-- param -->
+        <param name="car_id" 	  type="int" 			             value="1"                 />
         <!-- planning -->
-        <node pkg="service_node"  type="global_planning"    name="global_planning"    />
+        <node pkg="service_node"  type="global_planning"    	     name="global_planning"    />
         <!-- 发布tf -->
-        <node pkg="simulation"    type="tf_pub"             name="tf_pub"             />
+        <node pkg="simulation"    type="tf_pub"             	     name="tf_pub"             />
         <!-- task node -->
-        <node pkg="task_node"     type="build_up_task2"     name="build_up_task2"     />
+        <node pkg="task_node"     type="build_up_task_multi_car"     name="build_up_task_multi_car"  />
         <!-- control node -->
-        <node pkg="control_node"  type="path_tracking_node" name="path_tracking_node" />
+        <node pkg="control_node"  type="path_tracking_node" 	     name="path_tracking_node" />
         <!-- behavior tree -->
-        <node pkg="decision_node" type="behavior_node"      name="bahevior_node"      />
+        <node pkg="decision_node" type="behavior_node"      	     name="bahevior_node"      />
+        <!-- separate node -->
+        <node pkg="service_node"  type="separate_goal"               name="separate_goal"      />
     </group>
     <group ns="robot_2">
+        <!-- param -->
+        <param name="car_id" 	  type="int" 			             value="2"                 />
         <!-- planning -->
-        <node pkg="service_node"  type="global_planning"    name="global_planning"    />
+        <node pkg="service_node"  type="global_planning"    	     name="global_planning"    />
         <!-- 发布tf -->
-        <node pkg="simulation"    type="tf_pub"             name="tf_pub"             />
+        <node pkg="simulation"    type="tf_pub"             	     name="tf_pub"             />
         <!-- task node -->
-        <node pkg="task_node"     type="build_up_task3"     name="build_up_task3"     />
+        <node pkg="task_node"     type="build_up_task_multi_car"     name="build_up_task_multi_car"  />
         <!-- control node -->
-        <node pkg="control_node"  type="path_tracking_node" name="path_tracking_node" output="screen"/>
+        <node pkg="control_node"  type="path_tracking_node" 	     name="path_tracking_node" />
         <!-- behavior tree -->
-        <node pkg="decision_node" type="behavior_node"      name="bahevior_node"       output="screen"/>
+        <node pkg="decision_node" type="behavior_node"      	     name="bahevior_node"       />
+        <!-- separate node -->
+        <node pkg="service_node"  type="separate_goal"               name="separate_goal"      />
     </group>
     <group ns="robot_3">
+        <!-- param -->
+        <param name="car_id" 	  type="int" 			             value="3"                 />
         <!-- planning -->
-        <node pkg="service_node"  type="global_planning"    name="global_planning"    />
+        <node pkg="service_node"  type="global_planning"    	     name="global_planning"    />
         <!-- 发布tf -->
-        <node pkg="simulation"    type="tf_pub"             name="tf_pub"             />
+        <node pkg="simulation"    type="tf_pub"             	     name="tf_pub"             />
         <!-- task node -->
-        <node pkg="task_node"     type="build_up_task4"     name="build_up_task4"     />
+        <node pkg="task_node"     type="build_up_task_multi_car"     name="build_up_task_multi_car"    />
         <!-- control node -->
-        <node pkg="control_node"  type="path_tracking_node" name="path_tracking_node" />
+        <node pkg="control_node"  type="path_tracking_node" 	     name="path_tracking_node" />
         <!-- behavior tree -->
-        <node pkg="decision_node" type="behavior_node"      name="bahevior_node"      />
+        <node pkg="decision_node" type="behavior_node"      	     name="bahevior_node"      />
+        <!-- separate node -->
+        <node pkg="service_node"  type="separate_goal"               name="separate_goal"      />
     </group>
 
     <!-- Run the rviz -->

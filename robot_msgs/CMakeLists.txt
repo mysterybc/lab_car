@@ -28,6 +28,7 @@ add_service_files(
   DIRECTORY srv
   FILES
   Planning.srv
+  Separate.srv
 )
 
 add_action_files(

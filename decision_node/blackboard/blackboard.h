@@ -4,6 +4,7 @@
 #include "nav_msgs/Odometry.h"
 #include "robot_msgs/HostCmd.h"
 #include <geometry_msgs/PoseStamped.h>
+#include "std_msgs/String.h"
 
 
 
@@ -24,8 +25,10 @@ public:
         //goal_sub = nh.subscribe("/move_base_simple/goal",10,&Blackboard::GoalCallback,this);
         cmd_sub = nh.subscribe("/host_cmd",10,&Blackboard::CmdCallback,this);
         map_sub = nh.subscribe("/map",10,&Blackboard::MapCallback,this);
+        decision_state_pub = nh.advertise<std_msgs::String>("decision_state",10);
         //目前
-        car_number = 1;
+        nh.getParam("car_id",car_number);
+        car_number++;
 
         mission = MissionType::SYSTEM_STANDBY;
 
@@ -82,6 +85,12 @@ public:
         mission = mission_type;
     }
 
+    void PubDecisionState(std::string state){
+        std_msgs::String msg;
+        msg.data = state;
+        decision_state_pub.publish(state);
+    }
+
     //以下是判断条件
     bool IsSystemStart(){
         if(mission != MissionType::SYSTEM_STANDBY){
@@ -102,10 +111,12 @@ private:
     int car_number;
     // map info ,单位m
     double map_height,map_width;
+    std::string decision_state;
 
     ros::Subscriber pose_sub;
     ros::Subscriber goal_sub;
     ros::Subscriber cmd_sub;
     ros::Subscriber map_sub;
+    ros::Publisher  decision_state_pub;
 
 };

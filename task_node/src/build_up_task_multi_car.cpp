@@ -1,13 +1,14 @@
-#include "build_up_task.h"
+#include "build_up_task_multi_car.h"
 
 
 BuildUpTask::BuildUpTask()
     :build_up_action(nh,"build_up_action",boost::bind(&BuildUpTask::ExcuteCallback,this,_1),false)
 {
-    car_number = 1;
+    nh.getParam("car_id",car_id);
     pub_path_flag = false;
     build_up_action.registerPreemptCallback(std::bind(&BuildUpTask::PreemptCallback,this));
-    client = nh.serviceClient<robot_msgs::Planning>("global_planning");
+    planning_client = nh.serviceClient<robot_msgs::Planning>("global_planning");
+    separate_client = nh.serviceClient<robot_msgs::Separate>("separate_goal");
     path_pub_ = nh.advertise<nav_msgs::Path>("path", 10);
     cmd_pub = nh.advertise<robot_msgs::Cmd>("path_tracking_cmd",10);
     path_tracking_sub = nh.subscribe<std_msgs::String>("path_tracking_state",10,&BuildUpTask::PathTrackingCallback,this);
@@ -28,20 +29,22 @@ void BuildUpTask::PreemptCallback(){
 void BuildUpTask::ExcuteCallback(const robot_msgs::BuildUpGoalConstPtr &goal){
     //set goal
     ROS_INFO("get goal");
-    geometry_msgs::Pose origin_goal;
     goal_point = goal.get()->goal;
-    origin_goal = goal_point;
-    float temp[4][2] = {{-1,-1},{-1,1},{1,1},{1,-1}};
-    goal_point.position.x += temp[car_number-1][0] * 0.5;
-    goal_point.position.y += temp[car_number-1][1] * 0.5;
-    ROS_INFO("target position is [%f,%f],the car number is %d, build up target position is [%f,%f]",origin_goal.position.x,origin_goal.position.y,car_number,goal_point.position.x,goal_point.position.y);
+    geometry_msgs::Pose origin_goal{goal_point}; 
+    robot_msgs::Separate separate;
+    separate.request.goal = goal_point;
+    if (separate_client.call(separate))
+    {
+        goal_point = separate.response.goal;
+    }
+    ROS_INFO("target position is [%f,%f],the car number is %d, build up target position is [%f,%f]",origin_goal.position.x,origin_goal.position.y,car_id,goal_point.position.x,goal_point.position.y);
     //1、call路径规划服务
     //2、发布path
     //3、开启path_tracking任务
     ROS_INFO("set planning");
     robot_msgs::Planning planner;
     planner.request.goal = goal_point;
-    if (client.call(planner))
+    if (planning_client.call(planner))
     {
         if(planner.response.path.poses.size() == 0){
             ROS_ERROR("wrong target! please select right target position");

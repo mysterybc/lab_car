@@ -23,15 +23,7 @@ target_link_libraries(build_up_task ${catkin_LIBRARIES})
 ####四车的####
 
 #car1
-add_executable(build_up_task1 src/build_up_task1.cpp)
-target_link_libraries(build_up_task1 ${catkin_LIBRARIES})
-#car2
-add_executable(build_up_task2 src/build_up_task2.cpp)
-target_link_libraries(build_up_task2 ${catkin_LIBRARIES})
-#car3
-add_executable(build_up_task3 src/build_up_task3.cpp)
-target_link_libraries(build_up_task3 ${catkin_LIBRARIES})
-#car4
-add_executable(build_up_task4 src/build_up_task4.cpp)
-target_link_libraries(build_up_task4 ${catkin_LIBRARIES})
+add_executable(build_up_task_multi_car src/build_up_task_multi_car.cpp)
+target_link_libraries(build_up_task_multi_car ${catkin_LIBRARIES})
+
 

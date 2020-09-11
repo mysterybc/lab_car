@@ -25,7 +25,8 @@ public:
     ros::Publisher path_pub_;
     ros::Publisher cmd_pub;
     ros::Subscriber path_tracking_sub;
-    ros::ServiceClient client;
+    ros::ServiceClient planning_client;
+    ros::ServiceClient separate_client;
     actionlib::SimpleActionServer<robot_msgs::BuildUpAction> build_up_action;
     std::thread *pub_path_thread;
     int car_id;

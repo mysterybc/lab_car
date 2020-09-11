@@ -17,6 +17,7 @@ public:
     {}
 
     void Run() {
+        blackboard_->PubDecisionState("stand by");
         state = BehaviorState::RUNNING;
     }
 
