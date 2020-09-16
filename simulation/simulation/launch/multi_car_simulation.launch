@@ -18,7 +18,8 @@
         <!-- planning -->
         <node pkg="service_node"  type="global_planning"             name="global_planning"    />
         <!-- 发布tf -->
-        <node pkg="simulation"    type="tf_pub"                      name="tf_pub"             />
+        <node pkg="tf" type="static_transform_publisher" name="map_to_base_link"
+            args="0 0 0 0 0 0 /map odom 100" />
         <!-- task node -->
         <node pkg="task_node"     type="build_up_task_multi_car"     name="build_up_task_multi_car"  />
         <!-- control node -->
@@ -34,7 +35,8 @@
         <!-- planning -->
         <node pkg="service_node"  type="global_planning"    	     name="global_planning"    />
         <!-- 发布tf -->
-        <node pkg="simulation"    type="tf_pub"             	     name="tf_pub"             />
+        <node pkg="tf" type="static_transform_publisher" name="map_to_base_link"
+            args="0 0 0 0 0 0 /map odom 100" />
         <!-- task node -->
         <node pkg="task_node"     type="build_up_task_multi_car"     name="build_up_task_multi_car"  />
         <!-- control node -->
@@ -50,7 +52,8 @@
         <!-- planning -->
         <node pkg="service_node"  type="global_planning"    	     name="global_planning"    />
         <!-- 发布tf -->
-        <node pkg="simulation"    type="tf_pub"             	     name="tf_pub"             />
+        <node pkg="tf" type="static_transform_publisher" name="map_to_base_link"
+            args="0 0 0 0 0 0 /map odom 100" />
         <!-- task node -->
         <node pkg="task_node"     type="build_up_task_multi_car"     name="build_up_task_multi_car"  />
         <!-- control node -->
@@ -66,7 +69,8 @@
         <!-- planning -->
         <node pkg="service_node"  type="global_planning"    	     name="global_planning"    />
         <!-- 发布tf -->
-        <node pkg="simulation"    type="tf_pub"             	     name="tf_pub"             />
+        <node pkg="tf" type="static_transform_publisher" name="map_to_base_link"
+            args="0 0 0 0 0 0 /map odom 100" />
         <!-- task node -->
         <node pkg="task_node"     type="build_up_task_multi_car"     name="build_up_task_multi_car"    />
         <!-- control node -->

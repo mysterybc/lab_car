@@ -1,8 +1,21 @@
+define rplidar ranger
+(
+  sensor(
+    range [0.0 10.0]
+    fov 360
+    samples 360
+  )
+  # generic model properties
+  color "black"
+  size [ 0.050 0.050 0.100 ]
+)
+
 define car position
 (
   size [0.600 0.450 0.460]
   origin [0.000 0.000 0.000 0.000]
   localization "gps"
+  rplidar(pose [ 0.3 0 0 0 ])
   localization_origin [0 0 0 0 ]
   drive "diff"
   # [ xmin xmax ymin ymax zmin zmax amin amax ]				
@@ -45,7 +58,7 @@ floorplan
 ( 
   name "robot somulation Map"
   bitmap "/home/lovezy/catkin_car/src/simulation/simulation/launch/play_field.pgm"
-  size [25.000    25.400   0.000  0 ]
+  size [25.000    25.400   1.000 ]
   pose [12.500  12.700   0.000  0.000 ]
 )
 
