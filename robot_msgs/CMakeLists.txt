@@ -20,6 +20,7 @@ add_message_files(
   Error.msg
   State.msg
   Cmd.msg
+  TwistAccel.msg
   PerceptionNodeMsg.msg
   SourceNodeMsg.msg
 )
@@ -35,6 +36,7 @@ add_action_files(
     DIRECTORY action
     FILES
     BuildUp.action
+    LocalPlanner.action
 )
 
 generate_messages(
@@ -45,4 +47,9 @@ generate_messages(
   nav_msgs
 )
 
-catkin_package()
+catkin_package(
+  INCLUDE_DIRS
+  include
+)
+include_directories(include)
+

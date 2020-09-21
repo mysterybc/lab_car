@@ -54,7 +54,7 @@
 #include "costmap_math.h"
 #include "footprint.h"
 #include "inflation_layer.h"
-#include "yaml.h"
+#include "yaml-cpp/yaml.h"
 namespace costmap_node {
 
 InflationLayer::InflationLayer()

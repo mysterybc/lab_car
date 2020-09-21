@@ -16,7 +16,7 @@ define car position
   size [0.600 0.450 0.460]
   origin [0.000 0.000 0.000 0.000]
   localization "gps"
-  rplidar(pose [ 0.3 0 0 0 ])
+  rplidar(pose [ 0 0 0.2 0 ])
   localization_origin [0 0 0 0 ]
   drive "diff"
   # [ xmin xmax ymin ymax zmin zmax amin amax ]				

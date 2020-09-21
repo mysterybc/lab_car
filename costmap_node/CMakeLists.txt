@@ -19,13 +19,11 @@ find_package(catkin REQUIRED COMPONENTS
 find_package(PCL 1.7 REQUIRED)
 find_package(Boost REQUIRED)
 find_package(roslib)
+find_package(yaml-cpp)
 
-catkin_package(
-  INCLUDE_DIRS
-  include
-)
+catkin_package(INCLUDE_DIRS include)
 
-include_directories(include/costmap_node /usr/include/pcl-1.7/pcl /usr/local/include/yaml-cpp)
+include_directories(include ${catkin_INCLUDE_DIRS} /usr/include/pcl-1.7/pcl )
 aux_source_directory(src/. SRC_LIST)
 list(REMOVE_ITEM SRC_LIST "src/test_costmap.cpp")
 
@@ -43,7 +41,7 @@ target_include_directories(costmap_node
 
 target_link_libraries(costmap_node
   PUBLIC
-  /usr/local/lib/libyaml-cpp.so
+  yaml-cpp
   ${catkin_LIBRARIES}
 )
 
@@ -59,7 +57,7 @@ target_include_directories(test_costmap
 target_link_libraries(test_costmap
   costmap_node
   ${catkin_LIBRARIES}
-  /usr/local/lib/libyaml-cpp.so
+  yaml-cpp
   )
 
 list(APPEND catkin_LIBRARIES costmap_node)

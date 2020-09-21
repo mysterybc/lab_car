@@ -50,7 +50,7 @@
  *
  *********************************************************************/
 #include "obstacle_layer.h"
-#include "yaml.h"
+#include "yaml-cpp/yaml.h"
 
 namespace costmap_node {
 

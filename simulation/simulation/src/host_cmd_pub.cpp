@@ -1,5 +1,6 @@
 #include "ros/ros.h"
 #include "robot_msgs/HostCmd.h"
+#include "tf/tf.h"
 #include <thread>
 
 void Command();
@@ -34,18 +35,14 @@ int main(int argc, char **argv){
             case '2':
                 if(last_command == command)
                     break;
-                host_cmd.goal.pose.orientation.w = 1;
-                host_cmd.goal.pose.orientation.x = 0;
-                host_cmd.goal.pose.orientation.y = 0;
-                host_cmd.goal.pose.orientation.z = 0;
+                double yaw = 3.14;
+                host_cmd.goal.pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
                 host_cmd.goal.pose.position.x = 6;
                 host_cmd.goal.pose.position.y = 12;
                 host_cmd.goal.pose.position.z = 0;
                 host_cmd.mission.mission = host_cmd.mission.build_up_task;
                 last_command = '2';
                 MissionPub();
-                break;
-            default :
                 break;
         }
 
