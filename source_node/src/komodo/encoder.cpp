@@ -1,4 +1,4 @@
-#include "encoder_source.h"
+#include "driver_source.h"
 
 
 int Encoder::UpdateOdom()
@@ -7,14 +7,12 @@ int Encoder::UpdateOdom()
 
     std::string port;
     ros::NodeHandle nh_private("~");
-    nh_private.param<std::string>("port", port, "/dev/ttyUSB0"); 
+    nh_private.param<std::string>("vehicle_port", port, "/dev/ttyUSB0"); 
 
     //创建timeout
     serial::Timeout to = serial::Timeout::simpleTimeout(100);
     //设置要打开的串口名称
-    // sp.setPort("/dev/ttyUSB1");
     sp.setPort(port);
-
     //设置串口通信的波特率
     sp.setBaudrate(115200);
     //串口设置timeout
@@ -46,7 +44,7 @@ int Encoder::UpdateOdom()
     ros::Publisher vel_pub = n.advertise<geometry_msgs::Twist>("komodo/vel", 20);
     //! ros publisher for odometry information
     ros::Subscriber subTwist_ = n.subscribe("komodo/cmd_vel", 1000, &Encoder::cmdVelCallback,this);
-    ros::Publisher ros_odom_pub_ = n.advertise<nav_msgs::Odometry>("odom", 30);
+    ros::Publisher ros_odom_pub_ = n.advertise<nav_msgs::Odometry>("odom_raw", 30);
     //! ros chassis odometry tf
     geometry_msgs::TransformStamped odom_tf_;
     //! ros chassis odometry tf broadcaster

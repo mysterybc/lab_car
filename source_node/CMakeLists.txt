@@ -16,15 +16,19 @@ catkin_package()
 
 include_directories(include ${catkin_INCLUDE_DIRS})
 
-#add_dependencies(encoder_source_node source_node_generate_messages_cpp)
-#编码器节点
-add_executable(encoder_source_node src/encoder_source.cpp src/komodo/encoder.cpp)
-target_link_libraries(encoder_source_node ${catkin_LIBRARIES})
 #组合导航节点
-add_executable(navigation_source_node src/navigation_source.cpp)
+add_executable(navigation_source_node 
+  src/navigation_source.cpp 
+  src/komodo/imu.cpp 
+  src/komodo/gps.cpp
+)
 target_link_libraries(navigation_source_node ${catkin_LIBRARIES})
-#驱动器去节点
-add_executable(driver_source_node src/driver_source.cpp)
+
+#驱动器节点(编码器读取也在里面)
+add_executable(driver_source_node 
+  src/driver_source.cpp 
+  src/komodo/encoder.cpp
+)
 target_link_libraries(driver_source_node ${catkin_LIBRARIES})
 #摄像头节点待添加
 

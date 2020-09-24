@@ -89,3 +89,44 @@ int main(int argc, char **argv)
 }
 
 
+
+
+//以下是功能
+RemoteControl::RemoteControl()
+{
+    joystrick_drive_ = true;
+    subJoy_   = nh_.subscribe("joy", 1000, &RemoteControl::joyCallback, this);
+    subTwist_ = nh_.subscribe("cmd_vel", 1000, &RemoteControl::twistCallback, this);
+    pubTwist_ = nh_.advertise<geometry_msgs::Twist>("komodo/cmd_vel", 1000);
+}
+//如果在手动模式下，就发布手柄控制命令
+void RemoteControl::joyCallback(const sensor_msgs::Joy::ConstPtr& msg)
+{
+    if (msg->buttons[4] || msg->buttons[5])
+        joystrick_drive_ = false;
+    else
+        joystrick_drive_ = true;
+
+    geometry_msgs::Twist out_cmd_vel;
+    if (! joystrick_drive_)
+        out_cmd_vel = in_cmd_vel_;
+    else {
+        out_cmd_vel.angular.z = MAX_ANGULAR_VEL*msg->axes[2];
+        out_cmd_vel.linear.x = MAX_VEL*msg->axes[3];
+    }
+    pubTwist_.publish(out_cmd_vel);
+}
+void RemoteControl::twistCallback(const geometry_msgs::Twist::ConstPtr& msg)
+{
+    // memorize the command
+    in_cmd_vel_.angular = msg->angular;
+    in_cmd_vel_.linear  = msg->linear;
+    // publish the command if joystick button pressed
+    if (! joystrick_drive_) {
+        geometry_msgs::Twist out_cmd_vel;
+        out_cmd_vel = in_cmd_vel_;
+        pubTwist_.publish(out_cmd_vel);
+    }
+}
+
+
