@@ -54,6 +54,9 @@
         "utility": "cpp",
         "typeindex": "cpp",
         "typeinfo": "cpp",
-        "csignal": "cpp"
+        "csignal": "cpp",
+        "condition_variable": "cpp",
+        "slist": "cpp",
+        "valarray": "cpp"
     }
 }

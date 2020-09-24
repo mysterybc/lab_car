@@ -17,33 +17,41 @@ int main(int argc, char **argv){
     for(unsigned int i = 1; i <= 4; i++){
         host_cmd.car_id.push_back(i);
     }
-    std::thread command_thread = std::thread(Command);
     host_cmd_pub = nh.advertise<robot_msgs::HostCmd>("host_cmd",10);
 
     ros::Rate loop(10);
     while(ros::ok()){
         ros::spinOnce();
-
+        Command();
         switch(command){
-            case '1':
+            case '1':{
                 if(last_command == command)
                     break;
                 host_cmd.mission.mission = host_cmd.mission.system_standby;
                 last_command = '1';
                 MissionPub();
                 break;
-            case '2':
+            }
+            case '2':{
                 if(last_command == command)
                     break;
                 double yaw = 3.14;
+                std::cout << "please input x :" << std::endl;
+                std::cin >> host_cmd.goal.pose.position.x;
+                std::cout << "please input y :" << std::endl;
+                std::cin >> host_cmd.goal.pose.position.y;
+                std::cout << "please input yaw :" << std::endl;
+                std::cin >> yaw;
                 host_cmd.goal.pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
-                host_cmd.goal.pose.position.x = 6;
-                host_cmd.goal.pose.position.y = 12;
                 host_cmd.goal.pose.position.z = 0;
                 host_cmd.mission.mission = host_cmd.mission.build_up_task;
                 last_command = '2';
                 MissionPub();
                 break;
+            }
+            default:
+                break;
+                
         }
 
         loop.sleep();
@@ -62,7 +70,7 @@ void MissionPub(){
 }
 
 void Command(){
-    while(command != 27){
+    while(ros::ok()){
         std::cout << "please input command" << std::endl
                   << "1: system stand by"   << std::endl
                   << "2: build up mission"  << std::endl;
@@ -70,6 +78,8 @@ void Command(){
         if(command != '1' && command != '2'){
             std::cout << "please input again!" << std::endl;
             std::cin >> command;
+        }else{
+            break;
         }
     }
 }
