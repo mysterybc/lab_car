@@ -6,7 +6,7 @@
 #include <std_msgs/String.h>
 #include <nav_msgs/Odometry.h>
 #include <sensor_msgs/NavSatFix.h>
-#include <source_node/conversions.h>
+#include <conversions.h>
 #include <geometry_msgs/Quaternion.h>
 #include <geometry_msgs/TransformStamped.h>
 #include "tf/transform_broadcaster.h"

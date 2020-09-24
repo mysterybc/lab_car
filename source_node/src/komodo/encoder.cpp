@@ -145,10 +145,10 @@ int Encoder::UpdateOdom()
 
 void Encoder::cmdVelCallback(const geometry_msgs::Twist::ConstPtr& cmd_vel)
 {
-    int linear_vel = cmd_vel->linear.x * VEL_TO_RPM*0.67; //0-1500对应0-1000
-    int angular_vel =cmd_vel->angular.z * VEL_TO_RPM*TURN_RADIUS*0.67; //  820*0.25 = 205  
-    std::stringstream ss;
-    ss << "!M " << -angular_vel << " " << linear_vel << "\r";
-    sp.write(ss.str()); 
+    // int linear_vel = cmd_vel->linear.x * VEL_TO_RPM*0.67; //0-1500对应0-1000
+    // int angular_vel =cmd_vel->angular.z * VEL_TO_RPM*TURN_RADIUS*0.67; //  820*0.25 = 205  
+    // std::stringstream ss;
+    // ss << "!M " << -angular_vel << " " << linear_vel << "\r";
+    // sp.write(ss.str()); 
 
 }
