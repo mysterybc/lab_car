@@ -68,9 +68,9 @@ int Encoder::UpdateOdom()
             uint8_t buffer[1024];
             //读出数据
             num = sp.read(buffer, num);
-            if(!start_flag){
-                continue;
-            }
+            // if(!start_flag){
+            //     continue;
+            // }
             int vel_right = 0,vel_left = 0; 
             std::string str;
             for(int i=0; i<num; i++)
@@ -143,10 +143,10 @@ int Encoder::UpdateOdom()
 
 void Encoder::cmdVelCallback(const geometry_msgs::Twist::ConstPtr& cmd_vel)
 {
-    // int linear_vel = cmd_vel->linear.x * VEL_TO_RPM*0.67; //0-1500对应0-1000
-    // int angular_vel =cmd_vel->angular.z * VEL_TO_RPM*TURN_RADIUS*0.67; //  820*0.25 = 205  
-    // std::stringstream ss;
-    // ss << "!M " << -angular_vel << " " << linear_vel << "\r";
-    // sp.write(ss.str()); 
+    int linear_vel = -cmd_vel->linear.x * VEL_TO_RPM*0.67; //0-1500对应0-1000
+    int angular_vel = -cmd_vel->angular.z * VEL_TO_RPM*TURN_RADIUS*0.67; //  820*0.25 = 205  
+    std::stringstream ss;
+    ss << "!M " << linear_vel << " " <<  angular_vel << "\r";
+    sp.write(ss.str()); 
 
 }

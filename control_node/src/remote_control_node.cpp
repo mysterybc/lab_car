@@ -82,7 +82,7 @@ void RemoteControlNode::CmdCallback(const robot_msgs::CmdConstPtr &msg){
 
 int main(int argc, char **argv)
 {
-    ros::init(argc, argv, "remote control source");
+    ros::init(argc, argv, "remote_control_source");
     RemoteControlNode remote_control_node;
     remote_control_node.UpdateState();
     return 0;
@@ -111,8 +111,8 @@ void RemoteControl::joyCallback(const sensor_msgs::Joy::ConstPtr& msg)
     if (! joystrick_drive_)
         out_cmd_vel = in_cmd_vel_;
     else {
-        out_cmd_vel.angular.z = MAX_ANGULAR_VEL*msg->axes[2];
-        out_cmd_vel.linear.x = MAX_VEL*msg->axes[3];
+        out_cmd_vel.angular.z = MAX_ANGULAR_VEL*msg->axes[0];
+        out_cmd_vel.linear.x = MAX_VEL*msg->axes[1];
     }
     pubTwist_.publish(out_cmd_vel);
 }

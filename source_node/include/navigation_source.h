@@ -18,7 +18,7 @@ public:
     State Resume();
     void  UpdateState();
     void CmdCallback(const robot_msgs::CmdConstPtr &msg);
-    GPS gps_;
+    //GPS gps_;
     IMU imu_;
 
     ros::Publisher  state_pub;
