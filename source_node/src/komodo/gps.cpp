@@ -8,6 +8,7 @@ int GPS::UpDateGPS()
     //ros::Publisher IMU_pub = nh.advertise<sensor_msgs::Imu>("IMU_data", 20); 
     ros::Publisher gps_odom_pub_ = nh.advertise<nav_msgs::Odometry>("gps_odom", 30);
     ros::Publisher navsatfix_pub_ = nh.advertise<sensor_msgs::NavSatFix>("navsatfix", 30);
+    ros::Publisher gps_imu_pub = nh.advertise<sensor_msgs::Imu>("GPS_IMU_data",30);
     //! ros gps odometry tf
     geometry_msgs::TransformStamped gps_odom_tf;
     //! ros gps odometry tf broadcaster
@@ -84,13 +85,19 @@ int GPS::UpDateGPS()
             //发布odom信息和tf信息
             double x,y;
             gps_common::UTM(GI320_data.latitude,GI320_data.longitude,&x,&y);
+            //time stamp
             ros::Time current_time = ros::Time::now();
             odom_.header.stamp = current_time;
+            //position
             odom_.pose.pose.position.x = x-GPS_OFFSET_X;
             odom_.pose.pose.position.y = y-GPS_OFFSET_Y;
             odom_.pose.pose.position.z = GI320_data.altitude;
-            geometry_msgs::Quaternion q = tf::createQuaternionMsgFromRollPitchYaw(0,0,GI320_data.yaw/180*3.1415926535);
-            odom_.pose.pose.orientation = q;
+            
+            geometry_msgs::Quaternion q = tf::createQuaternionMsgFromRollPitchYaw(0,
+                                                                                  0,
+                                                                                  deg2rad(GI320_data.yaw)    );
+
+            //liner speed 31b-39b
             odom_.twist.twist.linear.x = GI320_data.eastSpeed;
             odom_.twist.twist.linear.y = GI320_data.northSpeed;
             odom_.twist.twist.linear.z = GI320_data.upSpeed;
@@ -103,7 +110,24 @@ int GPS::UpDateGPS()
 
             gps_odom_tf.transform.translation.z = GI320_data.altitude;
             gps_odom_tf.transform.rotation = q;
-            tf_broadcaster_.sendTransform(gps_odom_tf);
+            //tf_broadcaster_.sendTransform(gps_odom_tf);
+
+
+            q = tf::createQuaternionMsgFromRollPitchYaw(deg2rad(GI320_data.roll),
+                                                        deg2rad(GI320_data.pitch),
+                                                        deg2rad(GI320_data.yaw)    );
+            odom_.pose.pose.orientation = q;
+
+            sensor_msgs::Imu imu;
+            imu.linear_acceleration.x = GI320_data.eastAcc;
+            imu.linear_acceleration.y = GI320_data.northAcc;
+            imu.linear_acceleration.z = GI320_data.upAcc;
+            imu.angular_velocity.x = GI320_data.roll_gro;
+            imu.angular_velocity.y = GI320_data.pitch_gro;
+            imu.angular_velocity.z = GI320_data.yaw_gro;
+            imu.orientation = q;
+
+            
             //发布gps经纬度信息
             nav_msg.header.stamp = current_time;
             nav_msg.latitude = GI320_data.latitude;
@@ -118,6 +142,9 @@ int GPS::UpDateGPS()
     return 0;
 }
 
+double GPS::deg2rad(double angle){
+    return angle * 3.1415926 / 180.0;
+}
 
 
 //如果gps状态改变，则info状态信息
@@ -187,9 +214,9 @@ void GPS::TransData()
     GI320_data.yaw  = -GI320_data.yaw + 90;  //坐标系转换
 
     memcpy(var3.data8,  &temp_dat[53], 12);
-    GI320_data.northAcc = var3.data16[0];
-    GI320_data.eastAcc = var3.data16[1];
-    GI320_data.upAcc = var3.data16[2];
+    GI320_data.northAcc = var3.data16[0];   //北向加速度
+    GI320_data.eastAcc = var3.data16[1];    //东向加速度
+    GI320_data.upAcc = var3.data16[2];      //向上的加速度
     GI320_data.roll_gro = var3.data16[3];
     GI320_data.pitch_gro = var3.data16[4];
     GI320_data.yaw_gro = var3.data16[5];

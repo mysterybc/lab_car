@@ -1,4 +1,13 @@
 #include "imu.h"
+
+double roll = 0,pitch = 0,yaw = 0;
+const double GRAVITY = 9.80665;
+
+void IMU::RosRPY2Q(const double& roll,const double& pitch,const double& yaw,geometry_msgs::Quaternion& quaternion){
+    tf::Quaternion quat;
+    quaternion = tf::createQuaternionMsgFromRollPitchYaw(roll, pitch, yaw);
+}
+
 int IMU::UpDateIMU(){
     //声明节点句柄
     ros::NodeHandle nh;
@@ -8,7 +17,7 @@ int IMU::UpDateIMU(){
     try 
     { 
         //设置串口属性，并打开串口 
-        ser.setPort("/dev/ttyUSB0"); 
+        ser.setPort("/dev/ttyUSB1"); 
         ser.setBaudrate(115200); 
         serial::Timeout to = serial::Timeout::simpleTimeout(1000); 
         ser.setTimeout(to); 
@@ -48,23 +57,45 @@ int IMU::UpDateIMU(){
 
                     imu_data.header.stamp = ros::Time::now();
                     imu_data.header.frame_id = "imu_data";
-                    //四元数位姿,所有数据设为固定值，可以自己写代码获取ＩＭＵ的数据，，然后进行传递
-                    imu_data.orientation.x = 0;
-                    imu_data.orientation.y = 0;
-                    imu_data.orientation.z = 0;
-                    imu_data.orientation.w = 1;
-                    //线加速度
-                    imu_data.angular_velocity.x = imu_var.data32[0]; 
-                    imu_data.angular_velocity.y = imu_var.data32[1];
-                    imu_data.angular_velocity.z = imu_var.data32[2];
-                    //角速度
-                    imu_data.linear_acceleration.x = imu_var.data32[3]; 
-                    imu_data.linear_acceleration.y = imu_var.data32[4]; 
-                    imu_data.linear_acceleration.z = imu_var.data32[5];
 
-                    robot_angle += imu_var.data32[2] * 0.01;
-                    ROS_INFO("imu:%f",robot_angle);
-                    IMU_pub.publish(imu_data);                  
+                    //角速度
+                    imu_data.angular_velocity.x = (imu_var.data32[1])/180.0*3.14; 
+                    imu_data.angular_velocity.y = (imu_var.data32[0])/180.0*3.14;
+                    imu_data.angular_velocity.z = (imu_var.data32[2])/180.0*3.14;
+                    //线加速度
+                    imu_data.linear_acceleration.x = imu_var.data32[4]*GRAVITY;
+                    imu_data.linear_acceleration.y = imu_var.data32[3]*GRAVITY;
+                    imu_data.linear_acceleration.z = imu_var.data32[5]*GRAVITY;
+
+                    double accx,accy,accz;
+                    accx = imu_data.linear_acceleration.x;
+                    accy = imu_data.linear_acceleration.y;
+                    accz = imu_data.linear_acceleration.z;
+                    
+                    pitch = - std::atan2(accx,std::sqrt(accy*accy+accz*accz)); //俯仰
+                    roll = std::atan2(accy,accz);  //横滚
+
+                    //debug output
+                    //std::cout<<"initialize pitch: "<< 180.0* pitch/3.14<<"roll: "<<180.0 *roll/3.14<<std::endl;
+
+
+
+                    //roll += imu_data.angular_velocity.x * 0.01;
+                    //pitch += imu_data.angular_velocity.y * 0.01;
+                    yaw += imu_data.angular_velocity.z * 0.01;
+
+                    //std::cout<<"roll:  "<<roll<<" pitch: "<<pitch<<"yaw: "<<yaw<<std::endl;
+
+                    geometry_msgs::Quaternion q;
+
+                    RosRPY2Q(roll,pitch,yaw,q);
+
+                    imu_data.orientation.x = q.x;
+                    imu_data.orientation.y = q.y;
+                    imu_data.orientation.z = q.z;
+                    imu_data.orientation.w = q.w;
+
+                    IMU_pub.publish(imu_data);                   
                 }                
             }
         }

@@ -44,21 +44,21 @@ bool NavigationSource::LoadConfig(std::string file){
 
 State NavigationSource::Start(){
     ROS_INFO("navigation source running");
-    //gps_.Start();
+    gps_.Start();
     imu_.Start();
     return State::RUNNING;
 }
 //Stop需要reset参数
 State NavigationSource::Stop(){
     ROS_INFO("navigation source stop");
-    //gps_.Stop();
+    gps_.Stop();
     imu_.Stop();
     return State::STOP;
 }
 //退出需要清理线程
 State NavigationSource::Exit(){
     ROS_INFO("navigation source exit");
-    //gps_.Exit();
+    gps_.Exit();
     imu_.Exit();
     state_pub.shutdown();
     cmd_sub.shutdown();
@@ -69,7 +69,7 @@ State NavigationSource::Pause(){
     if(node_state!=State::RUNNING)
         return node_state;
     ROS_INFO("navigation source pause");
-    //gps_.Pause();
+    gps_.Pause();
     imu_.Pause();
     return State::PAUSED;
 }
@@ -77,7 +77,7 @@ State NavigationSource::Resume(){
     if(node_state!=State::PAUSED)
         return node_state;
     ROS_INFO("navigation source resume");
-    //gps_.Resume();
+    gps_.Resume();
     imu_.Resume();
     return State::RUNNING;
 }

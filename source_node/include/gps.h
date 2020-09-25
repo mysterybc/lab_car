@@ -6,6 +6,7 @@
 #include <nav_msgs/Odometry.h>
 #include <sensor_msgs/NavSatFix.h>
 #include <conversions.h>
+#include "sensor_msgs/Imu.h"
 #include <geometry_msgs/Quaternion.h>
 #include <geometry_msgs/TransformStamped.h>
 #include "tf/transform_broadcaster.h"
@@ -23,6 +24,7 @@ public:
     //显示收到的数据 debug用
     void InfoData();
     void TransData();
+    double deg2rad(double angle);
     //如果gps状态改变，则info状态信息
     void InfoGpsState();
     int UpDateGPS();

@@ -4,6 +4,7 @@
 #include <serial/serial.h> 
 #include <std_msgs/String.h>
 #include <sstream> 
+#include "tf/transform_broadcaster.h"
 #include <sensor_msgs/Imu.h>
 #include <std_msgs/Empty.h> 
 #include <thread>
@@ -16,7 +17,8 @@ public:
     int UpDateIMU();
     int32_t comb32(uint8_t first ,uint8_t second ,uint8_t third ,uint8_t fouth); //数据解析8->32
     void write_callback(const std_msgs::String::ConstPtr& msg); 
-    int16_t comb16(uint8_t first ,uint8_t second);  //数据解析8->16    
+    int16_t comb16(uint8_t first ,uint8_t second);  //数据解析8->16 
+    void RosRPY2Q(const double& roll,const double& pitch,const double& yaw,geometry_msgs::Quaternion& quaternion);   
     void Start(){
         start_flag = true;
         imu_thread_ = new std::thread(std::bind(&IMU::UpDateIMU,this));
