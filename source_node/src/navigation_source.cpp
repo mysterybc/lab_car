@@ -1,4 +1,5 @@
 #include "navigation_source.h"
+#include "robot_msgs/SourceNodeMsg.h"
 
 NavigationSource::NavigationSource(){
     ros::NodeHandle nh;

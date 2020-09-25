@@ -16,8 +16,8 @@ catkin_package()
 include_directories(include  ${catkin_INCLUDE_DIRS})
 
 #遥控节点
-add_executable(remote_cotrol_node src/remote_control_node.cpp)
-target_link_libraries(remote_cotrol_node ${catkin_LIBRARIES})
+add_executable(remote_control_node src/remote_control_node.cpp)
+target_link_libraries(remote_control_node ${catkin_LIBRARIES})
 #单车轨线跟踪
 add_library(AlgoTracking src/Tracking/AlgoTracking.cpp)
 add_library(Tkspline src/Tracking/tkspline.cpp)

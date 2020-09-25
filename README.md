@@ -60,6 +60,10 @@ ros message包含通讯所需msg，service and action三种通讯消息。
 
 （1）加入散点算法 （2）加入上位机交互的通讯节点 （3）精简仿真代码
 
+###### 2020年9月21日提交
+
+（1）加入costmap  （2）加入icra中基于teb实现的local_planner，但是目前存在问题
+
 
 
 

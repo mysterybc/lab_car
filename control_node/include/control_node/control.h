@@ -1,10 +1,4 @@
-/** brief:头文件声明了control节点的基类，ControlNode
- *  note:
- *  
- */
-
-#ifndef CONTROL_NODE_H
-#define CONTROL_NODE_H
+#pragma once
 #include <thread>
 #include <string>
 #include "robot_msgs/PerceptionNodeMsg.h"
@@ -51,6 +45,3 @@ public:
     uint8_t update_frequence;
     std::string node_name;
 };
-
-
-#endif
