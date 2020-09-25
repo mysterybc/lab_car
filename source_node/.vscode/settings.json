@@ -52,7 +52,8 @@
         "cinttypes": "cpp",
         "utility": "cpp",
         "typeindex": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "csignal": "cpp"
     },
     "python.autoComplete.extraPaths": [
         "/home/robot/realsense_ws/devel/lib/python2.7/dist-packages",

@@ -1,4 +1,6 @@
 #include "gps.h"
+#include "iostream"
+int count = 0;
 int GPS::UpDateGPS()
 {
     //声明节点句柄
@@ -26,7 +28,7 @@ int GPS::UpDateGPS()
     try 
     { 
         //设置串口属性，并打开串口 
-        ser.setPort("/dev/ttyUSB0");
+        ser.setPort("/dev/ttyUSB1");
         ser.setBaudrate(115200); 
         serial::Timeout to = serial::Timeout::simpleTimeout(1000); 
         ser.setTimeout(to); 
@@ -102,7 +104,7 @@ int GPS::UpDateGPS()
             odom_.twist.twist.linear.y = GI320_data.northSpeed;
             odom_.twist.twist.linear.z = GI320_data.upSpeed;
             odom_.twist.twist.angular.z = GI320_data.yaw_gro;
-            gps_odom_pub_.publish(odom_);
+            
 
             gps_odom_tf.header.stamp = current_time;
             gps_odom_tf.transform.translation.x = x;
@@ -113,19 +115,33 @@ int GPS::UpDateGPS()
             //tf_broadcaster_.sendTransform(gps_odom_tf);
 
 
-            q = tf::createQuaternionMsgFromRollPitchYaw(deg2rad(GI320_data.roll),
-                                                        deg2rad(GI320_data.pitch),
+            q = tf::createQuaternionMsgFromRollPitchYaw(deg2rad(GI320_data.pitch),
+                                                        deg2rad(GI320_data.roll),
                                                         deg2rad(GI320_data.yaw)    );
             odom_.pose.pose.orientation = q;
 
             sensor_msgs::Imu imu;
-            imu.linear_acceleration.x = GI320_data.eastAcc;
-            imu.linear_acceleration.y = GI320_data.northAcc;
-            imu.linear_acceleration.z = GI320_data.upAcc;
-            imu.angular_velocity.x = GI320_data.roll_gro;
-            imu.angular_velocity.y = GI320_data.pitch_gro;
-            imu.angular_velocity.z = GI320_data.yaw_gro;
+            imu.header.stamp = ros::Time().now();
+            imu.header.frame_id = "imu_link";
+            //左边是x，前是y，z向下
+            imu.linear_acceleration.x = ((double)GI320_data.northAcc)/100.0;
+            imu.linear_acceleration.y = ((double)GI320_data.eastAcc)/100.0;
+            imu.linear_acceleration.z = -((double)GI320_data.upAcc)/100.0;
+            imu.angular_velocity.x = deg2rad(((double)GI320_data.roll_gro)/100.0);
+            imu.angular_velocity.y = deg2rad(((double)GI320_data.pitch_gro)/100.0);
+            imu.angular_velocity.z = -deg2rad(((double)GI320_data.yaw_gro)/100.0);
             imu.orientation = q;
+            if(count++%10==0){
+                gps_imu_pub.publish(imu);
+                gps_odom_pub_.publish(odom_);
+                std::cout << "roll angle is" << GI320_data.roll << std::endl;
+                std::cout << "yaw angle is" << GI320_data.yaw << std::endl;
+                std::cout << "pitch angle is" << GI320_data.pitch << std::endl;
+            }
+            if(count >10000){
+                count = 0;
+            }
+            
 
             
             //发布gps经纬度信息
