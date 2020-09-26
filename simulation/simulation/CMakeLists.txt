@@ -12,6 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
   robot_msgs
   std_msgs
   tf
+  turtlebot3_navigation
 )
 
 # find_package(Boost REQUIRED COMPONENTS system)
