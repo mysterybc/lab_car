@@ -12,12 +12,20 @@
 
   <!-- AMCL -->
   <include file="$(find turtlebot3_navigation)/launch/amcl.launch"/>
+  <!-- 测试用tf -->
+  <node pkg="tf" type="static_transform_publisher" name="base_footprint_to_base_link"
+  args="0 0 0 0 0 0 base_footprint base_link 100" />
+
+   <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen">
+      <param name="publish_frequency" type="double" value="50.0" />
+      <!-- <param name="tf_prefix" value="$(arg second_tb3)" /> -->
+    </node>
   <!-- <node pkg="stage_ros" type="stageros" name="stageros" args="$(find simulation)/worlds/robot2020.world" respawn="false" >
   </node> -->
   <!-- Run the map server -->
   <!-- <node name="map_server" pkg="map_server" type="map_server" args="$(find simulation)/launch/planning_map.yaml" respawn="false" /> -->
   <!--  ************** Navigation ***************  -->
-	<node pkg="move_base" type="move_base" respawn="false" name="move_base" >
+	<node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen" >
   	  	<rosparam file="$(find teb_local_planner_tutorials)/cfg/diff_drive/costmap_common_params.yaml" command="load" ns="global_costmap" />
   	 	<rosparam file="$(find teb_local_planner_tutorials)/cfg/diff_drive/costmap_common_params.yaml" command="load" ns="local_costmap" />
   		<rosparam file="$(find teb_local_planner_tutorials)/cfg/diff_drive/local_costmap_params.yaml" command="load" />
@@ -33,8 +41,8 @@
 		<param name="controller_patience" value="15.0" />
 	</node>
   <!-- 测试用tf -->
-  <node pkg="tf" type="static_transform_publisher" name="map_to_base_link"
-  args="0 0 0 0 0 0 map odom 100" />
+  <!-- <node pkg="tf" type="static_transform_publisher" name="map_to_base_link"
+  args="0 0 0 0 0 0 map odom 100" /> -->
   <!-- 车id -->
   <param name="car_id" 	  type="int" 			             value="0"                 />
   <!-- task node -->
@@ -42,6 +50,6 @@
   <!-- behavior tree -->
   <node pkg="decision_node" type="behavior_node"      name="bahevior_node"   output="screen"  />
   <!-- Run the rviz -->
-  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find simulation)/rviz/test_costmap.rviz" />
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find simulation)/rviz/gazebo_simulation.rviz" />
 
 </launch>
