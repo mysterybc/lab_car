@@ -10,6 +10,7 @@ EncoderSource::EncoderSource(){
         node_error = Error::NO_ERROR;
         ROS_WARN("encoder_node: Config failed");
     }
+    node_state = State::RUNNING;
     state_pub = nh.advertise<robot_msgs::SourceNodeMsg>("encoder_state",10);
     cmd_sub = nh.subscribe("encoder_cmd",10,&EncoderSource::CmdCallback,this);
     encoder_thread_ = new std::thread(std::bind(&Encoder::UpdateOdom,&encoder));
@@ -76,11 +77,11 @@ State EncoderSource::Resume(){
 void EncoderSource::CmdCallback(const robot_msgs::CmdConstPtr &msg){
     ROS_INFO("encoder source get command");
     switch(msg->cmd){
-        case (int)Cmd::START : node_state = Start();  encoder.SetFlag(true);  break;
-        case (int)Cmd::PAUSE : node_state = Pause();  encoder.SetFlag(false); break;
-        case (int)Cmd::STOP  : node_state = Stop();   encoder.SetFlag(false); break;
-        case (int)Cmd::RESUME: node_state = Resume(); encoder.SetFlag(true);  break;
-        case (int)Cmd::EXIT  : node_state = Exit();   encoder.SetFlag(false); break;
+        case (int)Cmd::START : node_state = Start();   break;
+        case (int)Cmd::PAUSE : node_state = Pause();   break;
+        case (int)Cmd::STOP  : node_state = Stop();    break;
+        case (int)Cmd::RESUME: node_state = Resume();  break;
+        case (int)Cmd::EXIT  : node_state = Exit();    break;
     }
 }
 

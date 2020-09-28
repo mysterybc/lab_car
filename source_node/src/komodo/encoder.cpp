@@ -68,9 +68,6 @@ int Encoder::UpdateOdom()
             uint8_t buffer[1024];
             //读出数据
             num = sp.read(buffer, num);
-            // if(!start_flag){
-            //     continue;
-            // }
             int vel_right = 0,vel_left = 0; 
             std::string str;
             for(int i=0; i<num; i++)

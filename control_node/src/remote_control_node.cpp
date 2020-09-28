@@ -102,11 +102,17 @@ RemoteControl::RemoteControl()
 //如果在手动模式下，就发布手柄控制命令
 void RemoteControl::joyCallback(const sensor_msgs::Joy::ConstPtr& msg)
 {
-    if (msg->buttons[4] || msg->buttons[5])
+    if (msg->buttons[4] || msg->buttons[5]){
         joystrick_drive_ = false;
-    else
+        //debug
+        ROS_INFO("joystrick_drive_ running?  False");
+    }
+    else{
         joystrick_drive_ = true;
-
+        //debug
+        ROS_INFO("joystrick_drive_ running?  True");
+    }
+    
     geometry_msgs::Twist out_cmd_vel;
     if (! joystrick_drive_)
         out_cmd_vel = in_cmd_vel_;
@@ -127,6 +133,7 @@ void RemoteControl::twistCallback(const geometry_msgs::Twist::ConstPtr& msg)
         out_cmd_vel = in_cmd_vel_;
         pubTwist_.publish(out_cmd_vel);
     }
+    
 }
 
 

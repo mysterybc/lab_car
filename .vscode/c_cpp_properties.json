@@ -5,10 +5,9 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "/opt/ros/kinetic/include",
-                "~/banchao_ws/devel/include",
+                "~/catkin_car/devel/include",
                 "/usr/local/include",
                 "/opt/ros/kinetic/include/opencv-3.3.1-dev",
-                "~/banchao_ws/src/lab_car/source_node/include",
                 "/usr/include/pcl-1.7",
                 "/usr/include/eigen3"
 

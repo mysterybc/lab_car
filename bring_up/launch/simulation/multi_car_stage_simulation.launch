@@ -1,0 +1,131 @@
+<launch>
+    <!-- 仿真需要1、仿真模型 2、地图 3、rviz 4、tf（odom to map） 5、小车控制（planning&path_follow) -->
+    <param name="use_sim_time" value="true"/>
+    <node pkg="stage_ros" type="stageros" name="stageros" args="$(find simulation)/worlds/robot2020_fourcar.world" respawn="false" >
+    </node>
+    <!-- 上位机交互程序 -->
+    <!-- <node pkg="communication_node"  type="zmq_recv"     name="zmq_recv"    />
+    <node pkg="communication_node"  type="zmq_send"     name="zmq_send"    /> -->
+    <!-- Run the map server -->
+    <node name="map_server" pkg="map_server" type="map_server" args="$(find bring_up)/map/stage_map.yaml" respawn="false" />    
+    <group ns="robot_0">
+        <!-- param -->
+        <param name="car_id" 	  type="int" 			             value="0"                 />
+        <!-- 发布tf -->
+        <node pkg="tf" type="static_transform_publisher" name="map_to_base_link"
+            args="0 0 0 0 0 0 /map /robot_0/odom 100" />
+        <!-- task node -->
+        <node pkg="task_node"     type="build_up_task_multi_car"     name="build_up_task_multi_car"  />
+        <!-- behavior tree -->
+        <node pkg="decision_node" type="behavior_node"               name="bahevior_node"      />
+        <!-- separate node -->
+        <node pkg="service_node"  type="separate_goal"               name="separate_goal"      />
+        <!--  ************** Navigation ***************  -->
+        <node pkg="move_base" type="move_base" respawn="false" name="move_base" >
+            <rosparam file="$(find bring_up)/cfg/stage//diff_drive1/costmap_common_params.yaml" command="load" ns="global_costmap" />
+            <rosparam file="$(find bring_up)/cfg/stage//diff_drive1/costmap_common_params.yaml" command="load" ns="local_costmap" />
+            <rosparam file="$(find bring_up)/cfg/stage//diff_drive1/local_costmap_params.yaml" command="load" />
+            <rosparam file="$(find bring_up)/cfg/stage//diff_drive1/global_costmap_params.yaml" command="load" />
+            <rosparam file="$(find bring_up)/cfg/stage//diff_drive1/teb_local_planner_params.yaml" command="load" />
+
+            <param name="base_global_planner" value="global_planner/GlobalPlanner" />
+            <param name="planner_frequency" value="1.0" />
+            <param name="planner_patience" value="5.0" />
+
+            <param name="base_local_planner" value="teb_local_planner/TebLocalPlannerROS" />
+            <param name="controller_frequency" value="5.0" />
+            <param name="controller_patience" value="15.0" />
+        </node>
+    </group>
+    <group ns="robot_1">
+        <!-- param -->
+        <param name="car_id" 	  type="int" 			             value="1"                 />
+        <!-- 发布tf -->
+        <node pkg="tf" type="static_transform_publisher" name="map_to_base_link"
+            args="0 0 0 0 0 0 /map /robot_1/odom 100" />
+        <!-- task node -->
+        <node pkg="task_node"     type="build_up_task_multi_car"     name="build_up_task_multi_car"  />
+        <!-- behavior tree -->
+        <node pkg="decision_node" type="behavior_node"      	     name="bahevior_node"      />
+        <!-- separate node -->
+        <node pkg="service_node"  type="separate_goal"               name="separate_goal"      />
+        <!--  ************** Navigation ***************  -->
+        <node pkg="move_base" type="move_base" respawn="false" name="move_base" >
+            <rosparam file="$(find bring_up)/cfg/stage//diff_drive2/costmap_common_params.yaml" command="load" ns="global_costmap" />
+            <rosparam file="$(find bring_up)/cfg/stage//diff_drive2/costmap_common_params.yaml" command="load" ns="local_costmap" />
+            <rosparam file="$(find bring_up)/cfg/stage//diff_drive2/local_costmap_params.yaml" command="load" />
+            <rosparam file="$(find bring_up)/cfg/stage//diff_drive2/global_costmap_params.yaml" command="load" />
+            <rosparam file="$(find bring_up)/cfg/stage//diff_drive2/teb_local_planner_params.yaml" command="load" />
+
+            <param name="base_global_planner" value="global_planner/GlobalPlanner" />
+            <param name="planner_frequency" value="1.0" />
+            <param name="planner_patience" value="5.0" />
+
+            <param name="base_local_planner" value="teb_local_planner/TebLocalPlannerROS" />
+            <param name="controller_frequency" value="5.0" />
+            <param name="controller_patience" value="15.0" />
+        </node>
+    </group>
+    <group ns="robot_2">
+        <!-- param -->
+        <param name="car_id" 	  type="int" 			             value="2"                 />
+        <!-- 发布tf -->
+        <node pkg="tf" type="static_transform_publisher" name="map_to_base_link"
+            args="0 0 0 0 0 0 /map /robot_2/odom 100" />
+        <!-- task node -->
+        <node pkg="task_node"     type="build_up_task_multi_car"     name="build_up_task_multi_car" output="screen"   />
+        <!-- behavior tree -->
+        <node pkg="decision_node" type="behavior_node"      	     name="bahevior_node"    output="screen"    />
+        <!-- separate node -->
+        <node pkg="service_node"  type="separate_goal"               name="separate_goal"      />
+        <!--  ************** Navigation ***************  -->
+        <node pkg="move_base" type="move_base" respawn="false" name="move_base" >
+            <rosparam file="$(find bring_up)/cfg/stage//diff_drive3/costmap_common_params.yaml" command="load" ns="global_costmap" />
+            <rosparam file="$(find bring_up)/cfg/stage//diff_drive3/costmap_common_params.yaml" command="load" ns="local_costmap" />
+            <rosparam file="$(find bring_up)/cfg/stage//diff_drive3/local_costmap_params.yaml" command="load" />
+            <rosparam file="$(find bring_up)/cfg/stage//diff_drive3/global_costmap_params.yaml" command="load" />
+            <rosparam file="$(find bring_up)/cfg/stage//diff_drive3/teb_local_planner_params.yaml" command="load" />
+
+            <param name="base_global_planner" value="global_planner/GlobalPlanner" />
+            <param name="planner_frequency" value="1.0" />
+            <param name="planner_patience" value="5.0" />
+
+            <param name="base_local_planner" value="teb_local_planner/TebLocalPlannerROS" />
+            <param name="controller_frequency" value="5.0" />
+            <param name="controller_patience" value="15.0" />
+        </node>
+    </group>
+    <group ns="robot_3">
+        <!-- param -->
+        <param name="car_id" 	  type="int" 			             value="3"                 />
+        <!-- 发布tf -->
+        <node pkg="tf" type="static_transform_publisher" name="map_to_base_link"
+            args="0 0 0 0 0 0 /map /robot_3/odom 100" />
+        <!-- task node -->
+        <node pkg="task_node"     type="build_up_task_multi_car"     name="build_up_task_multi_car"    />
+        <!-- behavior tree -->
+        <node pkg="decision_node" type="behavior_node"      	     name="bahevior_node"      />
+        <!-- separate node -->
+        <node pkg="service_node"  type="separate_goal"               name="separate_goal"      />
+        <!--  ************** Navigation ***************  -->
+        <node pkg="move_base" type="move_base" respawn="false" name="move_base" >
+            <rosparam file="$(find bring_up)/cfg/stage//diff_drive4/costmap_common_params.yaml" command="load" ns="global_costmap" />
+            <rosparam file="$(find bring_up)/cfg/stage//diff_drive4/costmap_common_params.yaml" command="load" ns="local_costmap" />
+            <rosparam file="$(find bring_up)/cfg/stage//diff_drive4/local_costmap_params.yaml" command="load" />
+            <rosparam file="$(find bring_up)/cfg/stage//diff_drive4/global_costmap_params.yaml" command="load" />
+            <rosparam file="$(find bring_up)/cfg/stage//diff_drive4/teb_local_planner_params.yaml" command="load" />
+
+            <param name="base_global_planner" value="global_planner/GlobalPlanner" />
+            <param name="planner_frequency" value="1.0" />
+            <param name="planner_patience" value="5.0" />
+
+            <param name="base_local_planner" value="teb_local_planner/TebLocalPlannerROS" />
+            <param name="controller_frequency" value="5.0" />
+            <param name="controller_patience" value="15.0" />
+        </node>
+    </group>
+    
+
+    <!-- Run the rviz -->
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find bring_up)/rviz/multi_car_stage_simulation.rviz.rviz" />
+</launch>

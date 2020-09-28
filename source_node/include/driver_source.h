@@ -28,13 +28,8 @@ public:
     Encoder()=default;
     ~Encoder()=default;
     int UpdateOdom();
-    //TODO 暂时把驱动放在这里 不太清楚两个节点能否同时打开一个串口？？
     void cmdVelCallback(const geometry_msgs::Twist::ConstPtr& cmd_vel);
-    void SetFlag(bool state){
-        start_flag = state;
-    }
 private:    
-    bool start_flag{false};
     serial::Serial sp;
     ros::Publisher vel_pub;
     ros::Publisher odom_pub_;
