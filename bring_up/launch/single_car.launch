@@ -1,40 +1,51 @@
 <!-- 
     运行的节点包括：
-    1、资源节点：driver_source_node
-    2、控制节点：remote_control_node
-    3、遥控接收：joy_node（库）
-    4、地图：    map_server（库）
-    5、定位节点：ndt_localization
-    6、决策树：  decision_node
-    7、任务节点：task_node
-    8、规划节点：move_base（库）
-    9、可视化:  rviz（库）
+    1、坐标系变换：static tf
+    2、资源节点：driver_source_node
+    3、控制节点：remote_control_node
+    4、遥控接收：joy_node（库）
+    5、地图：    map_server（库）
+    6、定位节点：ndt_localization
+    7、决策树：  decision_node
+    8、任务节点：task_node
+    9、规划节点：move_base（库）
+    10、可视化:  rviz（库）
  -->
 
 <launch>
      <!-- 全局参数 -->
-    <param name="car_id" type="int" value="0" />   
-
-
+    <param name="car_id" type="int" value="0" />
     <!-- 1 -->
-    <node pkg="source_node"  type="driver_source_node"  name="driver_source_node" output="screen"/> 
+    <node pkg="tf" type="static_transform_publisher" name="world_map_broadcaster" args="0 0 0 0 0 0 /world /map 100" />
+    <node pkg="tf" type="static_transform_publisher" name="lidar_base_broadcaster" args="0 0 -0.4 0 0 0 /lidar_link /base_link 100" />
     <!-- 2 -->
-    <node pkg="control_node" type="remote_control_node" name="remote_control_node" output="screen"/> 
+    <node pkg="source_node"  type="driver_source_node"  name="driver_source_node" output="screen"/> 
     <!-- 3 -->
+    <node pkg="control_node" type="remote_control_node" name="remote_control_node" output="screen"/> 
+    <!-- 4 -->
     <node respawn="true" pkg="joy" type="joy_node" name="gamepad" >
         <param name="dev" type="string" value="/dev/input/js0" />
         <param name="deadzone" value="0.0" />
         <param name="autorepeat_rate" value="10.0" />
     </node>
-    <!-- 4 -->
-    <node name="map_server" pkg="map_server" type="map_server"  args="$(find bring_up)/map/stage_map.yaml"/>
     <!-- 5 -->
+    <node name="map_server" pkg="map_server" type="map_server"  args="$(find bring_up)/map/stage_map.yaml"/>
     <!-- 6 -->
-    <node pkg="task_node"     type="build_up_task"  name="build_up_node"    />
+    <node name="scan_to_submap_imu_node" pkg="ndt_localization" type="scan_to_submap_imu_node" output="screen">
+        <param name="score_threshold" type = "double" value="3.00" />
+        <param name="imu_enable" type = "bool" value="true" />
+        <!--meter-->>
+        <param name="initial_x " type = "double" value="113.0" />
+        <param name="initial_y" type = "double" value="88.0" />
+        <!--deg-->>
+        <param name="initial_yaw" type = "double" value="0.0" />
+    </node>
     <!-- 7 -->
-    <node pkg="decision_node" type="behavior_node"  name="bahevior_node"    />
+    <node pkg="task_node"     type="build_up_task"  name="build_up_node"    />
     <!-- 8 -->
-	<node pkg="move_base" type="move_base" respawn="false" name="move_base" >
+    <node pkg="decision_node" type="behavior_node"  name="bahevior_node"    />
+    <!-- 9 -->
+	  <node pkg="move_base" type="move_base" respawn="false" name="move_base" >
       <rosparam file="$(find bring_up)/cfg/real_world/single_car/costmap_common_params.yaml" command="load" ns="global_costmap" />
   	 	<rosparam file="$(find bring_up)/cfg/real_world/single_car/costmap_common_params.yaml" command="load" ns="local_costmap" />
   		<rosparam file="$(find bring_up)/cfg/real_world/single_car/local_costmap_params.yaml" command="load" />
@@ -49,12 +60,7 @@
 		<param name="controller_frequency" value="5.0" />
 		<param name="controller_patience" value="15.0" />
 	</node>
-  <!-- 测试用tf -->
-  <!-- <node pkg="tf" type="static_transform_publisher" name="map_to_base_link"
-  args="0 0 0 0 0 0 map odom 100" /> -->
- 
-  
-  <!-- 9 -->
+  <!-- 10 -->
   <node name="rviz" pkg="rviz" type="rviz" args="-d $(find bring_up)/rviz/test_costmap.rviz" />
 
 </launch>
