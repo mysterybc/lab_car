@@ -22,11 +22,11 @@
         <node pkg="service_node"  type="separate_goal"               name="separate_goal"      />
         <!--  ************** Navigation ***************  -->
         <node pkg="move_base" type="move_base" respawn="false" name="move_base" >
-            <rosparam file="$(find bring_up)/cfg/stage//diff_drive1/costmap_common_params.yaml" command="load" ns="global_costmap" />
-            <rosparam file="$(find bring_up)/cfg/stage//diff_drive1/costmap_common_params.yaml" command="load" ns="local_costmap" />
-            <rosparam file="$(find bring_up)/cfg/stage//diff_drive1/local_costmap_params.yaml" command="load" />
-            <rosparam file="$(find bring_up)/cfg/stage//diff_drive1/global_costmap_params.yaml" command="load" />
-            <rosparam file="$(find bring_up)/cfg/stage//diff_drive1/teb_local_planner_params.yaml" command="load" />
+            <rosparam file="$(find bring_up)/cfg/stage/diff_drive1/costmap_common_params.yaml" command="load" ns="global_costmap" />
+            <rosparam file="$(find bring_up)/cfg/stage/diff_drive1/costmap_common_params.yaml" command="load" ns="local_costmap" />
+            <rosparam file="$(find bring_up)/cfg/stage/diff_drive1/local_costmap_params.yaml" command="load" />
+            <rosparam file="$(find bring_up)/cfg/stage/diff_drive1/global_costmap_params.yaml" command="load" />
+            <rosparam file="$(find bring_up)/cfg/stage/diff_drive1/teb_local_planner_params.yaml" command="load" />
 
             <param name="base_global_planner" value="global_planner/GlobalPlanner" />
             <param name="planner_frequency" value="1.0" />
@@ -51,11 +51,11 @@
         <node pkg="service_node"  type="separate_goal"               name="separate_goal"      />
         <!--  ************** Navigation ***************  -->
         <node pkg="move_base" type="move_base" respawn="false" name="move_base" >
-            <rosparam file="$(find bring_up)/cfg/stage//diff_drive2/costmap_common_params.yaml" command="load" ns="global_costmap" />
-            <rosparam file="$(find bring_up)/cfg/stage//diff_drive2/costmap_common_params.yaml" command="load" ns="local_costmap" />
-            <rosparam file="$(find bring_up)/cfg/stage//diff_drive2/local_costmap_params.yaml" command="load" />
-            <rosparam file="$(find bring_up)/cfg/stage//diff_drive2/global_costmap_params.yaml" command="load" />
-            <rosparam file="$(find bring_up)/cfg/stage//diff_drive2/teb_local_planner_params.yaml" command="load" />
+            <rosparam file="$(find bring_up)/cfg/stage/diff_drive2/costmap_common_params.yaml" command="load" ns="global_costmap" />
+            <rosparam file="$(find bring_up)/cfg/stage/diff_drive2/costmap_common_params.yaml" command="load" ns="local_costmap" />
+            <rosparam file="$(find bring_up)/cfg/stage/diff_drive2/local_costmap_params.yaml" command="load" />
+            <rosparam file="$(find bring_up)/cfg/stage/diff_drive2/global_costmap_params.yaml" command="load" />
+            <rosparam file="$(find bring_up)/cfg/stage/diff_drive2/teb_local_planner_params.yaml" command="load" />
 
             <param name="base_global_planner" value="global_planner/GlobalPlanner" />
             <param name="planner_frequency" value="1.0" />
@@ -80,11 +80,11 @@
         <node pkg="service_node"  type="separate_goal"               name="separate_goal"      />
         <!--  ************** Navigation ***************  -->
         <node pkg="move_base" type="move_base" respawn="false" name="move_base" >
-            <rosparam file="$(find bring_up)/cfg/stage//diff_drive3/costmap_common_params.yaml" command="load" ns="global_costmap" />
-            <rosparam file="$(find bring_up)/cfg/stage//diff_drive3/costmap_common_params.yaml" command="load" ns="local_costmap" />
-            <rosparam file="$(find bring_up)/cfg/stage//diff_drive3/local_costmap_params.yaml" command="load" />
-            <rosparam file="$(find bring_up)/cfg/stage//diff_drive3/global_costmap_params.yaml" command="load" />
-            <rosparam file="$(find bring_up)/cfg/stage//diff_drive3/teb_local_planner_params.yaml" command="load" />
+            <rosparam file="$(find bring_up)/cfg/stage/diff_drive3/costmap_common_params.yaml" command="load" ns="global_costmap" />
+            <rosparam file="$(find bring_up)/cfg/stage/diff_drive3/costmap_common_params.yaml" command="load" ns="local_costmap" />
+            <rosparam file="$(find bring_up)/cfg/stage/diff_drive3/local_costmap_params.yaml" command="load" />
+            <rosparam file="$(find bring_up)/cfg/stage/diff_drive3/global_costmap_params.yaml" command="load" />
+            <rosparam file="$(find bring_up)/cfg/stage/diff_drive3/teb_local_planner_params.yaml" command="load" />
 
             <param name="base_global_planner" value="global_planner/GlobalPlanner" />
             <param name="planner_frequency" value="1.0" />
@@ -109,11 +109,11 @@
         <node pkg="service_node"  type="separate_goal"               name="separate_goal"      />
         <!--  ************** Navigation ***************  -->
         <node pkg="move_base" type="move_base" respawn="false" name="move_base" >
-            <rosparam file="$(find bring_up)/cfg/stage//diff_drive4/costmap_common_params.yaml" command="load" ns="global_costmap" />
-            <rosparam file="$(find bring_up)/cfg/stage//diff_drive4/costmap_common_params.yaml" command="load" ns="local_costmap" />
-            <rosparam file="$(find bring_up)/cfg/stage//diff_drive4/local_costmap_params.yaml" command="load" />
-            <rosparam file="$(find bring_up)/cfg/stage//diff_drive4/global_costmap_params.yaml" command="load" />
-            <rosparam file="$(find bring_up)/cfg/stage//diff_drive4/teb_local_planner_params.yaml" command="load" />
+            <rosparam file="$(find bring_up)/cfg/stage/diff_drive4/costmap_common_params.yaml" command="load" ns="global_costmap" />
+            <rosparam file="$(find bring_up)/cfg/stage/diff_drive4/costmap_common_params.yaml" command="load" ns="local_costmap" />
+            <rosparam file="$(find bring_up)/cfg/stage/diff_drive4/local_costmap_params.yaml" command="load" />
+            <rosparam file="$(find bring_up)/cfg/stage/diff_drive4/global_costmap_params.yaml" command="load" />
+            <rosparam file="$(find bring_up)/cfg/stage/diff_drive4/teb_local_planner_params.yaml" command="load" />
 
             <param name="base_global_planner" value="global_planner/GlobalPlanner" />
             <param name="planner_frequency" value="1.0" />
