@@ -9,15 +9,18 @@
     7、决策树：  decision_node
     8、任务节点：task_node
     9、规划节点：move_base（库）
-    10、可视化:  rviz（库）
+    10/激光driver
+    11/pointcloud 2 laserscan
+    12、可视化:  rviz（库）
  -->
 
 <launch>
      <!-- 全局参数 -->
     <param name="car_id" type="int" value="0" />
     <!-- 1 -->
-    <node pkg="tf" type="static_transform_publisher" name="world_map_broadcaster" args="0 0 0 0 0 0 /world /map 100" />
+    <node pkg="tf" type="static_transform_publisher" name="world_map_broadcaster" args="0 0 -0.4 0 0 0 /world /map 100" />
     <node pkg="tf" type="static_transform_publisher" name="lidar_base_broadcaster" args="0 0 -0.4 0 0 0 /lidar_link /base_link 100" />
+    <node pkg="tf" type="static_transform_publisher" name="lidar_velodyne_broadcaster" args="0 0 0 0 0 0 /lidar_link /velodyne 100" />
     <!-- 2 -->
     <node pkg="source_node"  type="driver_source_node"  name="driver_source_node" output="screen"/> 
     <!-- 3 -->
@@ -29,15 +32,13 @@
         <param name="autorepeat_rate" value="10.0" />
     </node>
     <!-- 5 -->
-    <node name="map_server" pkg="map_server" type="map_server"  args="$(find bring_up)/map/stage_map.yaml"/>
+    <node name="map_server" pkg="map_server" type="map_server"  args="$(find bring_up)/map/map0611.yaml"/>
     <!-- 6 -->
-    <node name="scan_to_submap_imu_node" pkg="ndt_localization" type="scan_to_submap_imu_node" output="screen">
+    <node name="scan_to_submap_imu_node" pkg="ndt_localization" type="scan_to_submap_imu_node" >
         <param name="score_threshold" type = "double" value="3.00" />
-        <param name="imu_enable" type = "bool" value="true" />
-        <!--meter-->>
+        <param name="imu_enable" type = "bool" value="false" />
         <param name="initial_x " type = "double" value="113.0" />
         <param name="initial_y" type = "double" value="88.0" />
-        <!--deg-->>
         <param name="initial_yaw" type = "double" value="0.0" />
     </node>
     <!-- 7 -->
@@ -60,7 +61,38 @@
 		<param name="controller_frequency" value="5.0" />
 		<param name="controller_patience" value="15.0" />
 	</node>
-  <!-- 10 -->
-  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find bring_up)/rviz/test_costmap.rviz" />
+    <!-- 10 -->
+    <include file="$(find velodyne_pointcloud)/launch/VLP16_points.launch" />
+    <!-- 11 -->
+    <node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" name="pointcloud_to_laserscan">
+
+        <remap from="cloud_in" to="velodyne_points"/>
+        <remap from="scan" to="scan2"/>
+        
+        <rosparam>
+            # target_frame: rslidar # Leave disabled to output scan in pointcloud frame
+            transform_tolerance: 0.01
+            min_height: -0.3
+            max_height: 0.6
+
+            angle_min: -3.1415926 # -M_PI
+            angle_max: 3.1415926 # M_PI
+            angle_increment: 0.003 # 0.17degree
+            scan_time: 0.1
+            range_min: 0.8
+            range_max: 50
+            use_inf: true
+            inf_epsilon: 1.0
+
+            # Concurrency level, affects number of pointclouds queued for processing and number of threads used
+            # 0 : Detect number of cores
+            # 1 : Single threaded
+            # 2->inf : Parallelism level
+            concurrency_level: 1
+        </rosparam>
+
+    </node>
+    <!-- 12 -->
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find bring_up)/rviz/single_car_stage_simulation.rviz" />
 
 </launch>

@@ -104,13 +104,9 @@ void RemoteControl::joyCallback(const sensor_msgs::Joy::ConstPtr& msg)
 {
     if (msg->buttons[4] || msg->buttons[5]){
         joystrick_drive_ = false;
-        //debug
-        ROS_INFO("joystrick_drive_ running?  False");
     }
     else{
         joystrick_drive_ = true;
-        //debug
-        ROS_INFO("joystrick_drive_ running?  True");
     }
     
     geometry_msgs::Twist out_cmd_vel;

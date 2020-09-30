@@ -1,22 +1,29 @@
 {
     "configurations": [
         {
-            "name": "Linux",
+            "browse": {
+                "databaseFilename": "",
+                "limitSymbolsToIncludedHeaders": true
+            },
             "includePath": [
-                "${workspaceFolder}/**",
+                "/home/robot/realsense_ws/devel/include",
+                "/home/robot/banchao_ws/devel/include",
+                "/home/robot/catkin_ws/devel/include",
                 "/opt/ros/kinetic/include",
-                "~/catkin_car/devel/include",
-                "/usr/local/include",
-                "/opt/ros/kinetic/include/opencv-3.3.1-dev",
-                "/usr/include/pcl-1.7",
-                "/usr/include/eigen3"
-
+                "/home/robot/banchao_ws/src/control_node/include",
+                "/home/robot/banchao_ws/src/ndt_localization/ndt_localization/include",
+                "/home/robot/banchao_ws/src/ndt_localization/ndt_omp/include",
+                "/home/robot/banchao_ws/src/robot_msgs/include",
+                "/home/robot/banchao_ws/src/source_node/include",
+                "/home/robot/banchao_ws/src/task_node/include",
+                "/home/robot/banchao_ws/src/simulation/turtlebot3_gazebo/include",
+                "/usr/include"
             ],
-            "defines": [],
+            "name": "Linux",
+            "intelliSenseMode": "gcc-x64",
             "compilerPath": "/usr/bin/gcc",
-            "cStandard": "c11",
-            "cppStandard": "c++17",
-            "intelliSenseMode": "clang-x64"
+            "cStandard": "gnu11",
+            "cppStandard": "c++17"
         }
     ],
     "version": 4

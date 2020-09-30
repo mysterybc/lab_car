@@ -87,7 +87,7 @@ int Encoder::UpdateOdom()
                 vel_linear = 0.5f * (vel_left + vel_right) * 0.00121052;
                 vel_angular = (vel_right - vel_left) / TURN_RADIUS*0.00121052 / 2;
 
-                vel_angular = vel_angular*0.83;  //根据实际情况修正
+                vel_angular = vel_angular*0.6;  //根据实际情况修正
 
                 geometry_msgs::Twist out_vel;
                 out_vel.linear.x = vel_linear;
@@ -121,7 +121,7 @@ int Encoder::UpdateOdom()
 
                 odom_tf_.transform.translation.z = 0.0;
                 odom_tf_.transform.rotation = q;
-                tf_broadcaster_.sendTransform(odom_tf_);
+                // tf_broadcaster_.sendTransform(odom_tf_);
             }
         }           
         get_vel_cnt++;
@@ -141,7 +141,7 @@ int Encoder::UpdateOdom()
 void Encoder::cmdVelCallback(const geometry_msgs::Twist::ConstPtr& cmd_vel)
 {
     int linear_vel = -cmd_vel->linear.x * VEL_TO_RPM*0.67; //0-1500对应0-1000
-    int angular_vel = -cmd_vel->angular.z * VEL_TO_RPM*TURN_RADIUS*0.67; //  820*0.25 = 205  
+    int angular_vel = -cmd_vel->angular.z * VEL_TO_RPM*TURN_RADIUS * 1.2; //  820*0.25 = 205  
     std::stringstream ss;
     ss << "!M " << linear_vel << " " <<  angular_vel << "\r";
     sp.write(ss.str()); 

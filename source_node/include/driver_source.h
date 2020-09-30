@@ -20,7 +20,7 @@
 //TODO 车号的定义需要后期使用度config文件的形式确定
 #define TURN_RADIUS_K2  0.25f //komodo 2 的转弯半径 单位m  (340+10+150)/2
 #define TURN_RADIUS_K3  0.29f //komodo 2 的转弯半径 单位m  (420+10+150)/2
-#define TURN_RADIUS  TURN_RADIUS_K3 //选择对应的车
+#define TURN_RADIUS  TURN_RADIUS_K2 //选择对应的车
 
 
 class Encoder{
