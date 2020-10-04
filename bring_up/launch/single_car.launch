@@ -1,4 +1,7 @@
 <!-- 
+    全局参数包括：
+    1、车辆id（从0开始）
+    2、车辆ip地址
     运行的节点包括：
     1、坐标系变换：static tf
     2、资源节点：driver_source_node
@@ -9,14 +12,16 @@
     7、决策树：  decision_node
     8、任务节点：task_node
     9、规划节点：move_base（库）
-    10/激光driver
-    11/pointcloud 2 laserscan
-    12、可视化:  rviz（库）
+    10、激光driver
+    11、pointcloud 2 laserscan
+    12、通讯节点
+    13、可视化:  rviz（库）
  -->
 
 <launch>
      <!-- 全局参数 -->
     <param name="car_id" type="int" value="0" />
+    <param name="ip_address" type="string" value="tcp://192.168.1.110:" />
     <!-- 1 -->
     <node pkg="tf" type="static_transform_publisher" name="world_map_broadcaster" args="0 0 -0.4 0 0 0 /world /map 100" />
     <node pkg="tf" type="static_transform_publisher" name="lidar_base_broadcaster" args="0 0 -0.4 0 0 0 /lidar_link /base_link 100" />
@@ -93,6 +98,8 @@
 
     </node>
     <!-- 12 -->
+    <node pkg="communication_node" name="receive_cmd" type="zmq_recv" />
+    <!-- 13 -->
     <node name="rviz" pkg="rviz" type="rviz" args="-d $(find bring_up)/rviz/single_car_stage_simulation.rviz" />
 
 </launch>

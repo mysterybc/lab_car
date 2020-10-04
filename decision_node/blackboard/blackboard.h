@@ -21,8 +21,6 @@ public:
     Blackboard(){
         ros::NodeHandle nh;
         pose_sub = nh.subscribe("odom",10,&Blackboard::PoseCallback,this);
-        //测试使用
-        //goal_sub = nh.subscribe("/move_base_simple/goal",10,&Blackboard::GoalCallback,this);
         cmd_sub = nh.subscribe("/host_cmd",10,&Blackboard::CmdCallback,this);
         map_sub = nh.subscribe("/map",10,&Blackboard::MapCallback,this);
         decision_state_pub = nh.advertise<std_msgs::String>("decision_state",10);
