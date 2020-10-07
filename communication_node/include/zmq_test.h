@@ -29,12 +29,21 @@ private:
     void *publisher; //发布
     robot_msgs::HostCmd cmd;
     ros::Publisher host_cmd_pub;
+    double pose_separate_factor;
     ros::NodeHandle nh;
 };
 
 ZMQ_TEST::ZMQ_TEST()
 {
     host_cmd_pub = nh.advertise<robot_msgs::HostCmd>("/host_cmd",10);
+    int car_id;
+    nh.param<int>("car_id",car_id,1);
+    if(car_id == 1){
+        pose_separate_factor = 1;
+    }
+    else{
+        pose_separate_factor = -1;
+    }
     context = NULL;
     subscriber = NULL;
     publisher = NULL;
@@ -80,7 +89,12 @@ void ZMQ_TEST::run()
             if(json1["instruction"].isArray())
             {
                 cmd.car_id.clear();
-                cmd.car_id.push_back(json1["ID"].asInt());
+                if(json1["ID"].isArray()){
+                    Json::Value json_id = json1["ID"];
+                    for(int i = 0; i < json_id.size(); i++){
+                        cmd.car_id.push_back(json_id[i].asInt());
+                    }
+                }
                 cmd.mission.mission = json1["type"].asUInt();
                 cmd.goal.header.stamp = ros::Time().now();
                 cmd.goal.header.frame_id = "map";
@@ -88,6 +102,9 @@ void ZMQ_TEST::run()
                 cmd.goal.pose.position.y = json1["instruction"][1].asDouble();
                 cmd.goal.pose.position.z = 0;
                 double yaw = json1["instruction"][2].asDouble();
+                //目前输入角度，手动坐标-1
+                yaw = yaw / 180.0 * 3.1415926;
+                cmd.goal.pose.position.x += pose_separate_factor;
                 cmd.goal.pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
                 host_cmd_pub.publish(cmd);
             }

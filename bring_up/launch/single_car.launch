@@ -1,6 +1,6 @@
 <!-- 
     全局参数包括：
-    1、车辆id（从0开始）
+    1、车辆id（从1开始）
     2、车辆ip地址
     运行的节点包括：
     1、坐标系变换：static tf
@@ -19,9 +19,11 @@
  -->
 
 <launch>
-     <!-- 全局参数 -->
-    <param name="car_id" type="int" value="0" />
-    <param name="ip_address" type="string" value="tcp://192.168.1.110:" />
+    <!-- 全局参数 -->
+    <arg name="car_id" value="1"/>
+    <param name="car_id" type="int" value="$(arg car_id)" />
+    <param name="host_ip_address" type="string" value="tcp://192.168.0.30:" />
+    <param name="my_ip_address" type="string" value="tcp://192.168.0.14:" />
     <!-- 1 -->
     <node pkg="tf" type="static_transform_publisher" name="world_map_broadcaster" args="0 0 -0.4 0 0 0 /world /map 100" />
     <node pkg="tf" type="static_transform_publisher" name="lidar_base_broadcaster" args="0 0 -0.4 0 0 0 /lidar_link /base_link 100" />
@@ -47,16 +49,16 @@
         <param name="initial_yaw" type = "double" value="0.0" />
     </node>
     <!-- 7 -->
-    <node pkg="task_node"     type="build_up_task"  name="build_up_node"    />
+    <node pkg="task_node"     type="build_up_task"  name="build_up_task"    />
     <!-- 8 -->
     <node pkg="decision_node" type="behavior_node"  name="bahevior_node"    />
     <!-- 9 -->
 	  <node pkg="move_base" type="move_base" respawn="false" name="move_base" >
-      <rosparam file="$(find bring_up)/cfg/real_world/single_car/costmap_common_params.yaml" command="load" ns="global_costmap" />
-  	 	<rosparam file="$(find bring_up)/cfg/real_world/single_car/costmap_common_params.yaml" command="load" ns="local_costmap" />
-  		<rosparam file="$(find bring_up)/cfg/real_world/single_car/local_costmap_params.yaml" command="load" />
-  		<rosparam file="$(find bring_up)/cfg/real_world/single_car/global_costmap_params.yaml" command="load" />
-  		<rosparam file="$(find bring_up)/cfg/real_world/single_car/teb_local_planner_params.yaml" command="load" />
+        <rosparam file="$(find bring_up)/cfg/real_world/car$(arg car_id)/costmap_common_params.yaml" command="load" ns="global_costmap" />
+  	 	<rosparam file="$(find bring_up)/cfg/real_world/car$(arg car_id)/costmap_common_params.yaml" command="load" ns="local_costmap" />
+  		<rosparam file="$(find bring_up)/cfg/real_world/car$(arg car_id)/local_costmap_params.yaml" command="load" />
+  		<rosparam file="$(find bring_up)/cfg/real_world/car$(arg car_id)/global_costmap_params.yaml" command="load" />
+  		<rosparam file="$(find bring_up)/cfg/real_world/car$(arg car_id)/teb_local_planner_params.yaml" command="load" />
 
 		<param name="base_global_planner" value="global_planner/GlobalPlanner" />
 		<param name="planner_frequency" value="1.0" />

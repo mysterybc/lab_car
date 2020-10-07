@@ -1,5 +1,0 @@
-geometry_msgs/Pose goal
-
----
-
-nav_msgs/Path path

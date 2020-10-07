@@ -17,6 +17,7 @@
 enum ActionState{
     PENDING = 0,
     ACTIVE = 1,
+    PREEMPTED = 2,
     SUCCEEDED = 3,
     ABORTED = 4
 };

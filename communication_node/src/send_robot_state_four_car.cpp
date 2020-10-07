@@ -21,7 +21,7 @@ int main(int argc,char **argv)
     ros::init(argc,argv,"send_robot_state");
     ros::NodeHandle nh;
     std::string ip_address;
-    nh.getParam("ip_address",ip_address);
+    nh.getParam("my_ip_address",ip_address);
     std::vector<ros::Subscriber> state_subs(4);
     std::vector<Robot> robots(4);
     for(int i = 0 ; i < 4; i++){

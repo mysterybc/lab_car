@@ -17,7 +17,7 @@ int IMU::UpDateIMU(){
     try 
     { 
         //设置串口属性，并打开串口 
-        ser.setPort("/dev/ttyUSB9"); 
+        ser.setPort("/dev/ttyUSB1"); 
         ser.setBaudrate(115200); 
         serial::Timeout to = serial::Timeout::simpleTimeout(1000); 
         ser.setTimeout(to); 

@@ -7,7 +7,10 @@
 #include <nav_msgs/Odometry.h>
 #include <pclomp/ndt_omp.h>
 #include <sensor_msgs/Imu.h>
-#include<geometry_msgs/TransformStamped.h>
+#include <geometry_msgs/TransformStamped.h>
+#include <geometry_msgs/PoseWithCovarianceStamped.h>
+
+
 
 #include <pcl/filters/passthrough.h>
 #include <pcl/filters/voxel_grid.h>
@@ -20,18 +23,21 @@
 
 #include <thread>
 #include <mutex>
+#include "ros/package.h"
 
 #include <ndt_localization/ndt_match.h>
 
 typedef pcl::PointXYZ PointT;
 
 bool imu_enable;
+bool get_rviz_pose = false;
 double score_threshold;
 double score;
 double imu_stamp;
 double initial_x;
 double initial_y;
 double initial_yaw;
+std::string map_source;
 
 pcl::Filter<PointT>::Ptr downsample_filter;
 pcl::Filter<PointT>::Ptr outlier_removal_filter;
@@ -595,9 +601,7 @@ void map_input(pcl::PointCloud<PointT>::ConstPtr& filtered_map_ptr)
     pcl::PointCloud<PointT>::Ptr map_Ptr(new pcl::PointCloud<PointT>);
     //读地图pcd文件，储存到map
     //std::string file_name = "/home/robot/catkin_ws/src/ndt_localization/ndt_localization/lio_sam_filtered.pcd";
-    std::string file_name = "/home/robot/banchao_ws/src/ndt_localization/ndt_localization/lidar_imu_odom_0611_0509.bag_map.pcd";
-    
-    pcl::io::loadPCDFile (file_name, *map_Ptr);
+    pcl::io::loadPCDFile (map_source, *map_Ptr);
     ROS_INFO("point_cloud_map points is receiving ");
 
     //显示地图的点云数量
@@ -644,6 +648,25 @@ void imu_data_cb(const sensor_msgs::Imu::ConstPtr& imuIn)
 
 }
 
+void initialpose_cb(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr& initial_pose_in)
+{
+    initial_x = initial_pose_in->pose.pose.position.x;
+    initial_y = initial_pose_in->pose.pose.position.y;
+
+    tf::Quaternion quat;
+    tf::quaternionMsgToTF(initial_pose_in->pose.pose.orientation, quat);
+ 
+     
+    double roll, pitch, yaw;//定义存储r\p\y的容器
+    tf::Matrix3x3(quat).getRPY(roll, pitch, yaw);//进行转换
+
+    initial_yaw = yaw * 180 /M_PI;
+
+    get_rviz_pose = true;
+    ROS_INFO("get_initial_pose");
+
+}
+
 //主函数
 int main (int argc, char** argv)
 {
@@ -665,16 +688,8 @@ int main (int argc, char** argv)
     nh_p.param<double>("initial_x",initial_x,0.0);
     nh_p.param<double>("initial_y",initial_y,0.0);
     nh_p.param<double>("initial_yaw",initial_yaw,0.0);
-
-
-    ros::Subscriber sub1 = nh.subscribe ("/velodyne_points", 1, velodyne_points_cb);
-    ros::Subscriber sub_Imu = nh.subscribe<sensor_msgs::Imu> ("/imu", 50, imu_data_cb);
-
-    sub_map_pub = nh.advertise<sensor_msgs::PointCloud2>("sub_map_points", 1);
-    transformed_points_pub = nh.advertise<sensor_msgs::PointCloud2>("transformed_points", 1);
-    transform_before_points_pub = nh.advertise<sensor_msgs::PointCloud2>("transform_before_points", 1);
-    pubPoseForKITTI = nh.advertise<nav_msgs::Odometry>("/odometry", 1);
-
+    map_source = ros::package::getPath("ndt_localization") + "/lidar_imu_odom_0611_0509.bag_map.pcd";
+    //nh_p.param<std::string>("map_source",map_source," ");
 
     map_input(point_cloud_map_Ptr);//读入地图并滤波
 
@@ -687,6 +702,23 @@ int main (int argc, char** argv)
     map_segmentation(point_cloud_map_Ptr, laserCloudMapArray);
 
     ROS_INFO("map segmentation finish");
+
+    ros::Subscriber sub_initial_pose = nh.subscribe<geometry_msgs::PoseWithCovarianceStamped> 
+                                    ("/initialpose", 50, initialpose_cb);
+
+    while (get_rviz_pose != true)  {  ros::spinOnce();  ros::Duration(0.1).sleep();}
+
+    ros::Subscriber sub1 = nh.subscribe ("/velodyne_points", 1, velodyne_points_cb);
+    ros::Subscriber sub_Imu = nh.subscribe<sensor_msgs::Imu> ("/imu", 50, imu_data_cb);
+
+
+    //initialpose
+
+    sub_map_pub = nh.advertise<sensor_msgs::PointCloud2>("sub_map_points", 1);
+    transformed_points_pub = nh.advertise<sensor_msgs::PointCloud2>("transformed_points", 1);
+    transform_before_points_pub = nh.advertise<sensor_msgs::PointCloud2>("transform_before_points", 1);
+    pubPoseForKITTI = nh.advertise<nav_msgs::Odometry>("/odometry", 1);
+
 
     ros::Rate r(100.0);
     while(nh.ok()){

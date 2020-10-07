@@ -17,10 +17,9 @@ int main(int argc,char **argv)
     ros::init(argc,argv,"send_robot_state");
     ros::NodeHandle nh;
     std::string ip_address;
-    int car_number;
-    nh.getParam("car_id",car_number);
-    car_number ++;
-    nh.getParam("ip_address",ip_address);
+    int car_id;
+    nh.getParam("car_id",car_id);
+    nh.getParam("my_ip_address",ip_address);
     ros::Subscriber state_subs;
     state_subs = nh.subscribe("decision_state",10,&DecisionSub);
     ZMQ_TEST *zmq_test;

@@ -16,9 +16,8 @@ LocalizationNode::LocalizationNode(){
 
 bool LocalizationNode::LoadConfig(std::string file){
     ROS_INFO("localization_node: load config");
-    YAML::Node config = YAML::LoadFile("/home/lovezy/catkin_car/src/perception_node/config/localization_config.yaml");
-    node_name = config["node_name"].as<std::string>();
-    update_frequence = config["update_frequence"].as<int>();
+    node_name = "localization_node";
+    update_frequence = 10;
 }
 
 void LocalizationNode::UpdateState(){
