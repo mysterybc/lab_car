@@ -21,15 +21,11 @@ public:
     Blackboard(){
         ros::NodeHandle nh;
         pose_sub = nh.subscribe("odom",10,&Blackboard::PoseCallback,this);
-        //测试使用
-        //goal_sub = nh.subscribe("/move_base_simple/goal",10,&Blackboard::GoalCallback,this);
         cmd_sub = nh.subscribe("/host_cmd",10,&Blackboard::CmdCallback,this);
         map_sub = nh.subscribe("/map",10,&Blackboard::MapCallback,this);
         decision_state_pub = nh.advertise<std_msgs::String>("decision_state",10);
         //目前
-        nh.getParam("car_id",car_number);
-        car_number++;
-
+        nh.getParam("car_id",car_id);
         mission = MissionType::SYSTEM_STANDBY;
 
     }
@@ -48,7 +44,7 @@ public:
         //首先判断我是否需要执行该指令；
         bool my_cmd = false;
         for(int i = 0; i < msg->car_id.size(); i++){
-            if(msg->car_id.at(i) == car_number){
+            if(msg->car_id.at(i) == car_id){
                 my_cmd = true;
             }
         }
@@ -74,7 +70,7 @@ public:
     }
 
     int GetCarNumber(){
-        return car_number;
+        return car_id;
     }
 
     MissionType GetMission(){
@@ -108,7 +104,7 @@ private:
     //! robot map pose
     geometry_msgs::Pose robot_pose;
     // car id 
-    int car_number;
+    int car_id;
     // map info ,单位m
     double map_height,map_width;
     std::string decision_state;

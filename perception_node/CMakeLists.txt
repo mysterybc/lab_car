@@ -13,11 +13,11 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package()
 
 
-include_directories(include ./include/perception_node ${catkin_INCLUDE_DIRS} /usr/local/lib/include)
+include_directories(include ./include/perception_node ${catkin_INCLUDE_DIRS} )
 
 #定为节点
 add_executable(localization_node src/localization_node.cpp)
-target_link_libraries(localization_node ${catkin_LIBRARIES} /usr/local/lib/libyaml-cpp.so)
+target_link_libraries(localization_node ${catkin_LIBRARIES} )
 #障碍物感知节点
 #add_executable(obstacle_perception_node src/obstacle_perception_node.cpp)
 #target_link_libraries(obstacle_perception_node ${catkin_LIBRARIES})

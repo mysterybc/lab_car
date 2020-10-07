@@ -1,13 +1,33 @@
 #include "driver_source.h"
 
+Encoder::Encoder(){
+    ros::NodeHandle nh;
+    nh.param<int>("car_id",car_id,1);
+    
+    if(car_id == 1){
+        turn_radius = 0.26;
+        twist_flag = -1;
+        linear_fb_factor = 1;
+        angular_fb_factor = 3.7;
+        linear_cmd_factor = 0.7;
+        angular_cmd_factor = 1.2;
+    }
+    else{
+        turn_radius = 0.29;
+        twist_flag = 1;
+        linear_fb_factor = 1;
+        angular_fb_factor = 3.7;
+        linear_cmd_factor = 0.7;
+        angular_cmd_factor = 0.7;
+    }
 
+}
 int Encoder::UpdateOdom()
 {
     ros::NodeHandle n;
 
     std::string port;
-    ros::NodeHandle nh_private("~");
-    nh_private.param<std::string>("vehicle_port", port, "/dev/ttyUSB0"); 
+    n.param<std::string>("vehicle_port", port, "/dev/ttyUSB0"); 
 
     //创建timeout
     serial::Timeout to = serial::Timeout::simpleTimeout(100);
@@ -40,23 +60,14 @@ int Encoder::UpdateOdom()
     {
         return -1;
     }
-
-    ros::Publisher vel_pub = n.advertise<geometry_msgs::Twist>("komodo/vel", 20);
     //! ros publisher for odometry information
     ros::Subscriber subTwist_ = n.subscribe("komodo/cmd_vel", 1000, &Encoder::cmdVelCallback,this);
     ros::Publisher ros_odom_pub_ = n.advertise<nav_msgs::Odometry>("odom_raw", 30);
-    //! ros chassis odometry tf
-    geometry_msgs::TransformStamped odom_tf_;
-    //! ros chassis odometry tf broadcaster
-    tf::TransformBroadcaster tf_broadcaster_;
     //! ros odometry message
     nav_msgs::Odometry odom_;
 
     odom_.header.frame_id = "odom";
     odom_.child_frame_id = "base_link";
-
-    odom_tf_.header.frame_id = "odom";
-    odom_tf_.child_frame_id = "base_link";
 
     ros::Rate loop_rate(100);
     static int get_vel_cnt = 0;
@@ -68,9 +79,6 @@ int Encoder::UpdateOdom()
             uint8_t buffer[1024];
             //读出数据
             num = sp.read(buffer, num);
-            // if(!start_flag){
-            //     continue;
-            // }
             int vel_right = 0,vel_left = 0; 
             std::string str;
             for(int i=0; i<num; i++)
@@ -87,19 +95,15 @@ int Encoder::UpdateOdom()
                 str_index = str.find(':');
                 std::stringstream bb(str.substr(str_index+1,5));
                 bb >> vel_right;
-                vel_linear = 0.5f * (vel_left + vel_right) * 0.00121052;
-                vel_angular = (vel_right - vel_left) / TURN_RADIUS*0.00121052 / 2;
+                //计算线速度和角速度
+                vel_linear = 0.5f * (vel_left + vel_right) * 0.00121052 / linear_fb_factor;
+                vel_angular = (vel_right - vel_left) / turn_radius * 0.00121052 / angular_fb_factor;
 
-                vel_angular = vel_angular*0.83;  //根据实际情况修正
-
-                geometry_msgs::Twist out_vel;
-                out_vel.linear.x = vel_linear;
-                out_vel.angular.z = vel_angular;
-                vel_pub.publish(out_vel);
 
                 static float pos_x = 0,pos_y = 0,theta = 0;
                 float delta_s = 0,delta_theta = 0;
 
+                //计算角度
                 delta_s = vel_linear*0.01;
                 delta_theta = vel_angular*0.01;
                 pos_x = pos_x + delta_s*cos(theta + 0.5*delta_theta);
@@ -115,16 +119,9 @@ int Encoder::UpdateOdom()
                 odom_.pose.pose.orientation = q;
                 odom_.twist.twist.linear.x = vel_linear;
                 odom_.twist.twist.linear.y = 0.0;
-                odom_.twist.twist.angular.z = vel_angular;
+                odom_.twist.twist.angular.z = twist_flag * vel_angular;
                 ros_odom_pub_.publish(odom_);
 
-                odom_tf_.header.stamp = current_time;
-                odom_tf_.transform.translation.x = pos_x;
-                odom_tf_.transform.translation.y = pos_y;
-
-                odom_tf_.transform.translation.z = 0.0;
-                odom_tf_.transform.rotation = q;
-                tf_broadcaster_.sendTransform(odom_tf_);
             }
         }           
         get_vel_cnt++;
@@ -143,8 +140,8 @@ int Encoder::UpdateOdom()
 
 void Encoder::cmdVelCallback(const geometry_msgs::Twist::ConstPtr& cmd_vel)
 {
-    int linear_vel = -cmd_vel->linear.x * VEL_TO_RPM*0.67; //0-1500对应0-1000
-    int angular_vel = -cmd_vel->angular.z * VEL_TO_RPM*TURN_RADIUS*0.67; //  820*0.25 = 205  
+    int linear_vel = -cmd_vel->linear.x * VEL_TO_RPM * linear_cmd_factor; //0-1500对应0-1000
+    int angular_vel = twist_flag * cmd_vel->angular.z * VEL_TO_RPM * turn_radius * angular_cmd_factor; //  820*0.25 = 205  
     std::stringstream ss;
     ss << "!M " << linear_vel << " " <<  angular_vel << "\r";
     sp.write(ss.str()); 

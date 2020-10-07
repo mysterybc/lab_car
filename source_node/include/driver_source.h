@@ -15,29 +15,28 @@
 #include "string"
 
 
-#define VEL_TO_RPM  826.0f//单位转换 m/s到rpm   v/(pi*d)*减速比   826.0f
-
-//TODO 车号的定义需要后期使用度config文件的形式确定
-#define TURN_RADIUS_K2  0.25f //komodo 2 的转弯半径 单位m  (340+10+150)/2
-#define TURN_RADIUS_K3  0.29f //komodo 2 的转弯半径 单位m  (420+10+150)/2
-#define TURN_RADIUS  TURN_RADIUS_K3 //选择对应的车
-
 
 class Encoder{
 public:
-    Encoder()=default;
+    #define VEL_TO_RPM  826.0f//单位转换 m/s到rpm   v/(pi*d)*减速比   826.0f
+    Encoder();
     ~Encoder()=default;
     int UpdateOdom();
-    //TODO 暂时把驱动放在这里 不太清楚两个节点能否同时打开一个串口？？
     void cmdVelCallback(const geometry_msgs::Twist::ConstPtr& cmd_vel);
-    void SetFlag(bool state){
-        start_flag = state;
-    }
 private:    
-    bool start_flag{false};
     serial::Serial sp;
     ros::Publisher vel_pub;
     ros::Publisher odom_pub_;
+    int car_id;
+    //与车id相关的参数
+    double turn_radius;        //小车0.26 大车0.29
+    double twist_flag;         //小车-1 大车1
+    //反馈参数
+    double angular_fb_factor; // 
+    double linear_fb_factor;  //小车3.7
+    //控制参数
+    double angular_cmd_factor; //小车1.2 大车0.7
+    double linear_cmd_factor;  //小车大车均为0.7
 };
 
 class EncoderSource{

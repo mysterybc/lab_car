@@ -20,7 +20,6 @@ add_message_files(
   Error.msg
   State.msg
   Cmd.msg
-  TwistAccel.msg
   PerceptionNodeMsg.msg
   SourceNodeMsg.msg
 )
@@ -28,7 +27,6 @@ add_message_files(
 add_service_files(
   DIRECTORY srv
   FILES
-  Planning.srv
   Separate.srv
 )
 
@@ -36,7 +34,6 @@ add_action_files(
     DIRECTORY action
     FILES
     BuildUp.action
-    LocalPlanner.action
 )
 
 generate_messages(
@@ -48,8 +45,5 @@ generate_messages(
 )
 
 catkin_package(
-  INCLUDE_DIRS
-  include
 )
-include_directories(include)
 

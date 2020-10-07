@@ -1,0 +1,38 @@
+<launch>
+  <!-- 仿真需要1、仿真模型 2、地图 3、rviz 4、tf（odom to map） 5、小车控制（planning&path_follow) -->
+  <!-- 车id -->
+  <param name="car_id" 	  type="int" 			             value="1"                 />
+  <param name="host_ip_address" type="string" value="tcp://192.168.1.110:" />
+  <param name="use_sim_time" value="true"/>
+  <node pkg="stage_ros" type="stageros" name="stageros" args="$(find simulation)/worlds/robot2020.world" respawn="false" >
+  </node>
+  <!-- Run the map server -->
+  <node name="map_server" pkg="map_server" type="map_server" args="$(find bring_up)/map/stage_map.yaml" respawn="false" />
+  <!--  ************** Navigation ***************  -->
+	<node pkg="move_base" type="move_base" respawn="false" name="move_base"  >
+      <rosparam file="$(find bring_up)/cfg/stage/single_car/costmap_common_params.yaml" command="load" ns="global_costmap" />
+  	 	<rosparam file="$(find bring_up)/cfg/stage/single_car/costmap_common_params.yaml" command="load" ns="local_costmap" />
+  		<rosparam file="$(find bring_up)/cfg/stage/single_car/local_costmap_params.yaml" command="load" />
+  		<rosparam file="$(find bring_up)/cfg/stage/single_car/global_costmap_params.yaml" command="load" />
+  		<rosparam file="$(find bring_up)/cfg/stage/single_car/teb_local_planner_params.yaml" command="load" />
+
+		<param name="base_global_planner" value="global_planner/GlobalPlanner" />
+		<param name="planner_frequency" value="1.0" />
+		<param name="planner_patience" value="5.0" />
+
+		<param name="base_local_planner" value="teb_local_planner/TebLocalPlannerROS" />
+		<param name="controller_frequency" value="5.0" />
+		<param name="controller_patience" value="15.0" />
+	</node>
+  <!-- 测试用tf -->
+  <node pkg="tf" type="static_transform_publisher" name="map_to_base_link"
+  args="0 0 0 0 0 0 map odom 100" />
+  <!-- task node -->
+  <node pkg="task_node"     type="build_up_task"      name="build_up_node"   output="screen"   />
+  <!-- behavior tree -->
+  <node pkg="decision_node" type="behavior_node"      name="bahevior_node"   output="screen"  />
+  <!-- Run the rviz -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find bring_up)/rviz/single_car_stage_simulation.rviz" />
+  <!-- cmd recv -->
+  <node pkg="communication_node" name="receive_cmd" type="receive_cmd" />
+</launch>

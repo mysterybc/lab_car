@@ -1,0 +1,22 @@
+<launch>
+    <param name="use_sim_time" value="true"/>
+    <!--开仿真需要ture,tf变换需要时间，数据集开false-->
+
+    <node pkg="tf" type="static_transform_publisher" name="world_map_broadcaster" args="0 0 0 0 0 0 /world /map 100" />
+
+    <node pkg="tf" type="static_transform_publisher" name="lidar_base_broadcaster" args="0 0 -0.4 0 0 0 /lidar_link /base_link 100" />
+
+    <node name="scan_to_submap_imu_node" pkg="ndt_localization" type="scan_to_submap_imu_node" output="screen">
+        <param name="score_threshold" type = "double" value="3.00" />
+        <param name="imu_enable" type = "bool" value="true" />
+        <!--meter-->>
+        <param name="initial_x " type = "double" value="0.0" />
+        <param name="initial_y" type = "double" value="0.0" />
+        <!--deg-->>
+        <param name="initial_yaw" type = "double" value="0.0" />
+
+        <param name="map_source" type = "string" value="/home/gzx/lab_car_ws/src/lab_car/ndt_localization/ndt_localization/lidar_imu_odom_0611_0509.bag_map.pcd" />
+
+    </node>
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find ndt_localization)/rviz/ndt_localization.rviz" required="true" />
+</launch>
