@@ -37,15 +37,15 @@ find_package(PCL REQUIRED)
 find_package(OpenCV REQUIRED)
 
 #需要添加的GTSAM代码
-find_package(GTSAM REQUIRED)
+#find_package(GTSAM REQUIRED)
 
 
-set(GTSAM_LIBRARIES gtsam)   # TODO: automatic search libs
+#set(GTSAM_LIBRARIES gtsam)   # TODO: automatic search libs
 
-find_package(GTSAMCMakeTools)
-include(GtsamMakeConfigFile)
-include(GtsamBuildTypes)
-include(GtsamTesting)
+#find_package(GTSAMCMakeTools)
+#include(GtsamMakeConfigFile)
+#include(GtsamBuildTypes)
+#include(GtsamTesting)
 
 
 
@@ -54,7 +54,7 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
   ${OpenCV_INCLUDE_DIRS}
   ${PCL_INCLUDE_DIRS}
-  ${GTSAM_INCLUDE_DIR}
+  #${GTSAM_INCLUDE_DIR}
 )
 
 ## Declare a C++ library

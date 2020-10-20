@@ -22,12 +22,16 @@ add_message_files(
   Cmd.msg
   PerceptionNodeMsg.msg
   SourceNodeMsg.msg
+  RobotState.msg
+  RobotStates.msg
 )
 
 add_service_files(
   DIRECTORY srv
   FILES
   Separate.srv
+  ReportPath.srv
+  GetConfigCmd.srv
 )
 
 add_action_files(

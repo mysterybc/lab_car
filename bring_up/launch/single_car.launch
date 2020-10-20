@@ -1,32 +1,48 @@
 <!-- 
     全局参数包括：
-    1、车辆id（从1开始）
-    2、车辆ip地址
+        1、全部车辆数量
+        2、车辆id（从1开始）
+        3、车辆ip地址、hostip地址
+        4、硬件端口号
+
     运行的节点包括：
-    1、坐标系变换：static tf
-    2、资源节点：driver_source_node
-    3、控制节点：remote_control_node
-    4、遥控接收：joy_node（库）
-    5、地图：    map_server（库）
-    6、定位节点：ndt_localization
-    7、决策树：  decision_node
-    8、任务节点：task_node
-    9、规划节点：move_base（库）
-    10、激光driver
-    11、pointcloud 2 laserscan
-    12、通讯节点
-    13、可视化:  rviz（库）
+        1、坐标系变换：static tf
+        2、资源节点：driver_source_node
+        3、控制节点：remote_control_node
+        4、遥控接收：joy_node（库）
+        5、地图：    map_server（库）
+        6、定位节点：ndt_localization
+        7、决策树：  decision_node
+        8、任务节点：task_node
+        9、规划节点：move_base（库）
+        10、激光driver
+        11、pointcloud 2 laserscan
+        12、通讯节点:接受指令
+        13、通讯节点：发送机器人状态
+        14、可视化:  rviz（库）
  -->
 
 <launch>
     <!-- 全局参数 -->
+    <!-- ip只有通讯节点使用 -->
     <arg name="car_id" value="1"/>
+    <param name="total_car_number" type="int" value="2" />
     <param name="car_id" type="int" value="$(arg car_id)" />
     <param name="host_ip_address" type="string" value="tcp://192.168.0.30:" />
     <param name="my_ip_address" type="string" value="tcp://192.168.0.14:" />
+    <rosparam>
+        total_robot_ip: ["tcp://192.168.0.14:","tcp://192.168.0.20:"]
+    </rosparam>
+    <!-- 下面两个source_node使用 -->
+    <!-- ttyUSB0为驱动接口，无需改变 -->
+    <param name="imu_port" type="string" value="/dev/ttyUSB1" />
+    <param name="gps_port" type="string" value="/dev/ttyUSB2" />
+    <!-- 遥控器接口 -->
+    <arg name="joy_port" value="/dev/input/js0"/>
+
     <!-- 1 -->
     <node pkg="tf" type="static_transform_publisher" name="world_map_broadcaster" args="0 0 -0.4 0 0 0 /world /map 100" />
-    <node pkg="tf" type="static_transform_publisher" name="lidar_base_broadcaster" args="0 0 -0.4 0 0 0 /lidar_link /base_link 100" />
+    <node pkg="tf" type="static_transform_publisher" name="lidar_base_broadcaster" args="-0.2 0 -0.4 0 0 0 /lidar_link /base_link 100" />
     <node pkg="tf" type="static_transform_publisher" name="lidar_velodyne_broadcaster" args="0 0 0 0 0 0 /lidar_link /velodyne 100" />
     <!-- 2 -->
     <node pkg="source_node"  type="driver_source_node"  name="driver_source_node" output="screen"/> 
@@ -34,7 +50,7 @@
     <node pkg="control_node" type="remote_control_node" name="remote_control_node" output="screen"/> 
     <!-- 4 -->
     <node respawn="true" pkg="joy" type="joy_node" name="gamepad" >
-        <param name="dev" type="string" value="/dev/input/js0" />
+        <param name="dev" type="string" value="$(arg joy_port)" />
         <param name="deadzone" value="0.0" />
         <param name="autorepeat_rate" value="10.0" />
     </node>
@@ -53,7 +69,7 @@
     <!-- 8 -->
     <node pkg="decision_node" type="behavior_node"  name="bahevior_node"    />
     <!-- 9 -->
-	  <node pkg="move_base" type="move_base" respawn="false" name="move_base" >
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base" >
         <rosparam file="$(find bring_up)/cfg/real_world/car$(arg car_id)/costmap_common_params.yaml" command="load" ns="global_costmap" />
   	 	<rosparam file="$(find bring_up)/cfg/real_world/car$(arg car_id)/costmap_common_params.yaml" command="load" ns="local_costmap" />
   		<rosparam file="$(find bring_up)/cfg/real_world/car$(arg car_id)/local_costmap_params.yaml" command="load" />
@@ -86,7 +102,7 @@
             angle_max: 3.1415926 # M_PI
             angle_increment: 0.003 # 0.17degree
             scan_time: 0.1
-            range_min: 0.8
+            range_min: 1.5
             range_max: 50
             use_inf: true
             inf_epsilon: 1.0
@@ -100,8 +116,12 @@
 
     </node>
     <!-- 12 -->
-    <node pkg="communication_node" name="receive_cmd" type="zmq_recv" />
+    <node pkg="communication_node" name="receive_host_cmd" type="receive_host_cmd" />
     <!-- 13 -->
+    <node pkg="communication_node" name="publish_robot_state" type="publish_robot_state"  output="screen"/>
+    <!-- 14 -->
+    <node pkg="communication_node" name="receive_robot_state" type="receive_robot_state"  output="screen"/>
+    <!-- 15 -->
     <node name="rviz" pkg="rviz" type="rviz" args="-d $(find bring_up)/rviz/single_car_stage_simulation.rviz" />
 
 </launch>

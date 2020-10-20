@@ -1,0 +1,12 @@
+<launch>
+  <arg name="car_id" value="1"/>
+  <param name="total_car_number" type="int" value="1" />
+  <param name="car_id" type="int" value="$(arg car_id)" />
+  <param name="host_ip_address" type="string" value="tcp://192.168.0.30:" />
+  <param name="my_ip_address" type="string" value="tcp://192.168.1.103:" />
+  <rosparam>
+        total_robot_ip: ["tcp://192.168.1.103:","tcp://192.168.1.105:"]
+  </rosparam>
+    <node pkg="communication_node" name="receive_robot_state" type="receive_robot_state"  output="screen"/>
+
+</launch>

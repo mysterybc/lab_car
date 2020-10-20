@@ -79,6 +79,8 @@ public:
         }
         else{
             this->state = BehaviorState::FAILURE;
+            blackboard_->PubDecisionState("build up task error");
+            blackboard_->SetMission(MissionType::SYSTEM_STANDBY);
         }
         return ;
     }

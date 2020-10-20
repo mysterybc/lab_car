@@ -16,8 +16,11 @@ int IMU::UpDateIMU(){
     ros::Publisher IMU_pub = nh.advertise<sensor_msgs::Imu>("IMU_data", 20); 
     try 
     { 
+        //获取imu port
+        std::string imu_port;
+        nh.param<std::string>("imu_port",imu_port,"/dev/ttyUSB1");
         //设置串口属性，并打开串口 
-        ser.setPort("/dev/ttyUSB1"); 
+        ser.setPort(imu_port); 
         ser.setBaudrate(115200); 
         serial::Timeout to = serial::Timeout::simpleTimeout(1000); 
         ser.setTimeout(to); 

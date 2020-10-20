@@ -27,8 +27,11 @@ int GPS::UpDateGPS()
 
     try 
     { 
+        //获取gps port
+        std::string gps_port;
+        nh.param<std::string>("gps_port",gps_port,"/dev/ttyUSB2");
         //设置串口属性，并打开串口 
-        ser.setPort("/dev/ttyUSB1");
+        ser.setPort(gps_port);
         ser.setBaudrate(115200); 
         serial::Timeout to = serial::Timeout::simpleTimeout(1000); 
         ser.setTimeout(to); 

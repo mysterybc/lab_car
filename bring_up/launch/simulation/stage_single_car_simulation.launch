@@ -1,8 +1,15 @@
 <launch>
   <!-- 仿真需要1、仿真模型 2、地图 3、rviz 4、tf（odom to map） 5、小车控制（planning&path_follow) -->
   <!-- 车id -->
-  <param name="car_id" 	  type="int" 			             value="1"                 />
-  <param name="host_ip_address" type="string" value="tcp://192.168.1.110:" />
+    <!-- ip只有通讯节点使用 -->
+  <arg name="car_id" value="1"/>
+  <param name="total_car_number" type="int" value="1" />
+  <param name="car_id" type="int" value="$(arg car_id)" />
+  <param name="host_ip_address" type="string" value="tcp://192.168.0.30:" />
+  <param name="my_ip_address" type="string" value="tcp://192.168.1.103:" />
+  <rosparam>
+        total_robot_ip: ["tcp://192.168.1.103:","tcp://192.168.1.105:"]
+  </rosparam>
   <param name="use_sim_time" value="true"/>
   <node pkg="stage_ros" type="stageros" name="stageros" args="$(find simulation)/worlds/robot2020.world" respawn="false" >
   </node>
@@ -22,17 +29,23 @@
 
 		<param name="base_local_planner" value="teb_local_planner/TebLocalPlannerROS" />
 		<param name="controller_frequency" value="5.0" />
-		<param name="controller_patience" value="15.0" />
-	</node>
+		<param name="controller_patience" value="15.0" /> 
+	</node> -->
   <!-- 测试用tf -->
   <node pkg="tf" type="static_transform_publisher" name="map_to_base_link"
   args="0 0 0 0 0 0 map odom 100" />
   <!-- task node -->
-  <node pkg="task_node"     type="build_up_task"      name="build_up_node"   output="screen"   />
+  <node pkg="task_node"     type="build_up_task"      name="build_up_node"    output="screen"  />
   <!-- behavior tree -->
-  <node pkg="decision_node" type="behavior_node"      name="bahevior_node"   output="screen"  />
+  <node pkg="decision_node" type="behavior_node"      name="bahevior_node"     />
+   <!-- separate goal -->
+  <node pkg="service_node" type="separate_goal"      name="separate_goal"   output="screen"    />
   <!-- Run the rviz -->
   <node name="rviz" pkg="rviz" type="rviz" args="-d $(find bring_up)/rviz/single_car_stage_simulation.rviz" />
   <!-- cmd recv -->
-  <node pkg="communication_node" name="receive_cmd" type="receive_cmd" />
+  <!-- <node pkg="communication_node" name="receive_host_cmd" type="receive_host_cmd" output="screen"/> -->
+  <!-- send robot state -->
+  <!-- <node pkg="communication_node" name="publish_robot_state" type="publish_robot_state"  output="screen"/> -->
+  <!-- receive other robot state -->
+  <node pkg="communication_node" name="receive_robot_state" type="receive_robot_state"  />
 </launch>

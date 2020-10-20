@@ -13,20 +13,17 @@ catkin_package()
 
 include_directories(include ${catkin_INCLUDE_DIRS})
 
+add_library(zmq_test src/zmq_test.cpp)
 
-add_executable(receive_cmd src/receive_cmd.cpp)
-target_link_libraries(receive_cmd ${catkin_LIBRARIES} ${ZeroMQ_LIBRARIES} ${Jsoncpp_LIBRARIES})
 
-add_executable(send_cmd src/send_cmd.cpp)
-target_link_libraries(send_cmd ${ZeroMQ_LIBRARIES} ${Jsoncpp_LIBRARIES} ${catkin_LIBRARIES})
+add_executable(receive_host_cmd src/receive_host_cmd.cpp  )
+target_link_libraries(receive_host_cmd zmq_test ${catkin_LIBRARIES} ${ZeroMQ_LIBRARIES} ${Jsoncpp_LIBRARIES})
 
-add_executable(send_robot_state_four_car src/send_robot_state_four_car.cpp)
-target_link_libraries(send_robot_state_four_car ${ZeroMQ_LIBRARIES} ${Jsoncpp_LIBRARIES} ${catkin_LIBRARIES})
+add_executable(publish_robot_state src/publish_robot_state.cpp )
+target_link_libraries(publish_robot_state zmq_test ${catkin_LIBRARIES} ${ZeroMQ_LIBRARIES} ${Jsoncpp_LIBRARIES})
 
-add_executable(send_robot_state src/send_robot_state.cpp)
-target_link_libraries(send_robot_state ${catkin_LIBRARIES} ${ZeroMQ_LIBRARIES} ${Jsoncpp_LIBRARIES})
+add_executable(receive_robot_state src/receive_robot_state.cpp  )
+target_link_libraries(receive_robot_state zmq_test ${catkin_LIBRARIES} ${ZeroMQ_LIBRARIES} ${Jsoncpp_LIBRARIES})
 
-add_executable(test_receive src/test_receive.cpp)
-target_link_libraries(test_receive ${catkin_LIBRARIES} ${ZeroMQ_LIBRARIES} ${Jsoncpp_LIBRARIES})
 
 

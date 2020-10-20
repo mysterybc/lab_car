@@ -32,9 +32,6 @@ public:
 
     ~Blackboard() = default;
     // Goal
-    void GoalCallback(const geometry_msgs::PoseStampedConstPtr &msg){
-        goal = msg->pose;
-    }
 
     void PoseCallback(const nav_msgs::OdometryConstPtr &msg){
         robot_pose = msg->pose.pose;
@@ -84,7 +81,7 @@ public:
     void PubDecisionState(std::string state){
         std_msgs::String msg;
         msg.data = state;
-        decision_state_pub.publish(state);
+        decision_state_pub.publish(msg);
     }
 
     //以下是判断条件
