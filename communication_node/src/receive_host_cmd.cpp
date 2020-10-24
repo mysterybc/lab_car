@@ -21,7 +21,6 @@ private:
     string host_cmd_state;
     std::string ip_recv;
     int car_id;
-    double pose_separate_factor;
 };
 
 HostMessage::~HostMessage(){
@@ -32,12 +31,6 @@ HostMessage::HostMessage(){
     host_cmd_pub = nh.advertise<robot_msgs::HostCmd>("/host_cmd",10);
     server = nh.advertiseService("get_config_cmd",&HostMessage::GetConfigCmdServer,this);
     nh.param<int>("car_id",car_id,1);
-    if(car_id == 1){
-        pose_separate_factor = 1;
-    }
-    else{
-        pose_separate_factor = -1;
-    }
     host_cmd_state = "not receive";
     nh.getParam("host_ip_address",ip_recv);
     zmq_test = new ZMQ_TEST;
@@ -63,7 +56,6 @@ void HostMessage::DecodeMsg(Json::Value json){
             double yaw = json["instruction"][2].asDouble();
             //目前输入角度，手动坐标-1
             yaw = yaw / 180.0 * 3.1415926;
-            cmd.goal.pose.position.x += pose_separate_factor;
             cmd.goal.pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
             host_cmd_pub.publish(cmd);
         }

@@ -17,9 +17,11 @@
         9、规划节点：move_base（库）
         10、激光driver
         11、pointcloud 2 laserscan
-        12、通讯节点:接受指令
-        13、通讯节点：发送机器人状态
-        14、可视化:  rviz（库）
+        12、服务节点:散点
+        13、通讯节点:接受上位机指令
+        14、通讯节点：发送机器人状态
+        15、通讯节点：接受其他机器人状态
+        16、可视化:  rviz（库）
  -->
 
 <launch>
@@ -116,11 +118,13 @@
 
     </node>
     <!-- 12 -->
+    <node pkg="service_node" type="separate_goal"      name="separate_goal" />
+    <!-- 12 -->
     <node pkg="communication_node" name="receive_host_cmd" type="receive_host_cmd" />
     <!-- 13 -->
-    <node pkg="communication_node" name="publish_robot_state" type="publish_robot_state"  output="screen"/>
+    <node pkg="communication_node" name="publish_robot_state" type="publish_robot_state" />
     <!-- 14 -->
-    <node pkg="communication_node" name="receive_robot_state" type="receive_robot_state"  output="screen"/>
+    <node pkg="communication_node" name="receive_robot_state" type="receive_robot_state" />
     <!-- 15 -->
     <node name="rviz" pkg="rviz" type="rviz" args="-d $(find bring_up)/rviz/single_car_stage_simulation.rviz" />
 

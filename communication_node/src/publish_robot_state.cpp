@@ -4,15 +4,21 @@
 #include "std_msgs/String.h"
 #include "robot_msgs/ReportPath.h"
 #include "memory"
+#include "tf/transform_listener.h"
+
+
+
 
 //用于发送机器人状态
 class RobotState{
 public:
     RobotState(int car_id);
-    void SetPose(nav_msgs::Odometry odom);
+    void GetPose();
     void SetState(std_msgs::String msg);
     std::string GetMessage();
     Json::Value json;
+    tf::TransformListener listener;
+    tf::StampedTransform trans;
     
 };
 RobotState::RobotState(int car_id){
@@ -24,18 +30,29 @@ RobotState::RobotState(int car_id){
         json["pose"].append(0.0);
     }
 }
-void RobotState::SetPose(nav_msgs::Odometry odom){
-    tf::Quaternion quat;
+void RobotState::GetPose(){
+    while(ros::ok){
+        try{
+            listener.lookupTransform("map","base_link",ros::Time(0),trans);
+        }
+        catch(tf::TransformException){
+            continue;
+        }
+        break;
+    }
+    tf::Quaternion quat = trans.getRotation();
     double roll,yaw,pitch;
-    tf::quaternionMsgToTF(odom.pose.pose.orientation,quat);
     tf::Matrix3x3(quat).getEulerYPR(yaw,pitch,roll);
     yaw = yaw / 3.1415926 * 180;
     json["pose"].clear();
-    json["pose"].append(odom.pose.pose.position.x);
-    json["pose"].append(odom.pose.pose.position.y);
+    json["pose"].append(trans.getOrigin().x());
+    json["pose"].append(trans.getOrigin().y());
     json["pose"].append(yaw);
 }
 void RobotState::SetState(std_msgs::String msg){
+    //pose
+    GetPose();
+    //state
     json["state"] = msg.data;
 }
 std::string RobotState::GetMessage(){
@@ -69,7 +86,6 @@ void ConfigPath::SetPath(nav_msgs::Path msg){
     }
 }
 std::string ConfigPath::GetMessage(){
-    cout << json.toStyledString();
     return json.toStyledString();
 }
 
@@ -86,9 +102,7 @@ bool ConfigPath::ReportPath(robot_msgs::ReportPath::Request  &req,
 void DecisionSubCB(const std_msgs::StringConstPtr &msg, RobotState &state){
     state.SetState(*msg);
 }
-void OdomSubCB(const nav_msgs::OdometryConstPtr &msg, RobotState &state){
-    state.SetPose(*msg);
-}
+
 
 
 int main(int argc,char **argv)
@@ -114,11 +128,9 @@ int main(int argc,char **argv)
 
     //sub 
     ros::Subscriber state_subs;
-    ros::Subscriber odom_subs;
     ros::ServiceServer report_path_server;
     report_path_server = nh.advertiseService("report_path",&ConfigPath::ReportPath,&config_message);
     state_subs = nh.subscribe<std_msgs::String>("decision_state",10,boost::bind(&DecisionSubCB,_1,std::ref(state_message)));
-    odom_subs = nh.subscribe<nav_msgs::Odometry>("odom",10,boost::bind(&OdomSubCB,_1,std::ref(state_message)));
 
 
 

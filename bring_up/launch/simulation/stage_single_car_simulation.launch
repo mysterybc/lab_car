@@ -5,10 +5,10 @@
   <arg name="car_id" value="1"/>
   <param name="total_car_number" type="int" value="1" />
   <param name="car_id" type="int" value="$(arg car_id)" />
-  <param name="host_ip_address" type="string" value="tcp://192.168.0.30:" />
-  <param name="my_ip_address" type="string" value="tcp://192.168.1.103:" />
+  <param name="host_ip_address" type="string" value="tcp://192.168.31.8:" />
+  <param name="my_ip_address" type="string" value="tcp://192.168.31.144:" />
   <rosparam>
-        total_robot_ip: ["tcp://192.168.1.103:","tcp://192.168.1.105:"]
+        total_robot_ip: ["tcp://192.168.31.144:"]
   </rosparam>
   <param name="use_sim_time" value="true"/>
   <node pkg="stage_ros" type="stageros" name="stageros" args="$(find simulation)/worlds/robot2020.world" respawn="false" >
@@ -43,9 +43,9 @@
   <!-- Run the rviz -->
   <node name="rviz" pkg="rviz" type="rviz" args="-d $(find bring_up)/rviz/single_car_stage_simulation.rviz" />
   <!-- cmd recv -->
-  <!-- <node pkg="communication_node" name="receive_host_cmd" type="receive_host_cmd" output="screen"/> -->
+  <node pkg="communication_node" name="receive_host_cmd" type="receive_host_cmd" output="screen"/>
   <!-- send robot state -->
-  <!-- <node pkg="communication_node" name="publish_robot_state" type="publish_robot_state"  output="screen"/> -->
+  <node pkg="communication_node" name="publish_robot_state" type="publish_robot_state"  output="screen"/>
   <!-- receive other robot state -->
   <node pkg="communication_node" name="receive_robot_state" type="receive_robot_state"  />
 </launch>

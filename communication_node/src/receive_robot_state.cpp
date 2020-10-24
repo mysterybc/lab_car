@@ -82,28 +82,28 @@ void RobotState::RecvMsg(){
     Json::Reader jsonread;
     char topic_name[256]={0}; //用于接收订阅的主题名
     char payload[1024]={0};   //用于接收订阅主题的内容
-        ros::spinOnce();
-        memset(topic_name,0,sizeof(topic_name));
-        memset(payload,0,sizeof(payload));
+    ros::spinOnce();
+    memset(topic_name,0,sizeof(topic_name));
+    memset(payload,0,sizeof(payload));
 
-        int size = zmq_recv (zmq_test->subscriber, topic_name, sizeof(topic_name), ZMQ_NOBLOCK); //接收订阅的主题名称
-        if (size == -1)
-        {
-            return ;
-        }
-        size = zmq_recv (zmq_test->subscriber, payload, sizeof(payload), ZMQ_NOBLOCK); //接收订阅的消息
-        if (size == -1)
-        {
-            return ;
-        }
-        if(!jsonread.parse(payload,json))
-        {
-            ROS_INFO("json_error");
-        }
-        else
-        {
-            DecodeMsg(json);
-        }
+    int size = zmq_recv (zmq_test->subscriber, topic_name, sizeof(topic_name), ZMQ_NOBLOCK); //接收订阅的主题名称
+    if (size == -1)
+    {
+        return ;
+    }
+    size = zmq_recv (zmq_test->subscriber, payload, sizeof(payload), ZMQ_NOBLOCK); //接收订阅的消息
+    if (size == -1)
+    {
+        return ;
+    }
+    if(!jsonread.parse(payload,json))
+    {
+        ROS_INFO("json_error");
+    }
+    else
+    {
+        DecodeMsg(json);
+    }
         
 }
 
