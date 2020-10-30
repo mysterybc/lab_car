@@ -167,19 +167,15 @@ void BuildUpTask::BuildUpExcuteCB(const robot_msgs::BuildUpGoalConstPtr &goal){
     task_state = ActionState::PENDING;
     
 }
+
 /* 以下是planning move_base的callback */
 void BuildUpTask::MoveBaseStatusCB(const actionlib_msgs::GoalStatusArrayConstPtr &msg){
     if(msg->status_list.empty()){
         task_state = ActionState::PENDING;
         return ;
     }
-    int state = msg->status_list.begin()->status;
-    if(state <= 3){
-        task_state = (ActionState)state;
-    }
-    else{
-        task_state = ActionState::ABORTED;
-    }
+    int state = (--msg->status_list.end())->status;
+    task_state = (ActionState)state;
     
 }
 

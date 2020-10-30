@@ -69,7 +69,7 @@
     <!-- 7 -->
     <node pkg="task_node"     type="build_up_task"  name="build_up_task"    />
     <!-- 8 -->
-    <node pkg="decision_node" type="behavior_node"  name="bahevior_node"    />
+    <node pkg="decision_node" type="decision_node"  name="decision_node"    />
     <!-- 9 -->
     <node pkg="move_base" type="move_base" respawn="false" name="move_base" >
         <rosparam file="$(find bring_up)/cfg/real_world/car$(arg car_id)/costmap_common_params.yaml" command="load" ns="global_costmap" />

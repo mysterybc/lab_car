@@ -1,36 +1,34 @@
+cmake_minimum_required(VERSION 3.0.2)
 project(decision_node)
-cmake_minimum_required(VERSION 3.1)
 
-set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake_module)
-set(CMAKE_BUILD_TYPE Release)
-
+set(CMAKE_CXX_FLAGS "${CAMKE_CXX_FLAGS} -std=c++11 -pthread")
 find_package(catkin REQUIRED COMPONENTS
-  roscpp
-  tf
-  nav_msgs
-  geometry_msgs
   actionlib
+  geometry_msgs
+  nav_msgs
   robot_msgs
-  )
-
-find_package(Eigen3 REQUIRED)
-
-include_directories(
-  include
-  ../decision_node
-  ${catkin_INCLUDE_DIRS}
+  roscpp
+  roslib
+  tf
 )
 
 
 catkin_package()
 
-add_executable(behavior_node
-  example_behavior/build_up_behavior.h
-  behavior_tree.cpp
-  )
 
-target_link_libraries(behavior_node
-  PRIVATE
-  ${catkin_LIBRARIES}
-  )
+include_directories(
+    inc
+    inc/exported 
+    inc/exported/behaviac_generated/types/internal
+  ${catkin_INCLUDE_DIRS}
+)
+
+aux_source_directory(src/.  SRC_LIST1)
+aux_source_directory(inc/exported/behaviac_generated/types/internal  SRC_LIST2)
+
+add_executable(decision_node ${SRC_LIST1} ${SRC_LIST2})
+target_link_libraries(decision_node  pthread ${catkin_LIBRARIES}
+${PROJECT_SOURCE_DIR}/libs/libbehaviac_gcc_release.a)
+
+
+

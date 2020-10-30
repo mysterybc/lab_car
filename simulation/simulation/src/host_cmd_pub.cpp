@@ -27,14 +27,6 @@ int main(int argc, char **argv){
             case '1':{
                 if(last_command == command)
                     break;
-                host_cmd.mission.mission = host_cmd.mission.system_standby;
-                last_command = '1';
-                MissionPub();
-                break;
-            }
-            case '2':{
-                if(last_command == command)
-                    break;
                 double yaw = 3.14;
                 std::cout << "please input x :" << std::endl;
                 std::cin >> host_cmd.goal.pose.position.x;
@@ -45,13 +37,38 @@ int main(int argc, char **argv){
                 host_cmd.goal.pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
                 host_cmd.goal.pose.position.z = 0;
                 host_cmd.mission.mission = host_cmd.mission.build_up_task;
+                last_command = '1';
+                MissionPub();
+                break;
+            }
+            case '2':{
+                if(last_command == command)
+                    break;
+                host_cmd.mission.mission = host_cmd.mission.STOP;
                 last_command = '2';
+                MissionPub();
+                break;
+            }
+            case '3':{
+                if(last_command == command)
+                    break;
+                host_cmd.mission.mission = host_cmd.mission.pause;
+                last_command = '3';
+                MissionPub();
+                break;
+            }
+
+            case '4':{
+               if(last_command == command)
+                    break;
+                host_cmd.mission.mission = host_cmd.mission.resume;
+                last_command = '4';
                 MissionPub();
                 break;
             }
             default:
                 break;
-                
+
         }
 
         loop.sleep();
@@ -62,7 +79,7 @@ int main(int argc, char **argv){
 
 void MissionPub(){
     ros::Rate loop(10);
-    for(int i = 0; i < 2; i++){
+    for(int i = 0; i < 1; i++){
         host_cmd_pub.publish(host_cmd);
         ros::spinOnce();
         loop.sleep();
@@ -72,10 +89,12 @@ void MissionPub(){
 void Command(){
     while(ros::ok()){
         std::cout << "please input command" << std::endl
-                  << "1: system stand by"   << std::endl
-                  << "2: build up mission"  << std::endl;
+                  << "1: build up mission"   << std::endl
+                  << "2: system stand by"  << std::endl
+                 << "3: mission pause"  << std::endl
+                 << "4: mission resume"  << std::endl;
         std::cin  >> command;
-        if(command != '1' && command != '2'){
+        if(command != '1' && command != '2' && command != '3' && command != '4'){
             std::cout << "please input again!" << std::endl;
             std::cin >> command;
         }else{

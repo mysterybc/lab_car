@@ -20,9 +20,9 @@ include_directories(include ${catkin_INCLUDE_DIRS})
 add_executable(build_up_task src/build_up_task.cpp)
 target_link_libraries(build_up_task ${catkin_LIBRARIES})
 
-####四车的####
+####没有host####
 
-add_executable(build_up_task_multi_car src/build_up_task_multi_car.cpp)
-target_link_libraries(build_up_task_multi_car ${catkin_LIBRARIES})
+add_executable(build_up_task_nohost src/build_up_task_nohost.cpp)
+target_link_libraries(build_up_task_nohost ${catkin_LIBRARIES})
 
 

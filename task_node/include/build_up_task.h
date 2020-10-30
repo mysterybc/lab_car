@@ -23,7 +23,13 @@ enum ActionState{
     ACTIVE = 1,
     PREEMPTED = 2,
     SUCCEEDED = 3,
-    ABORTED = 4
+    ABORTED = 4,
+    REJECTED = 5,
+    PREEMPTING = 6,
+    RECALLING  = 7,
+    RECALLED  = 8,
+    LOST = 9
+
 };
 
 class BuildUpTask{

@@ -37,15 +37,15 @@
   <!-- task node -->
   <node pkg="task_node"     type="build_up_task"      name="build_up_node"    output="screen"  />
   <!-- behavior tree -->
-  <node pkg="decision_node" type="behavior_node"      name="bahevior_node"     />
+  <node pkg="decision_node" type="decision_node"      name="decision_node"    output="screen" />
    <!-- separate goal -->
   <node pkg="service_node" type="separate_goal"      name="separate_goal"   output="screen"    />
   <!-- Run the rviz -->
-  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find bring_up)/rviz/single_car_stage_simulation.rviz" />
+  <!-- <node name="rviz" pkg="rviz" type="rviz" args="-d $(find bring_up)/rviz/single_car_stage_simulation.rviz" /> -->
   <!-- cmd recv -->
-  <node pkg="communication_node" name="receive_host_cmd" type="receive_host_cmd" output="screen"/>
+  <!-- <node pkg="communication_node" name="receive_host_cmd" type="receive_host_cmd" output="screen"/> -->
   <!-- send robot state -->
-  <node pkg="communication_node" name="publish_robot_state" type="publish_robot_state"  output="screen"/>
+  <!-- <node pkg="communication_node" name="publish_robot_state" type="publish_robot_state"  output="screen"/> -->
   <!-- receive other robot state -->
-  <node pkg="communication_node" name="receive_robot_state" type="receive_robot_state"  />
+  <!-- <node pkg="communication_node" name="receive_robot_state" type="receive_robot_state"  /> -->
 </launch>
