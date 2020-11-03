@@ -17,6 +17,7 @@ add_message_files(
   FILES
   Mission.msg
   HostCmd.msg
+  HostCmdArray.msg
   Error.msg
   State.msg
   Cmd.msg

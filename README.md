@@ -121,6 +121,8 @@
 
 （1）加入了Gazebo仿真，针对多车加入了namespace，将tf的frame通过param传入
 
+（2）修改host_cmd_pub以及host_cmd.msg，支持多任务。
+
 ### 7、下一步工作
 
 ###### （1）行军任务
