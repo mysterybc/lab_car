@@ -34,7 +34,7 @@ RobotState::RobotState(std::string ip){
     robot_pose = geometry_msgs::Pose();
     car_id = 0;
     zmq_test = std::make_shared<ZMQ_TEST>(ZMQ_TEST());
-    zmq_test->zmq_init(1,0,6666,ip);
+    zmq_test->zmq_init(1,0,ip);
     // receive_robot_msg_thread = std::make_shared<std::thread>(std::thread(&RobotState::RecvMsg,this));
 };
 
@@ -144,9 +144,13 @@ void RobotStates::ResvMsg(){
 RobotStates::RobotStates(){
     ros::NodeHandle nh;
     std::string my_ip_address;
+    //获取group空间名
+    std::string namespace_;
+    namespace_ = nh.getNamespace();
+    //获取group下的参数
     std::vector<std::string> total_robot_ip;
-    nh.getParam("my_ip_address",my_ip_address);
-    nh.getParam("total_robot_ip",total_robot_ip);
+    nh.getParam(namespace_+"/my_ip_address",my_ip_address);
+    nh.getParam("/total_robot_ip",total_robot_ip);
     for(auto ip : total_robot_ip){
         if(ip == my_ip_address)
             continue;

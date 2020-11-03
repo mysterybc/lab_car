@@ -30,11 +30,15 @@ HostMessage::~HostMessage(){
 HostMessage::HostMessage(){
     host_cmd_pub = nh.advertise<robot_msgs::HostCmd>("/host_cmd",10);
     server = nh.advertiseService("get_config_cmd",&HostMessage::GetConfigCmdServer,this);
-    nh.param<int>("car_id",car_id,1);
+        //获取group空间名
+    std::string namespace_;
+    namespace_ = nh.getNamespace();
+    //获取group下的参数
+    nh.getParam(namespace_+"/car_id",car_id);
+    nh.getParam(namespace_+"/host_ip_address",ip_recv);
     host_cmd_state = "not receive";
-    nh.getParam("host_ip_address",ip_recv);
     zmq_test = new ZMQ_TEST;
-    zmq_test->zmq_init(1,0,6666,ip_recv);
+    zmq_test->zmq_init(1,0,ip_recv);
 }
 void HostMessage::DecodeMsg(Json::Value json){
     if(json["message_type"].asString() == "mission"){

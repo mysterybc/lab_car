@@ -1,0 +1,44 @@
+<launch>
+  <!-- 仿真时间 -->
+  <param name="use_sim_time" value="true"/>
+  <!-- 全局参数 -->
+  <arg name="map" default="lab_car_map.yaml" /> 
+  <arg name="simulator" value="gazebo"/>
+  <arg name="host_ip_address" default="tcp://192.168.31.8:" />
+  <arg name="total_car_number" default="1" />
+  <!-- 车参数 -->
+  <arg name="car_id" default="1"/>
+  <arg name="robot_name" value="robot$(arg car_id)"/>
+  <arg name="my_ip_address" default="tcp://192.168.31.144:" />
+  <arg name="robot1_x" value="-7"/>
+  <arg name="robot1_y" value="-7"/>
+  <arg name="robot1_z" value="0.1"/>
+
+  <!-- gazebo环境  -->
+  <include file="$(find gazebo_pioneer3at)/launch/pioneer_world.launch"/>
+
+  <!-- 运行地图服务器，并且加载设置的地图-->
+  <node name="map_server" pkg="map_server" type="map_server" args="$(find bring_up)/map/$(arg map)" />
+  
+  <!-- amcl tf-->
+  <include file="$(find gazebo_pioneer3at)/launch/pioneer.launch" >
+    <arg name="robot_name" value="$(arg robot_name)"/>
+    <arg name = "x" value="$(arg robot1_x)" />
+    <arg name = "y" value="$(arg robot1_y)" />
+    <arg name = "z" value="$(arg robot1_z)" />
+  </include>
+
+  <!-- rviz -->
+  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find bring_up)/rviz/gazebo_singlecar.rviz"/>
+
+
+  <!-- 我们的程序部分 -->
+  <include file="$(find bring_up)/launch/simulation/labcar_simulation.launch" >
+    <arg name="car_id" value="$(arg car_id)" />
+    <arg name="total_car_number" value="$(arg total_car_number)" />
+    <arg name="host_ip_address" value="$(arg host_ip_address)" />
+    <arg name="my_ip_address" value="$(arg my_ip_address)" />
+    <arg name="simulator"  value="$(arg simulator)"/>
+  </include>
+
+</launch>

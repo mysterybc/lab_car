@@ -66,6 +66,6 @@ floorplan
 
 # throw in a robot
  car(pose [ 3.000 3.000 0.000 0.000 ] name "car0" color "blue" )
- #car(pose [ 22.000 22.000 0.000 0.000 ] name "car1" color "red" )
+ #car(pose [ 50.000 50.000 0.000 0.000 ] name "car1" color "red" )
 # throw in a block for test
  #block(pose [ 7.79 3.45 0 0.3 ] color "red"  )

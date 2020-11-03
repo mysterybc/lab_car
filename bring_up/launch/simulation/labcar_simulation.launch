@@ -1,0 +1,62 @@
+<launch>
+
+    <!-- 参数 -->
+    <arg name="car_id" default="1"/>
+    <arg name="total_car_number" default="1" />
+    <arg name="robot_name" default="robot$(arg car_id)"/>
+    <arg name="host_ip_address" default="tcp://192.168.31.8:" />
+    <arg name="my_ip_address" default="tcp://192.168.31.144:6661" />
+    <arg name="simulator" default="stage"/>
+
+    <!-- 全局参数 -->
+    <param name="total_car_number" value="$(arg total_car_number)"/>
+    <param name="host_ip_address" value="$(arg host_ip_address)"/>
+
+    <group ns="$(arg robot_name)">
+        <!-- 每辆车的参数 -->
+        <param name="car_id" value="$(arg car_id)"/>
+        <param name="my_ip_address" value="$(arg my_ip_address)"/>
+        <!-- tf用到的frame前缀 -->
+        <param name="tf_ns" value="$(arg robot_name)/"/>
+        <!--  ************** Navigation ***************  -->
+        <node pkg="move_base" type="move_base" respawn="false" name="move_base" >
+        <rosparam file="$(find bring_up)/cfg/$(arg simulator)/$(arg robot_name)/costmap_common_params.yaml" command="load" ns="global_costmap" />
+        <rosparam file="$(find bring_up)/cfg/$(arg simulator)/$(arg robot_name)/costmap_common_params.yaml" command="load" ns="local_costmap" />
+        <rosparam file="$(find bring_up)/cfg/$(arg simulator)/$(arg robot_name)/local_costmap_params.yaml" command="load" />
+        <rosparam file="$(find bring_up)/cfg/$(arg simulator)/$(arg robot_name)/global_costmap_params.yaml" command="load" />
+        <rosparam file="$(find bring_up)/cfg/$(arg simulator)/$(arg robot_name)/teb_local_planner_params.yaml" command="load" />
+
+        <param name="base_global_planner" value="global_planner/GlobalPlanner" />
+        <param name="planner_frequency" value="1.0" />
+        <param name="planner_patience" value="5.0" />
+
+        <param name="base_local_planner" value="teb_local_planner/TebLocalPlannerROS" />
+        <param name="controller_frequency" value="5.0" />
+        <param name="controller_patience" value="15.0" /> 
+        </node> -->
+        <!-- task node -->
+        <node pkg="task_node"     type="build_up_task_nohost"      name="build_up_task_nohost"    output="screen"  />
+        <!-- behavior tree -->
+        <node pkg="decision_node" type="decision_node"      name="decision_node"  output="screen"   />
+        <!-- separate goal -->
+        <node pkg="service_node" type="separate_goal"      name="separate_goal"   />
+        <!-- cmd recv -->
+        <!-- <node pkg="communication_node" name="receive_host_cmd" type="receive_host_cmd" /> -->
+        <!-- send robot state -->
+        <node pkg="communication_node" name="publish_robot_state" type="publish_robot_state" output="screen"/>
+        <!-- receive other robot state -->
+        <node pkg="communication_node" name="receive_robot_state" type="receive_robot_state" output="screen" />
+    </group>
+
+
+
+</launch>
+    
+
+  
+  
+  
+
+
+
+

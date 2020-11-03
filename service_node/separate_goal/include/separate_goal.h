@@ -41,6 +41,7 @@ private:
     geometry_msgs::Pose my_pose;
     geometry_msgs::Pose goal_point;
     nav_msgs::OccupancyGrid map;
+    std::string tf_ns;
     int car_id;
     int total_car_number;
 

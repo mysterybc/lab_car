@@ -3,7 +3,7 @@
 ### 1、项目简介
 
 - 代码为实验室项目无人车部分代码，不包含上位机。
-- 在脱离上位机的情况下仅能实现遥控和基于rviz目标点的导航。
+- 仿真包含stage环境和gazebo环境。
 
 ### 2、运行方法
 
@@ -33,7 +33,8 @@
   						ros-kinetic-map-server \
   						ros-kinetic-pointcloud-to-laserscan \
   						ros-kinetic-joy \
-  						ros-kinetic-octomap-ros
+  						ros-kinetic-octomap-ros\
+  						ros-kinetic-amcl
   ```
 
 - 实车：
@@ -116,13 +117,15 @@
 
 （1）更换behaviac决策树（2）修改一些集结任务的bug（3）更改mission格式
 
+###### 2020年11月3日提交
+
+（1）加入了Gazebo仿真，针对多车加入了namespace，将tf的frame通过param传入
+
 ### 7、下一步工作
 
-###### （1）可以考虑添加双车通讯的专用通道
+###### （1）行军任务
 
-###### （2）添加gazebo仿真
-
-
+###### （2）测试实车运行情况
 
 
 

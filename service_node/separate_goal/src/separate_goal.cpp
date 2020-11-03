@@ -4,18 +4,25 @@
 
 SeparateGoal::SeparateGoal(){
     ros::NodeHandle nh;
-    nh.param<int>("car_id",car_id,1);
+   //获取group空间名
+    std::string namespace_;
+    namespace_ = nh.getNamespace();
+    //获取group下的参数
+    nh.getParam(namespace_+"/car_id",car_id);
+    nh.getParam(namespace_+"/tf_ns",tf_ns);
     robots_state_sub = nh.subscribe("robot_states",10,&SeparateGoal::RobotStateCallback,this);
-    map_sub = nh.subscribe("map",10,&SeparateGoal::MapCallback,this);
+    map_sub = nh.subscribe("/map",10,&SeparateGoal::MapCallback,this);
     separate_service = nh.advertiseService("separate_goal",&SeparateGoal::CalGoal,this);
 }
 
 bool SeparateGoal::CalGoal(robot_msgs::Separate::Request &req,
                            robot_msgs::Separate::Response &res){
     goal_point = req.goal;  
+    ROS_INFO("separate start!!");
     int x_flag{0}, y_flag{0};
     int online_car{1};
     my_pose = GetMyPose();
+    ROS_INFO("get my pose!!");
     for(auto it : robots_info){
         if(it.car_id == 0){
             continue;
@@ -84,7 +91,7 @@ geometry_msgs::Pose SeparateGoal::GetMyPose(){
     tf::StampedTransform trans;
     while(ros::ok()){
         try{
-            listerner.lookupTransform("map","base_link",ros::Time(0),trans);
+            listerner.lookupTransform("map",tf_ns+"base_link",ros::Time(0),trans);
         }
         catch(tf::TransformException &exception) {
             ros::Duration(0.5).sleep(); // sleep for half a second
@@ -95,8 +102,6 @@ geometry_msgs::Pose SeparateGoal::GetMyPose(){
         pose.position.x = trans.getOrigin().x();
         pose.position.y = trans.getOrigin().y();
         pose.position.z = trans.getOrigin().z();
-        std::cout << "pose x is" << pose.position.x << std::endl;
-        std::cout << "pose y is" << pose.position.y << std::endl;
         break;
     }
     return pose;

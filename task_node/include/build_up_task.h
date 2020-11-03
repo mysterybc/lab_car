@@ -55,6 +55,7 @@ public:
     actionlib::SimpleActionServer<robot_msgs::BuildUpAction> build_up_action;
     actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> plan_action;
     int car_id;
+    std::string tf_ns;
     geometry_msgs::Pose goal_point;
     robot_msgs::BuildUpResult result;
     ActionState task_state;

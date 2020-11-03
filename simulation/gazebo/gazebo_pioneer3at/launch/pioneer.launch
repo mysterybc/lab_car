@@ -1,0 +1,35 @@
+<launch>
+    <!-- 机器人namespace -->
+    <arg name="robot_name" default="robot1"/>
+    <param name="use_sim_time" value="true"/>
+    <arg name="x" default="0"/>
+    <arg name="y" default="0"/>
+    <arg name="z" default="0"/>
+
+    <group ns="$(arg robot_name)">
+        <!-- 加载机器人模型描述参数 -->
+        <param name="robot_description" command="$(find xacro)/xacro  --inorder '$(find gazebo_pioneer3at)/urdf/pioneer3at_with_rplidar_and_camera.xacro' ns:=$(arg robot_name)"/> 
+
+        <!-- 运行joint_state_publisher节点，发布机器人的关节状态  -->
+        <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+
+        <!-- 运行robot_state_publisher节点，发布tf  -->
+        <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"  >
+            <param name="publish_frequency" type="double" value="50.0" />
+        </node>
+
+        <!-- 在gazebo中加载机器人模型-->
+        <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" 
+            args="-urdf -model $(arg robot_name) -param  robot_description  -x $(arg x) -y $(arg y) -z $(arg z) 3"  />         
+
+        <!-- amcl定位 -->
+        <include file="$(find pioneer3at_navigation)/launch/amcl.launch" >
+            <arg name="robot_name" value="$(arg robot_name)" />
+            <arg name="init_x" value="$(arg x)" />
+            <arg name="init_y" value="$(arg y)" />
+            <arg name="init_z" value="$(arg z)" />
+        </include>
+
+    </group>
+
+</launch>

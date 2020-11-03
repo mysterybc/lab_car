@@ -1,0 +1,68 @@
+<launch>
+
+    <!-- 设置地图的配置文件 -->
+    <arg name="map" default="coverage_map.yaml" />
+
+    <!-- 运行地图服务器，并且加载设置的地图-->
+    <node name="map_server" pkg="map_server" type="map_server" args="$(find pioneer3at_navigation)/maps/$(arg map)" >
+    <param name="frame_id" value="/map"/>
+    </node>
+    <!--node pkg="tf" type="static_transform_publisher" name="map_odom_broadcaster" args="0 0 0 0 0 0 robot1/map robot1/odom 100" /-->
+
+        <!-- 运行虚拟定位，兼容AMCL输出 -->
+    <!--node pkg="fake_localization" type="fake_localization" name="fake_localization" output="screen">
+    <param name="odom_frame_id"  value="robot1/odom"/>
+    <param name="base_frame_id"  value="robot1/base_link"/>
+    <param name="global_frame_id" value="robot1/map"/>
+    </node-->
+    <arg name="use_map_topic" default="true"/>
+    <arg name="scan_topic" default="/robot1/scan"/>
+
+    <node pkg="amcl" type="amcl" name="amcl" clear_params="false">
+        <param name="use_map_topic" value="$(arg use_map_topic)"/>
+       
+        <param name="odom_model_type" value="diff"/>
+        <param name="odom_alpha5" value="0.1"/>
+        <param name="gui_publish_rate" value="10.0"/>
+        <param name="laser_max_beams" value="60"/>
+        <param name="laser_max_range" value="6"/>
+        <param name="min_particles" value="500"/>
+        <param name="max_particles" value="2000"/>
+        <param name="kld_err" value="0.05"/>
+        <param name="kld_z" value="0.99"/>
+        <param name="odom_alpha1" value="0.01"/>
+        <param name="odom_alpha2" value="0.01"/>
+       
+        <param name="odom_alpha3" value="0.01"/>
+        <param name="odom_alpha4" value="0.01"/>
+        <param name="laser_z_hit" value="0.5"/>
+        <param name="laser_z_short" value="0.05"/>
+        <param name="laser_z_max" value="0.05"/>
+        <param name="laser_z_rand" value="0.5"/>
+        <param name="laser_sigma_hit" value="0.2"/>
+        <param name="laser_lambda_short" value="0.1"/>
+        <param name="laser_model_type" value="likelihood_field"/>
+       
+        <param name="laser_likelihood_max_dist" value="2.0"/>
+        <param name="update_min_d" value="0.25"/>
+        <param name="update_min_a" value="0.1"/>
+        <param name="odom_frame_id" value="robot1/odom"/>
+        <param name="resample_interval" value="1"/>
+        
+        <param name="transform_tolerance" value="0.1"/>
+        <param name="recovery_alpha_slow" value="0.0"/>
+        <param name="recovery_alpha_fast" value="0.0"/>
+        <remap from="scan" to="$(arg scan_topic)"/>
+        <param name="base_frame_id" value="robot1/base_link"/>
+        <param name="global_frame_id" value="/map"/>
+        
+        <param name="initial_pose_x" value="0"/>
+        <param name="initial_pose_y" value="3"/>
+        <param name="initial_pose_a" value="0"/>
+        
+        <!--remap from="/map" to="/robot1/map"/-->
+    </node>
+    
+    <!-- 对于虚拟定位，需要设置一个/odom与/map之间的静态坐标变换 -->
+    <!--node pkg="tf" type="static_transform_publisher" name="map_odom_broadcaster" args="0 0 0 0 0 0 /map /robot1/odom 100" -->
+</launch>

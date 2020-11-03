@@ -12,16 +12,18 @@
 //用于发送机器人状态
 class RobotState{
 public:
-    RobotState(int car_id);
+    RobotState(int car_id, std::string ns);
     void GetPose();
     void SetState(std_msgs::String msg);
     std::string GetMessage();
     Json::Value json;
     tf::TransformListener listener;
     tf::StampedTransform trans;
+    std::string tf_ns;
     
 };
-RobotState::RobotState(int car_id){
+RobotState::RobotState(int car_id, std::string ns){
+    tf_ns = ns;
     json["message_type"] = "state";  //string
     json["id"] = car_id;             //int
     json["state"] = "stand_by";
@@ -33,9 +35,10 @@ RobotState::RobotState(int car_id){
 void RobotState::GetPose(){
     while(ros::ok){
         try{
-            listener.lookupTransform("map","base_link",ros::Time(0),trans);
+            listener.lookupTransform("map",tf_ns+"base_link",ros::Time(0),trans);
         }
         catch(tf::TransformException){
+            ros::Duration(0.1).sleep();
             continue;
         }
         break;
@@ -113,17 +116,23 @@ int main(int argc,char **argv)
 
     //config id & ip
     int car_id;
-    nh.getParam("car_id",car_id);
-    nh.getParam("my_ip_address",ip_address);
+    //获取group空间名
+    std::string namespace_;
+    std::string tf_ns;
+    namespace_ = nh.getNamespace();
+    //获取group下的参数
+    nh.getParam(namespace_+"/car_id",car_id);
+    nh.getParam(namespace_+"/my_ip_address",ip_address);
+    nh.getParam(namespace_+"/tf_ns",tf_ns);
 
     //zmq_init
     std::shared_ptr<ZMQ_TEST> host_zmq;
     host_zmq = std::make_shared<ZMQ_TEST>(ZMQ_TEST());
-    host_zmq->zmq_init(0,1,6666,ip_address);
+    host_zmq->zmq_init(0,1,ip_address);
 
 
     //message init
-    RobotState state_message(car_id);
+    RobotState state_message(car_id,tf_ns);
     ConfigPath config_message(car_id,host_zmq);
 
     //sub 
@@ -139,6 +148,11 @@ int main(int argc,char **argv)
     ros::Rate loop(20);
     while(ros::ok())
     {
+        //TODO : 记得删！！！！！！
+        std_msgs::String data;
+        data.data = "stand_by";
+        state_message.SetState(data);
+        //
         host_zmq->send_data(state_message.GetMessage());
         ros::spinOnce();
         loop.sleep();

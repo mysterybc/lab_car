@@ -1,0 +1,2877 @@
+<sdf version='1.6'>
+  <world name='default'>
+    <light name='sun' type='directional'>
+      <cast_shadows>1</cast_shadows>
+      <pose frame=''>0 0 10 0 -0 0</pose>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.1 0.1 0.1 1</specular>
+      <attenuation>
+        <range>1000</range>
+        <constant>0.9</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <direction>-0.5 0.5 -1</direction>
+    </light>
+    <model name='ground_plane'>
+      <static>1</static>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>100</mu>
+                <mu2>50</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='visual'>
+          <cast_shadows>0</cast_shadows>
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/Grey</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+    </model>
+    <gravity>0 0 -9.8</gravity>
+    <magnetic_field>6e-06 2.3e-05 -4.2e-05</magnetic_field>
+    <atmosphere type='adiabatic'/>
+    <physics name='default_physics' default='0' type='ode'>
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1</real_time_factor>
+      <real_time_update_rate>1000</real_time_update_rate>
+    </physics>
+    <scene>
+      <ambient>0.4 0.4 0.4 1</ambient>
+      <background>0.7 0.7 0.7 1</background>
+      <shadows>1</shadows>
+    </scene>
+    <spherical_coordinates>
+      <surface_model>EARTH_WGS84</surface_model>
+      <latitude_deg>0</latitude_deg>
+      <longitude_deg>0</longitude_deg>
+      <elevation>0</elevation>
+      <heading_deg>0</heading_deg>
+    </spherical_coordinates>
+    <state world_name='default'>
+      <sim_time>45 364000000</sim_time>
+      <real_time>39 79247057</real_time>
+      <wall_time>1555917476 998600898</wall_time>
+      <iterations>37368</iterations>
+      <model name='LTL_WORLD_0'>
+        <pose frame=''>0.008 0 0 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='Wall_0'>
+          <pose frame=''>0 7 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_10'>
+          <pose frame=''>4.58458 -1.07207 0 0 0 -1.5708</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_12'>
+          <pose frame=''>4.591 4.56783 0 0 -0 3.14159</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_13'>
+          <pose frame=''>2.16592 -0.380567 0 0 0 -1.57081</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_2'>
+          <pose frame=''>0 -7 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_4'>
+          <pose frame=''>-7 0 0 0 0 -1.5708</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_6'>
+          <pose frame=''>7 0 0 0 -0 1.5708</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='Wall_8'>
+          <pose frame=''>-4.04718 0.27683 0 0 0 -1.5708</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='ground_plane'>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='nocollision_unit_box_0'>
+        <pose frame=''>-0.391299 -2.5011 0.500004 -9e-06 -0 -0.134249</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose frame=''>-0.391299 -2.5011 0.500004 -9e-06 -0 -0.134249</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='robot1'>
+        <pose frame=''>0.028731 -2.0592 0.241357 -4.6e-05 -1.5386 -2.13992</pose>
+        <scale>1 1 1</scale>
+        <link name='robot1/base_link'>
+          <pose frame=''>0.028731 -2.0592 0.241357 -4.6e-05 -1.5386 -2.13992</pose>
+          <velocity>-0.001376 0.004936 0.010438 -0.012245 0.007124 -0.016046</velocity>
+          <acceleration>1.24955 1.12845 14.1717 0.179824 -0.765409 3.05867</acceleration>
+          <wrench>28.3648 25.6158 321.698 0 -0 0</wrench>
+        </link>
+        <link name='robot1/p3at_back_left_wheel'>
+          <pose frame=''>0.256789 -2.06828 0.110999 -3e-06 -0.945495 -2.13996</pose>
+          <velocity>-0.002453 -0.000322 0.008926 2.1533 -1.37836 -0.016051</velocity>
+          <acceleration>1.33527 1.25751 13.9486 -0.491342 -0.609052 3.04236</acceleration>
+          <wrench>1.60232 1.50902 16.7384 0 -0 0</wrench>
+        </link>
+        <link name='robot1/p3at_back_right_wheel'>
+          <pose frame=''>-0.075097 -1.85594 0.110999 -2e-06 0.576725 -2.13997</pose>
+          <velocity>0.000955 0.005004 0.00869 1.07575 -0.688956 -0.016049</velocity>
+          <acceleration>1.35308 1.2852 13.8756 -0.472783 -0.641945 3.07687</acceleration>
+          <wrench>1.6237 1.54224 16.6507 0 -0 0</wrench>
+        </link>
+        <link name='robot1/p3at_front_left_wheel'>
+          <pose frame=''>0.252123 -2.07558 0.37986 -4e-06 -0.961295 -2.13996</pose>
+          <velocity>-0.000682 0.003025 0.00902 2.15323 -1.37847 -0.016079</velocity>
+          <acceleration>0.703206 0.357498 13.9201 -0.471197 -0.646011 3.05047</acceleration>
+          <wrench>0.843847 0.428997 16.7041 0 -0 0</wrench>
+        </link>
+        <link name='robot1/p3at_front_right_wheel'>
+          <pose frame=''>-0.079763 -1.86324 0.37986 -2e-06 0.568179 -2.13997</pose>
+          <velocity>0.002755 0.008373 0.008811 1.07575 -0.688961 -0.016048</velocity>
+          <acceleration>0.713698 0.379787 13.8402 -0.471801 -0.643707 3.07649</acceleration>
+          <wrench>0.856437 0.455744 16.6083 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='robot2'>
+        <pose frame=''>2.99999 0 -3.4e-05 0 -0.000145 0</pose>
+        <scale>1 1 1</scale>
+        <link name='robot2/base_link'>
+          <pose frame=''>2.99999 0 -3.4e-05 0 -0.000145 0</pose>
+          <velocity>0 0 7.4e-05 0 4e-06 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='robot2/p3at_back_left_wheel'>
+          <pose frame=''>2.86598 0.197 0.110947 0 -0.000191 0</pose>
+          <velocity>0 0 7.5e-05 0 3e-06 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='robot2/p3at_back_right_wheel'>
+          <pose frame=''>2.86598 -0.197 0.110947 0 -0.000191 0</pose>
+          <velocity>0 0 7.5e-05 0 3e-06 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='robot2/p3at_front_left_wheel'>
+          <pose frame=''>3.13498 0.197 0.110986 0 -0.000184 0</pose>
+          <velocity>0 0 7.3e-05 0 3e-06 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='robot2/p3at_front_right_wheel'>
+          <pose frame=''>3.13498 -0.197 0.110986 0 -0.000184 0</pose>
+          <velocity>0 0 7.3e-05 0 3e-06 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='robot3'>
+        <pose frame=''>-6.00001 0 -3.4e-05 0 -0.000145 0</pose>
+        <scale>1 1 1</scale>
+        <link name='robot3/base_link'>
+          <pose frame=''>-6.00001 0 -3.4e-05 0 -0.000145 0</pose>
+          <velocity>0 0 7.4e-05 0 4e-06 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='robot3/p3at_back_left_wheel'>
+          <pose frame=''>-6.13402 0.197 0.110947 0 -0.00019 0</pose>
+          <velocity>0 0 7.5e-05 0 3e-06 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='robot3/p3at_back_right_wheel'>
+          <pose frame=''>-6.13402 -0.197 0.110947 0 -0.000191 0</pose>
+          <velocity>0 0 7.5e-05 0 3e-06 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='robot3/p3at_front_left_wheel'>
+          <pose frame=''>-5.86502 0.197 0.110986 0 -0.000184 0</pose>
+          <velocity>0 0 7.3e-05 0 3e-06 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+        <link name='robot3/p3at_front_right_wheel'>
+          <pose frame=''>-5.86502 -0.197 0.110986 0 -0.000184 0</pose>
+          <velocity>0 0 7.3e-05 0 3e-06 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <light name='sun'>
+        <pose frame=''>0 0 10 0 -0 0</pose>
+      </light>
+    </state>
+    <model name='LTL_WORLD_0'>
+      <pose frame=''>0.008 0 0 0 -0 0</pose>
+      <link name='Wall_0'>
+        <collision name='Wall_0_Collision'>
+          <geometry>
+            <box>
+              <size>14.15 0.15 2.5</size>
+            </box>
+          </geometry>
+          <pose frame=''>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='Wall_0_Visual'>
+          <pose frame=''>0 0 1.25 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>14.15 0.15 2.5</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/Grey</name>
+            </script>
+            <ambient>1 1 1 1</ambient>
+          </material>
+        </visual>
+        <pose frame=''>-0.008 7 0 0 -0 0</pose>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+      <link name='Wall_10'>
+        <collision name='Wall_10_Collision'>
+          <geometry>
+            <box>
+              <size>6.25 0.15 2.5</size>
+            </box>
+          </geometry>
+          <pose frame=''>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='Wall_10_Visual'>
+          <pose frame=''>0 0 1.25 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>6.25 0.15 2.5</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/Grey</name>
+            </script>
+            <ambient>1 1 1 1</ambient>
+          </material>
+        </visual>
+        <pose frame=''>4.57658 -1.07207 0 0 0 -1.5708</pose>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+      <link name='Wall_12'>
+        <collision name='Wall_12_Collision'>
+          <geometry>
+            <box>
+              <size>5 0.15 2.5</size>
+            </box>
+          </geometry>
+          <pose frame=''>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='Wall_12_Visual'>
+          <pose frame=''>0 0 1.25 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>5 0.15 2.5</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/Grey</name>
+            </script>
+            <ambient>1 1 1 1</ambient>
+          </material>
+        </visual>
+        <pose frame=''>4.583 4.56783 0 0 -0 3.14159</pose>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+      <link name='Wall_13'>
+        <collision name='Wall_13_Collision'>
+          <geometry>
+            <box>
+              <size>9.98562 0.15 2.5</size>
+            </box>
+          </geometry>
+          <pose frame=''>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='Wall_13_Visual'>
+          <pose frame=''>0 0 1.25 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>9.98562 0.15 2.5</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/Grey</name>
+            </script>
+            <ambient>1 1 1 1</ambient>
+          </material>
+        </visual>
+        <pose frame=''>2.15792 -0.380567 0 0 0 -1.57081</pose>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+      <link name='Wall_2'>
+        <collision name='Wall_2_Collision'>
+          <geometry>
+            <box>
+              <size>14.15 0.15 2.5</size>
+            </box>
+          </geometry>
+          <pose frame=''>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='Wall_2_Visual'>
+          <pose frame=''>0 0 1.25 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>14.15 0.15 2.5</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/Grey</name>
+            </script>
+            <ambient>1 1 1 1</ambient>
+          </material>
+        </visual>
+        <pose frame=''>-0.008 -7 0 0 -0 0</pose>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+      <link name='Wall_4'>
+        <collision name='Wall_4_Collision'>
+          <geometry>
+            <box>
+              <size>14.15 0.15 2.5</size>
+            </box>
+          </geometry>
+          <pose frame=''>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='Wall_4_Visual'>
+          <pose frame=''>0 0 1.25 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>14.15 0.15 2.5</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/Grey</name>
+            </script>
+            <ambient>1 1 1 1</ambient>
+          </material>
+        </visual>
+        <pose frame=''>-7.008 0 0 0 0 -1.5708</pose>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+      <link name='Wall_6'>
+        <collision name='Wall_6_Collision'>
+          <geometry>
+            <box>
+              <size>14.15 0.15 2.5</size>
+            </box>
+          </geometry>
+          <pose frame=''>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='Wall_6_Visual'>
+          <pose frame=''>0 0 1.25 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>14.15 0.15 2.5</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/Grey</name>
+            </script>
+            <ambient>1 1 1 1</ambient>
+          </material>
+        </visual>
+        <pose frame=''>6.992 0 0 0 -0 1.5708</pose>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+      <link name='Wall_8'>
+        <collision name='Wall_8_Collision'>
+          <geometry>
+            <box>
+              <size>9.5 0.15 2.5</size>
+            </box>
+          </geometry>
+          <pose frame=''>0 0 1.25 0 -0 0</pose>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='Wall_8_Visual'>
+          <pose frame=''>0 0 1.25 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>9.5 0.15 2.5</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/Grey</name>
+            </script>
+            <ambient>1 1 1 1</ambient>
+          </material>
+        </visual>
+        <pose frame=''>-4.05518 0.27683 0 0 0 -1.5708</pose>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+      <static>1</static>
+    </model>
+    <gui fullscreen='0'>
+      <camera name='user_camera'>
+        <pose frame=''>0.981264 -0.913164 15.8857 0 1.47825 1.58819</pose>
+        <view_controller>orbit</view_controller>
+        <projection_type>perspective</projection_type>
+      </camera>
+    </gui>
+    <model name='robot2'>
+      <link name='robot2/base_link'>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <inertial>
+          <pose frame=''>-0.094753 0 0.1753 0 -0 0</pose>
+          <mass>22.7</mass>
+          <inertia>
+            <ixx>11.3767</ixx>
+            <ixy>-6.57483e-19</ixy>
+            <ixz>0.00326928</ixz>
+            <iyy>11.5288</iyy>
+            <iyz>1.21639e-18</iyz>
+            <izz>11.402</izz>
+          </inertia>
+        </inertial>
+        <collision name='robot2/base_link_collision'>
+          <pose frame=''>0 0 0.177 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/chassis.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <collision name='robot2/base_link_fixed_joint_lump__robot2/laser_link_collision_1'>
+          <pose frame=''>0.003 0 0.302 0 -0 0</pose>
+          <geometry>
+            <cylinder>
+              <length>0.06</length>
+              <radius>0.05</radius>
+            </cylinder>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <collision name='robot2/base_link_fixed_joint_lump__robot2/p3at_back_left_axle_collision_2'>
+          <pose frame=''>-0.134 0.156 0.111 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/axle.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <collision name='robot2/base_link_fixed_joint_lump__robot2/p3at_back_left_hub_collision_3'>
+          <pose frame=''>-0.134 0.197 0.111 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/left_hubcap.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <collision name='robot2/base_link_fixed_joint_lump__robot2/p3at_back_right_axle_collision_4'>
+          <pose frame=''>-0.134 -0.156 0.111 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/axle.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <collision name='robot2/base_link_fixed_joint_lump__robot2/p3at_back_right_hub_collision_5'>
+          <pose frame=''>-0.134 -0.197 0.111 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/right_hubcap.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='robot2/base_link_visual'>
+          <pose frame=''>0 0 0.177 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/chassis.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Red</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='robot2/base_link_fixed_joint_lump__robot2/back_sonar_visual_1'>
+          <pose frame=''>-0.187 0 0.247 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/back_sonar.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Yellow</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='robot2/base_link_fixed_joint_lump__robot2/front_sonar_visual_2'>
+          <pose frame=''>0.193 0 0.25 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/front_sonar.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Yellow</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='robot2/base_link_fixed_joint_lump__robot2/p3at_front_left_axle_visual_3'>
+          <pose frame=''>0.135 0.156 0.111 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/axle.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='robot2/base_link_fixed_joint_lump__robot2/p3at_front_left_hub_visual_4'>
+          <pose frame=''>0.135 0.197 0.111 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/left_hubcap.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Yellow</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='robot2/base_link_fixed_joint_lump__robot2/p3at_front_right_axle_visual_5'>
+          <pose frame=''>0.135 -0.156 0.111 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/axle.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='robot2/base_link_fixed_joint_lump__robot2/p3at_front_right_hub_visual_6'>
+          <pose frame=''>0.135 -0.197 0.111 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/right_hubcap.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Yellow</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='robot2/base_link_fixed_joint_lump__robot2/top_plate_visual_7'>
+          <pose frame=''>0.003 0 0.274 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/top.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Black</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='robot2/base_link_fixed_joint_lump__robot2/laser_link_visual_8'>
+          <pose frame=''>0.003 0 0.302 0 -0 0</pose>
+          <geometry>
+            <cylinder>
+              <length>0.05</length>
+              <radius>0.05</radius>
+            </cylinder>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Black</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='robot2/base_link_fixed_joint_lump__robot2/p3at_back_left_axle_visual_9'>
+          <pose frame=''>-0.134 0.156 0.111 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/axle.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='robot2/base_link_fixed_joint_lump__robot2/p3at_back_left_hub_visual_10'>
+          <pose frame=''>-0.134 0.197 0.111 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/left_hubcap.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Yellow</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='robot2/base_link_fixed_joint_lump__robot2/p3at_back_right_axle_visual_11'>
+          <pose frame=''>-0.134 -0.156 0.111 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/axle.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='robot2/base_link_fixed_joint_lump__robot2/p3at_back_right_hub_visual_12'>
+          <pose frame=''>-0.134 -0.197 0.111 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/right_hubcap.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Yellow</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <velocity_decay/>
+        <velocity_decay/>
+        <velocity_decay/>
+        <velocity_decay/>
+        <velocity_decay/>
+        <velocity_decay/>
+        <velocity_decay/>
+        <velocity_decay/>
+        <velocity_decay/>
+        <velocity_decay/>
+        <sensor name='rplidar' type='ray'>
+          <visualize>0</visualize>
+          <update_rate>5.5</update_rate>
+          <ray>
+            <scan>
+              <horizontal>
+                <samples>360</samples>
+                <resolution>1</resolution>
+                <min_angle>-3</min_angle>
+                <max_angle>3</max_angle>
+              </horizontal>
+              <vertical>
+                <samples>1</samples>
+                <min_angle>0</min_angle>
+                <max_angle>0</max_angle>
+              </vertical>
+            </scan>
+            <range>
+              <min>0.1</min>
+              <max>6</max>
+              <resolution>0.01</resolution>
+            </range>
+            <noise>
+              <type>gaussian</type>
+              <mean>0</mean>
+              <stddev>0.01</stddev>
+            </noise>
+          </ray>
+          <plugin name='gazebo_rplidar' filename='libgazebo_ros_laser.so'>
+            <topicName>robot2//scan</topicName>
+            <frameName>laser_link</frameName>
+            <robotNamespace>/robot2/</robotNamespace>
+          </plugin>
+          <pose frame=''>0.003 0 0.302 0 -0 0</pose>
+        </sensor>
+        <velocity_decay/>
+        <velocity_decay/>
+        <velocity_decay/>
+        <gravity>1</gravity>
+        <velocity_decay/>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+      </link>
+      <link name='robot2/p3at_front_left_wheel'>
+        <pose frame=''>0.135 0.197 0.111 0 -0 0</pose>
+        <inertial>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <mass>1.2</mass>
+          <inertia>
+            <ixx>0.0124118</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0152182</iyy>
+            <iyz>0</iyz>
+            <izz>0.011764</izz>
+          </inertia>
+        </inertial>
+        <collision name='robot2/p3at_front_left_wheel_collision'>
+          <pose frame=''>0 0 0 -1.5708 0 0</pose>
+          <geometry>
+            <cylinder>
+              <length>0.075</length>
+              <radius>0.111</radius>
+            </cylinder>
+          </geometry>
+          <surface>
+            <contact>
+              <ode>
+                <kp>1e+06</kp>
+                <kd>100</kd>
+                <max_vel>1</max_vel>
+                <min_depth>0</min_depth>
+              </ode>
+            </contact>
+            <friction>
+              <ode>
+                <mu>1</mu>
+                <mu2>1</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='robot2/p3at_front_left_wheel_visual'>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/wheel.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Black</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <velocity_decay/>
+        <gravity>1</gravity>
+        <velocity_decay/>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='robot2/p3at_front_left_wheel_joint' type='revolute'>
+        <child>robot2/p3at_front_left_wheel</child>
+        <parent>robot2/base_link</parent>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-1e+16</lower>
+            <upper>1e+16</upper>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+          <use_parent_model_frame>1</use_parent_model_frame>
+        </axis>
+      </joint>
+      <link name='robot2/p3at_front_right_wheel'>
+        <pose frame=''>0.135 -0.197 0.111 0 -0 0</pose>
+        <inertial>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <mass>1.2</mass>
+          <inertia>
+            <ixx>0.0124118</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0152182</iyy>
+            <iyz>0</iyz>
+            <izz>0.011764</izz>
+          </inertia>
+        </inertial>
+        <collision name='robot2/p3at_front_right_wheel_collision'>
+          <pose frame=''>0 0 0 -1.5708 0 0</pose>
+          <geometry>
+            <cylinder>
+              <length>0.075</length>
+              <radius>0.111</radius>
+            </cylinder>
+          </geometry>
+          <surface>
+            <contact>
+              <ode>
+                <kp>1e+06</kp>
+                <kd>100</kd>
+                <max_vel>1</max_vel>
+                <min_depth>0</min_depth>
+              </ode>
+            </contact>
+            <friction>
+              <ode>
+                <mu>1</mu>
+                <mu2>1</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='robot2/p3at_front_right_wheel_visual'>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/wheel.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Black</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <velocity_decay/>
+        <gravity>1</gravity>
+        <velocity_decay/>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='robot2/p3at_front_right_wheel_joint' type='revolute'>
+        <child>robot2/p3at_front_right_wheel</child>
+        <parent>robot2/base_link</parent>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-1e+16</lower>
+            <upper>1e+16</upper>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+          <use_parent_model_frame>1</use_parent_model_frame>
+        </axis>
+      </joint>
+      <link name='robot2/p3at_back_left_wheel'>
+        <pose frame=''>-0.134 0.197 0.111 0 -0 0</pose>
+        <inertial>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <mass>1.2</mass>
+          <inertia>
+            <ixx>0.0124118</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0152182</iyy>
+            <iyz>0</iyz>
+            <izz>0.011764</izz>
+          </inertia>
+        </inertial>
+        <collision name='robot2/p3at_back_left_wheel_collision'>
+          <pose frame=''>0 0 0 -1.5708 0 0</pose>
+          <geometry>
+            <cylinder>
+              <length>0.075</length>
+              <radius>0.111</radius>
+            </cylinder>
+          </geometry>
+          <surface>
+            <contact>
+              <ode>
+                <kp>1e+06</kp>
+                <kd>100</kd>
+                <max_vel>1</max_vel>
+                <min_depth>0</min_depth>
+              </ode>
+            </contact>
+            <friction>
+              <ode>
+                <mu>1</mu>
+                <mu2>1</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='robot2/p3at_back_left_wheel_visual'>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/wheel.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Black</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <velocity_decay/>
+        <gravity>1</gravity>
+        <velocity_decay/>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='robot2/p3at_back_left_wheel_joint' type='revolute'>
+        <child>robot2/p3at_back_left_wheel</child>
+        <parent>robot2/base_link</parent>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-1e+16</lower>
+            <upper>1e+16</upper>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+          <use_parent_model_frame>1</use_parent_model_frame>
+        </axis>
+      </joint>
+      <link name='robot2/p3at_back_right_wheel'>
+        <pose frame=''>-0.134 -0.197 0.111 0 -0 0</pose>
+        <inertial>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <mass>1.2</mass>
+          <inertia>
+            <ixx>0.0124118</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0152182</iyy>
+            <iyz>0</iyz>
+            <izz>0.011764</izz>
+          </inertia>
+        </inertial>
+        <collision name='robot2/p3at_back_right_wheel_collision'>
+          <pose frame=''>0 0 0 -1.5708 0 0</pose>
+          <geometry>
+            <cylinder>
+              <length>0.075</length>
+              <radius>0.111</radius>
+            </cylinder>
+          </geometry>
+          <surface>
+            <contact>
+              <ode>
+                <kp>1e+06</kp>
+                <kd>100</kd>
+                <max_vel>1</max_vel>
+                <min_depth>0</min_depth>
+              </ode>
+            </contact>
+            <friction>
+              <ode>
+                <mu>1</mu>
+                <mu2>1</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='robot2/p3at_back_right_wheel_visual'>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/wheel.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Black</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <velocity_decay/>
+        <gravity>1</gravity>
+        <velocity_decay/>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='robot2/p3at_back_right_wheel_joint' type='revolute'>
+        <child>robot2/p3at_back_right_wheel</child>
+        <parent>robot2/base_link</parent>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-1e+16</lower>
+            <upper>1e+16</upper>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+          <use_parent_model_frame>1</use_parent_model_frame>
+        </axis>
+      </joint>
+      <static>0</static>
+      <plugin name='skid_steer_drive_controller' filename='libgazebo_ros_skid_steer_drive.so'>
+        <updateRate>100.0</updateRate>
+        <robotNamespace>/</robotNamespace>
+        <leftFrontJoint>robot2/p3at_front_left_wheel_joint</leftFrontJoint>
+        <rightFrontJoint>robot2/p3at_front_right_wheel_joint</rightFrontJoint>
+        <leftRearJoint>robot2/p3at_back_left_wheel_joint</leftRearJoint>
+        <rightRearJoint>robot2/p3at_back_right_wheel_joint</rightRearJoint>
+        <wheelSeparation>0.4</wheelSeparation>
+        <wheelDiameter>0.215</wheelDiameter>
+        <robotBaseFrame>robot2/base_link</robotBaseFrame>
+        <MaxForce>5.0</MaxForce>
+        <torque>200</torque>
+        <commandTopic>robot2/cmd_vel</commandTopic>
+        <odometryTopic>robot2/odom</odometryTopic>
+        <odometryFrame>robot2/odom</odometryFrame>
+        <broadcastTF>true</broadcastTF>
+      </plugin>
+      <pose frame=''>3 0 0 0 -0 0</pose>
+    </model>
+    <model name='robot3'>
+      <link name='robot3/base_link'>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <inertial>
+          <pose frame=''>-0.094753 0 0.1753 0 -0 0</pose>
+          <mass>22.7</mass>
+          <inertia>
+            <ixx>11.3767</ixx>
+            <ixy>-6.57483e-19</ixy>
+            <ixz>0.00326928</ixz>
+            <iyy>11.5288</iyy>
+            <iyz>1.21639e-18</iyz>
+            <izz>11.402</izz>
+          </inertia>
+        </inertial>
+        <collision name='robot3/base_link_collision'>
+          <pose frame=''>0 0 0.177 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/chassis.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <collision name='robot3/base_link_fixed_joint_lump__robot3/laser_link_collision_1'>
+          <pose frame=''>0.003 0 0.302 0 -0 0</pose>
+          <geometry>
+            <cylinder>
+              <length>0.06</length>
+              <radius>0.05</radius>
+            </cylinder>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <collision name='robot3/base_link_fixed_joint_lump__robot3/p3at_back_left_axle_collision_2'>
+          <pose frame=''>-0.134 0.156 0.111 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/axle.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <collision name='robot3/base_link_fixed_joint_lump__robot3/p3at_back_left_hub_collision_3'>
+          <pose frame=''>-0.134 0.197 0.111 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/left_hubcap.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <collision name='robot3/base_link_fixed_joint_lump__robot3/p3at_back_right_axle_collision_4'>
+          <pose frame=''>-0.134 -0.156 0.111 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/axle.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <collision name='robot3/base_link_fixed_joint_lump__robot3/p3at_back_right_hub_collision_5'>
+          <pose frame=''>-0.134 -0.197 0.111 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/right_hubcap.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='robot3/base_link_visual'>
+          <pose frame=''>0 0 0.177 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/chassis.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Red</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='robot3/base_link_fixed_joint_lump__robot3/back_sonar_visual_1'>
+          <pose frame=''>-0.187 0 0.247 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/back_sonar.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Yellow</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='robot3/base_link_fixed_joint_lump__robot3/front_sonar_visual_2'>
+          <pose frame=''>0.193 0 0.25 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/front_sonar.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Yellow</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='robot3/base_link_fixed_joint_lump__robot3/p3at_front_left_axle_visual_3'>
+          <pose frame=''>0.135 0.156 0.111 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/axle.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='robot3/base_link_fixed_joint_lump__robot3/p3at_front_left_hub_visual_4'>
+          <pose frame=''>0.135 0.197 0.111 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/left_hubcap.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Yellow</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='robot3/base_link_fixed_joint_lump__robot3/p3at_front_right_axle_visual_5'>
+          <pose frame=''>0.135 -0.156 0.111 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/axle.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='robot3/base_link_fixed_joint_lump__robot3/p3at_front_right_hub_visual_6'>
+          <pose frame=''>0.135 -0.197 0.111 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/right_hubcap.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Yellow</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='robot3/base_link_fixed_joint_lump__robot3/top_plate_visual_7'>
+          <pose frame=''>0.003 0 0.274 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/top.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Black</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='robot3/base_link_fixed_joint_lump__robot3/laser_link_visual_8'>
+          <pose frame=''>0.003 0 0.302 0 -0 0</pose>
+          <geometry>
+            <cylinder>
+              <length>0.05</length>
+              <radius>0.05</radius>
+            </cylinder>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Black</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='robot3/base_link_fixed_joint_lump__robot3/p3at_back_left_axle_visual_9'>
+          <pose frame=''>-0.134 0.156 0.111 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/axle.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='robot3/base_link_fixed_joint_lump__robot3/p3at_back_left_hub_visual_10'>
+          <pose frame=''>-0.134 0.197 0.111 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/left_hubcap.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Yellow</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='robot3/base_link_fixed_joint_lump__robot3/p3at_back_right_axle_visual_11'>
+          <pose frame=''>-0.134 -0.156 0.111 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/axle.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='robot3/base_link_fixed_joint_lump__robot3/p3at_back_right_hub_visual_12'>
+          <pose frame=''>-0.134 -0.197 0.111 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/right_hubcap.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Yellow</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <velocity_decay/>
+        <velocity_decay/>
+        <velocity_decay/>
+        <velocity_decay/>
+        <velocity_decay/>
+        <velocity_decay/>
+        <velocity_decay/>
+        <velocity_decay/>
+        <velocity_decay/>
+        <velocity_decay/>
+        <sensor name='rplidar' type='ray'>
+          <visualize>0</visualize>
+          <update_rate>5.5</update_rate>
+          <ray>
+            <scan>
+              <horizontal>
+                <samples>360</samples>
+                <resolution>1</resolution>
+                <min_angle>-3</min_angle>
+                <max_angle>3</max_angle>
+              </horizontal>
+              <vertical>
+                <samples>1</samples>
+                <min_angle>0</min_angle>
+                <max_angle>0</max_angle>
+              </vertical>
+            </scan>
+            <range>
+              <min>0.1</min>
+              <max>6</max>
+              <resolution>0.01</resolution>
+            </range>
+            <noise>
+              <type>gaussian</type>
+              <mean>0</mean>
+              <stddev>0.01</stddev>
+            </noise>
+          </ray>
+          <plugin name='gazebo_rplidar' filename='libgazebo_ros_laser.so'>
+            <topicName>robot3//scan</topicName>
+            <frameName>laser_link</frameName>
+            <robotNamespace>/robot3/</robotNamespace>
+          </plugin>
+          <pose frame=''>0.003 0 0.302 0 -0 0</pose>
+        </sensor>
+        <velocity_decay/>
+        <velocity_decay/>
+        <velocity_decay/>
+        <gravity>1</gravity>
+        <velocity_decay/>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+      </link>
+      <link name='robot3/p3at_front_left_wheel'>
+        <pose frame=''>0.135 0.197 0.111 0 -0 0</pose>
+        <inertial>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <mass>1.2</mass>
+          <inertia>
+            <ixx>0.0124118</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0152182</iyy>
+            <iyz>0</iyz>
+            <izz>0.011764</izz>
+          </inertia>
+        </inertial>
+        <collision name='robot3/p3at_front_left_wheel_collision'>
+          <pose frame=''>0 0 0 -1.5708 0 0</pose>
+          <geometry>
+            <cylinder>
+              <length>0.075</length>
+              <radius>0.111</radius>
+            </cylinder>
+          </geometry>
+          <surface>
+            <contact>
+              <ode>
+                <kp>1e+06</kp>
+                <kd>100</kd>
+                <max_vel>1</max_vel>
+                <min_depth>0</min_depth>
+              </ode>
+            </contact>
+            <friction>
+              <ode>
+                <mu>1</mu>
+                <mu2>1</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='robot3/p3at_front_left_wheel_visual'>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/wheel.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Black</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <velocity_decay/>
+        <gravity>1</gravity>
+        <velocity_decay/>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='robot3/p3at_front_left_wheel_joint' type='revolute'>
+        <child>robot3/p3at_front_left_wheel</child>
+        <parent>robot3/base_link</parent>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-1e+16</lower>
+            <upper>1e+16</upper>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+          <use_parent_model_frame>1</use_parent_model_frame>
+        </axis>
+      </joint>
+      <link name='robot3/p3at_front_right_wheel'>
+        <pose frame=''>0.135 -0.197 0.111 0 -0 0</pose>
+        <inertial>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <mass>1.2</mass>
+          <inertia>
+            <ixx>0.0124118</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0152182</iyy>
+            <iyz>0</iyz>
+            <izz>0.011764</izz>
+          </inertia>
+        </inertial>
+        <collision name='robot3/p3at_front_right_wheel_collision'>
+          <pose frame=''>0 0 0 -1.5708 0 0</pose>
+          <geometry>
+            <cylinder>
+              <length>0.075</length>
+              <radius>0.111</radius>
+            </cylinder>
+          </geometry>
+          <surface>
+            <contact>
+              <ode>
+                <kp>1e+06</kp>
+                <kd>100</kd>
+                <max_vel>1</max_vel>
+                <min_depth>0</min_depth>
+              </ode>
+            </contact>
+            <friction>
+              <ode>
+                <mu>1</mu>
+                <mu2>1</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='robot3/p3at_front_right_wheel_visual'>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/wheel.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Black</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <velocity_decay/>
+        <gravity>1</gravity>
+        <velocity_decay/>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='robot3/p3at_front_right_wheel_joint' type='revolute'>
+        <child>robot3/p3at_front_right_wheel</child>
+        <parent>robot3/base_link</parent>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-1e+16</lower>
+            <upper>1e+16</upper>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+          <use_parent_model_frame>1</use_parent_model_frame>
+        </axis>
+      </joint>
+      <link name='robot3/p3at_back_left_wheel'>
+        <pose frame=''>-0.134 0.197 0.111 0 -0 0</pose>
+        <inertial>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <mass>1.2</mass>
+          <inertia>
+            <ixx>0.0124118</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0152182</iyy>
+            <iyz>0</iyz>
+            <izz>0.011764</izz>
+          </inertia>
+        </inertial>
+        <collision name='robot3/p3at_back_left_wheel_collision'>
+          <pose frame=''>0 0 0 -1.5708 0 0</pose>
+          <geometry>
+            <cylinder>
+              <length>0.075</length>
+              <radius>0.111</radius>
+            </cylinder>
+          </geometry>
+          <surface>
+            <contact>
+              <ode>
+                <kp>1e+06</kp>
+                <kd>100</kd>
+                <max_vel>1</max_vel>
+                <min_depth>0</min_depth>
+              </ode>
+            </contact>
+            <friction>
+              <ode>
+                <mu>1</mu>
+                <mu2>1</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='robot3/p3at_back_left_wheel_visual'>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/wheel.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Black</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <velocity_decay/>
+        <gravity>1</gravity>
+        <velocity_decay/>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='robot3/p3at_back_left_wheel_joint' type='revolute'>
+        <child>robot3/p3at_back_left_wheel</child>
+        <parent>robot3/base_link</parent>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-1e+16</lower>
+            <upper>1e+16</upper>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+          <use_parent_model_frame>1</use_parent_model_frame>
+        </axis>
+      </joint>
+      <link name='robot3/p3at_back_right_wheel'>
+        <pose frame=''>-0.134 -0.197 0.111 0 -0 0</pose>
+        <inertial>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <mass>1.2</mass>
+          <inertia>
+            <ixx>0.0124118</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0152182</iyy>
+            <iyz>0</iyz>
+            <izz>0.011764</izz>
+          </inertia>
+        </inertial>
+        <collision name='robot3/p3at_back_right_wheel_collision'>
+          <pose frame=''>0 0 0 -1.5708 0 0</pose>
+          <geometry>
+            <cylinder>
+              <length>0.075</length>
+              <radius>0.111</radius>
+            </cylinder>
+          </geometry>
+          <surface>
+            <contact>
+              <ode>
+                <kp>1e+06</kp>
+                <kd>100</kd>
+                <max_vel>1</max_vel>
+                <min_depth>0</min_depth>
+              </ode>
+            </contact>
+            <friction>
+              <ode>
+                <mu>1</mu>
+                <mu2>1</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='robot3/p3at_back_right_wheel_visual'>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/wheel.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Black</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <velocity_decay/>
+        <gravity>1</gravity>
+        <velocity_decay/>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='robot3/p3at_back_right_wheel_joint' type='revolute'>
+        <child>robot3/p3at_back_right_wheel</child>
+        <parent>robot3/base_link</parent>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-1e+16</lower>
+            <upper>1e+16</upper>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+          <use_parent_model_frame>1</use_parent_model_frame>
+        </axis>
+      </joint>
+      <static>0</static>
+      <plugin name='skid_steer_drive_controller' filename='libgazebo_ros_skid_steer_drive.so'>
+        <updateRate>100.0</updateRate>
+        <robotNamespace>/</robotNamespace>
+        <leftFrontJoint>robot3/p3at_front_left_wheel_joint</leftFrontJoint>
+        <rightFrontJoint>robot3/p3at_front_right_wheel_joint</rightFrontJoint>
+        <leftRearJoint>robot3/p3at_back_left_wheel_joint</leftRearJoint>
+        <rightRearJoint>robot3/p3at_back_right_wheel_joint</rightRearJoint>
+        <wheelSeparation>0.4</wheelSeparation>
+        <wheelDiameter>0.215</wheelDiameter>
+        <robotBaseFrame>robot3/base_link</robotBaseFrame>
+        <MaxForce>5.0</MaxForce>
+        <torque>200</torque>
+        <commandTopic>robot3/cmd_vel</commandTopic>
+        <odometryTopic>robot3/odom</odometryTopic>
+        <odometryFrame>robot3/odom</odometryFrame>
+        <broadcastTF>true</broadcastTF>
+      </plugin>
+      <pose frame=''>-6 0 0 0 -0 0</pose>
+    </model>
+    <model name='robot1'>
+      <link name='robot1/base_link'>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <inertial>
+          <pose frame=''>-0.094753 0 0.1753 0 -0 0</pose>
+          <mass>22.7</mass>
+          <inertia>
+            <ixx>11.3767</ixx>
+            <ixy>-6.57483e-19</ixy>
+            <ixz>0.00326928</ixz>
+            <iyy>11.5288</iyy>
+            <iyz>1.21639e-18</iyz>
+            <izz>11.402</izz>
+          </inertia>
+        </inertial>
+        <collision name='robot1/base_link_collision'>
+          <pose frame=''>0 0 0.177 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/chassis.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <collision name='robot1/base_link_fixed_joint_lump__robot1/laser_link_collision_1'>
+          <pose frame=''>0.003 0 0.302 0 -0 0</pose>
+          <geometry>
+            <cylinder>
+              <length>0.06</length>
+              <radius>0.05</radius>
+            </cylinder>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <collision name='robot1/base_link_fixed_joint_lump__robot1/p3at_back_left_axle_collision_2'>
+          <pose frame=''>-0.134 0.156 0.111 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/axle.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <collision name='robot1/base_link_fixed_joint_lump__robot1/p3at_back_left_hub_collision_3'>
+          <pose frame=''>-0.134 0.197 0.111 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/left_hubcap.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <collision name='robot1/base_link_fixed_joint_lump__robot1/p3at_back_right_axle_collision_4'>
+          <pose frame=''>-0.134 -0.156 0.111 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/axle.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <collision name='robot1/base_link_fixed_joint_lump__robot1/p3at_back_right_hub_collision_5'>
+          <pose frame=''>-0.134 -0.197 0.111 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/right_hubcap.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <friction>
+              <ode/>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='robot1/base_link_visual'>
+          <pose frame=''>0 0 0.177 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/chassis.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Red</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='robot1/base_link_fixed_joint_lump__robot1/back_sonar_visual_1'>
+          <pose frame=''>-0.187 0 0.247 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/back_sonar.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Yellow</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='robot1/base_link_fixed_joint_lump__robot1/front_sonar_visual_2'>
+          <pose frame=''>0.193 0 0.25 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/front_sonar.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Yellow</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='robot1/base_link_fixed_joint_lump__robot1/p3at_front_left_axle_visual_3'>
+          <pose frame=''>0.135 0.156 0.111 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/axle.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='robot1/base_link_fixed_joint_lump__robot1/p3at_front_left_hub_visual_4'>
+          <pose frame=''>0.135 0.197 0.111 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/left_hubcap.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Yellow</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='robot1/base_link_fixed_joint_lump__robot1/p3at_front_right_axle_visual_5'>
+          <pose frame=''>0.135 -0.156 0.111 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/axle.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='robot1/base_link_fixed_joint_lump__robot1/p3at_front_right_hub_visual_6'>
+          <pose frame=''>0.135 -0.197 0.111 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/right_hubcap.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Yellow</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='robot1/base_link_fixed_joint_lump__robot1/top_plate_visual_7'>
+          <pose frame=''>0.003 0 0.274 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/top.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Black</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='robot1/base_link_fixed_joint_lump__robot1/laser_link_visual_8'>
+          <pose frame=''>0.003 0 0.302 0 -0 0</pose>
+          <geometry>
+            <cylinder>
+              <length>0.05</length>
+              <radius>0.05</radius>
+            </cylinder>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Black</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='robot1/base_link_fixed_joint_lump__robot1/p3at_back_left_axle_visual_9'>
+          <pose frame=''>-0.134 0.156 0.111 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/axle.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='robot1/base_link_fixed_joint_lump__robot1/p3at_back_left_hub_visual_10'>
+          <pose frame=''>-0.134 0.197 0.111 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/left_hubcap.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Yellow</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='robot1/base_link_fixed_joint_lump__robot1/p3at_back_right_axle_visual_11'>
+          <pose frame=''>-0.134 -0.156 0.111 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/axle.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <visual name='robot1/base_link_fixed_joint_lump__robot1/p3at_back_right_hub_visual_12'>
+          <pose frame=''>-0.134 -0.197 0.111 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/right_hubcap.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Yellow</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <velocity_decay/>
+        <velocity_decay/>
+        <velocity_decay/>
+        <velocity_decay/>
+        <velocity_decay/>
+        <velocity_decay/>
+        <velocity_decay/>
+        <velocity_decay/>
+        <velocity_decay/>
+        <velocity_decay/>
+        <sensor name='rplidar' type='ray'>
+          <visualize>0</visualize>
+          <update_rate>5.5</update_rate>
+          <ray>
+            <scan>
+              <horizontal>
+                <samples>360</samples>
+                <resolution>1</resolution>
+                <min_angle>-3</min_angle>
+                <max_angle>3</max_angle>
+              </horizontal>
+              <vertical>
+                <samples>1</samples>
+                <min_angle>0</min_angle>
+                <max_angle>0</max_angle>
+              </vertical>
+            </scan>
+            <range>
+              <min>0.1</min>
+              <max>6</max>
+              <resolution>0.01</resolution>
+            </range>
+            <noise>
+              <type>gaussian</type>
+              <mean>0</mean>
+              <stddev>0.01</stddev>
+            </noise>
+          </ray>
+          <plugin name='gazebo_rplidar' filename='libgazebo_ros_laser.so'>
+            <topicName>robot1//scan</topicName>
+            <frameName>laser_link</frameName>
+            <robotNamespace>/robot1/</robotNamespace>
+          </plugin>
+          <pose frame=''>0.003 0 0.302 0 -0 0</pose>
+        </sensor>
+        <velocity_decay/>
+        <velocity_decay/>
+        <velocity_decay/>
+        <gravity>1</gravity>
+        <velocity_decay/>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+      </link>
+      <link name='robot1/p3at_front_left_wheel'>
+        <pose frame=''>0.135 0.197 0.111 0 -0 0</pose>
+        <inertial>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <mass>1.2</mass>
+          <inertia>
+            <ixx>0.0124118</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0152182</iyy>
+            <iyz>0</iyz>
+            <izz>0.011764</izz>
+          </inertia>
+        </inertial>
+        <collision name='robot1/p3at_front_left_wheel_collision'>
+          <pose frame=''>0 0 0 -1.5708 0 0</pose>
+          <geometry>
+            <cylinder>
+              <length>0.075</length>
+              <radius>0.111</radius>
+            </cylinder>
+          </geometry>
+          <surface>
+            <contact>
+              <ode>
+                <kp>1e+06</kp>
+                <kd>100</kd>
+                <max_vel>1</max_vel>
+                <min_depth>0</min_depth>
+              </ode>
+            </contact>
+            <friction>
+              <ode>
+                <mu>1</mu>
+                <mu2>1</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='robot1/p3at_front_left_wheel_visual'>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/wheel.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Black</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <velocity_decay/>
+        <gravity>1</gravity>
+        <velocity_decay/>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='robot1/p3at_front_left_wheel_joint' type='revolute'>
+        <child>robot1/p3at_front_left_wheel</child>
+        <parent>robot1/base_link</parent>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-1e+16</lower>
+            <upper>1e+16</upper>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+          <use_parent_model_frame>1</use_parent_model_frame>
+        </axis>
+      </joint>
+      <link name='robot1/p3at_front_right_wheel'>
+        <pose frame=''>0.135 -0.197 0.111 0 -0 0</pose>
+        <inertial>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <mass>1.2</mass>
+          <inertia>
+            <ixx>0.0124118</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0152182</iyy>
+            <iyz>0</iyz>
+            <izz>0.011764</izz>
+          </inertia>
+        </inertial>
+        <collision name='robot1/p3at_front_right_wheel_collision'>
+          <pose frame=''>0 0 0 -1.5708 0 0</pose>
+          <geometry>
+            <cylinder>
+              <length>0.075</length>
+              <radius>0.111</radius>
+            </cylinder>
+          </geometry>
+          <surface>
+            <contact>
+              <ode>
+                <kp>1e+06</kp>
+                <kd>100</kd>
+                <max_vel>1</max_vel>
+                <min_depth>0</min_depth>
+              </ode>
+            </contact>
+            <friction>
+              <ode>
+                <mu>1</mu>
+                <mu2>1</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='robot1/p3at_front_right_wheel_visual'>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/wheel.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Black</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <velocity_decay/>
+        <gravity>1</gravity>
+        <velocity_decay/>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='robot1/p3at_front_right_wheel_joint' type='revolute'>
+        <child>robot1/p3at_front_right_wheel</child>
+        <parent>robot1/base_link</parent>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-1e+16</lower>
+            <upper>1e+16</upper>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+          <use_parent_model_frame>1</use_parent_model_frame>
+        </axis>
+      </joint>
+      <link name='robot1/p3at_back_left_wheel'>
+        <pose frame=''>-0.134 0.197 0.111 0 -0 0</pose>
+        <inertial>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <mass>1.2</mass>
+          <inertia>
+            <ixx>0.0124118</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0152182</iyy>
+            <iyz>0</iyz>
+            <izz>0.011764</izz>
+          </inertia>
+        </inertial>
+        <collision name='robot1/p3at_back_left_wheel_collision'>
+          <pose frame=''>0 0 0 -1.5708 0 0</pose>
+          <geometry>
+            <cylinder>
+              <length>0.075</length>
+              <radius>0.111</radius>
+            </cylinder>
+          </geometry>
+          <surface>
+            <contact>
+              <ode>
+                <kp>1e+06</kp>
+                <kd>100</kd>
+                <max_vel>1</max_vel>
+                <min_depth>0</min_depth>
+              </ode>
+            </contact>
+            <friction>
+              <ode>
+                <mu>1</mu>
+                <mu2>1</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='robot1/p3at_back_left_wheel_visual'>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/wheel.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Black</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <velocity_decay/>
+        <gravity>1</gravity>
+        <velocity_decay/>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='robot1/p3at_back_left_wheel_joint' type='revolute'>
+        <child>robot1/p3at_back_left_wheel</child>
+        <parent>robot1/base_link</parent>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-1e+16</lower>
+            <upper>1e+16</upper>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+          <use_parent_model_frame>1</use_parent_model_frame>
+        </axis>
+      </joint>
+      <link name='robot1/p3at_back_right_wheel'>
+        <pose frame=''>-0.134 -0.197 0.111 0 -0 0</pose>
+        <inertial>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <mass>1.2</mass>
+          <inertia>
+            <ixx>0.0124118</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0152182</iyy>
+            <iyz>0</iyz>
+            <izz>0.011764</izz>
+          </inertia>
+        </inertial>
+        <collision name='robot1/p3at_back_right_wheel_collision'>
+          <pose frame=''>0 0 0 -1.5708 0 0</pose>
+          <geometry>
+            <cylinder>
+              <length>0.075</length>
+              <radius>0.111</radius>
+            </cylinder>
+          </geometry>
+          <surface>
+            <contact>
+              <ode>
+                <kp>1e+06</kp>
+                <kd>100</kd>
+                <max_vel>1</max_vel>
+                <min_depth>0</min_depth>
+              </ode>
+            </contact>
+            <friction>
+              <ode>
+                <mu>1</mu>
+                <mu2>1</mu2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <visual name='robot1/p3at_back_right_wheel_visual'>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>/home/pja/catkin_ws/src/amr-ros-config/description/meshes/p3at_meshes/wheel.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Black</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+          </material>
+        </visual>
+        <velocity_decay/>
+        <gravity>1</gravity>
+        <velocity_decay/>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+      </link>
+      <joint name='robot1/p3at_back_right_wheel_joint' type='revolute'>
+        <child>robot1/p3at_back_right_wheel</child>
+        <parent>robot1/base_link</parent>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-1e+16</lower>
+            <upper>1e+16</upper>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+          <use_parent_model_frame>1</use_parent_model_frame>
+        </axis>
+      </joint>
+      <static>0</static>
+      <plugin name='skid_steer_drive_controller' filename='libgazebo_ros_skid_steer_drive.so'>
+        <updateRate>100.0</updateRate>
+        <robotNamespace>/</robotNamespace>
+        <leftFrontJoint>robot1/p3at_front_left_wheel_joint</leftFrontJoint>
+        <rightFrontJoint>robot1/p3at_front_right_wheel_joint</rightFrontJoint>
+        <leftRearJoint>robot1/p3at_back_left_wheel_joint</leftRearJoint>
+        <rightRearJoint>robot1/p3at_back_right_wheel_joint</rightRearJoint>
+        <wheelSeparation>0.4</wheelSeparation>
+        <wheelDiameter>0.215</wheelDiameter>
+        <robotBaseFrame>robot1/base_link</robotBaseFrame>
+        <MaxForce>5.0</MaxForce>
+        <torque>200</torque>
+        <commandTopic>robot1/cmd_vel</commandTopic>
+        <odometryTopic>robot1/odom</odometryTopic>
+        <odometryFrame>robot1/odom</odometryFrame>
+        <broadcastTF>true</broadcastTF>
+      </plugin>
+      <pose frame=''>0 0 0 0 -0 0</pose>
+    </model>
+    <model name='nocollision_unit_box_0'>
+      <link name='link'>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <inertial>
+          <mass>1</mass>
+          <inertia>
+            <ixx>0.166667</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.166667</iyy>
+            <iyz>0</iyz>
+            <izz>0.166667</izz>
+          </inertia>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+        </inertial>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+        <visual name='visual'>
+          <geometry>
+            <box>
+              <size>1 1 1</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <name>Gazebo/Grey</name>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+            </script>
+            <ambient>0.3 0.3 0.3 1</ambient>
+            <diffuse>0.7 0.7 0.7 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+            <emissive>0 0 0 1</emissive>
+            <shader type='vertex'>
+              <normal_map>__default__</normal_map>
+            </shader>
+          </material>
+          <pose frame=''>0 0 0 0 -0 0</pose>
+          <cast_shadows>1</cast_shadows>
+          <transparency>0</transparency>
+        </visual>
+      </link>
+      <static>0</static>
+      <allow_auto_disable>1</allow_auto_disable>
+      <pose frame=''>-0.391299 -2.5011 0.500004 -9e-06 -0 -0.134249</pose>
+    </model>
+  </world>
+</sdf>

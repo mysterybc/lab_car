@@ -16,7 +16,7 @@ ZMQ_TEST::~ZMQ_TEST()
     zmq_ctx_destroy(context);
 }
 
-void ZMQ_TEST::zmq_init(int server_or_client, int sub_or_pub, int port, string ip) //ZMQ初始化
+void ZMQ_TEST::zmq_init(int server_or_client, int sub_or_pub, string ip) //ZMQ初始化
 {
     context = zmq_ctx_new();
     if(context)
@@ -27,15 +27,13 @@ void ZMQ_TEST::zmq_init(int server_or_client, int sub_or_pub, int port, string i
             {
                 subscriber = zmq_socket(context, ZMQ_SUB);
                 // string sub_str = "tcp://*:" + to_string(port);
-                string sub_str = ip + to_string(port);
-                zmq_bind(subscriber, sub_str.data());
+                zmq_bind(subscriber, ip.data());
             }
             else            //客户端
             {
                 subscriber = zmq_socket(context, ZMQ_SUB);
                 // string sub_str = "tcp://localhost:" + to_string(port);
-                string sub_str = ip + to_string(port);
-                zmq_connect(subscriber, sub_str.data());
+                zmq_connect(subscriber, ip.data());
             }
             zmq_setsockopt(subscriber, ZMQ_SUBSCRIBE, "TEST", 4);  //允许订阅多个频道
         }
@@ -45,15 +43,13 @@ void ZMQ_TEST::zmq_init(int server_or_client, int sub_or_pub, int port, string i
             {
                 publisher = zmq_socket(context, ZMQ_PUB);
                 // string pub_str = "tcp://10.1.76.159:" + to_string(port);
-                string pub_str = ip + to_string(port);
-                zmq_bind(publisher, pub_str.data());
+                zmq_bind(publisher, ip.data());
             }
             else            //客户端
             {
                 publisher = zmq_socket(context, ZMQ_PUB);
                 // string pub_str = "tcp://10.1.76.159:" + to_string(port);
-                string pub_str = ip + to_string(port);
-                zmq_connect(publisher, pub_str.data());
+                zmq_connect(publisher, ip.data());
                 
             }
             int hwm = 10;

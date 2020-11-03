@@ -14,11 +14,14 @@ BlackBoard::BlackBoard()
     ros::NodeHandle nh;
 	car_number = 0;
 ///<<< BEGIN WRITING YOUR CODE CONSTRUCTOR
-    cmd_sub = nh.subscribe<robot_msgs::HostCmd>("host_cmd",10,&BlackBoard::CmdCallback,this);   
+    cmd_sub = nh.subscribe<robot_msgs::HostCmd>("/host_cmd",10,&BlackBoard::CmdCallback,this);   
     ROS_INFO("init blackborad");                                              
     decision_state_pub = nh.advertise<std_msgs::String>("decision_state",10);
     nh.getParam("car_id",car_number);
-    car_number++;
+    std::string namespace_;
+    namespace_ = nh.getNamespace();
+    //获取group下的参数
+    nh.getParam(namespace_+"/car_id",car_number);
     g_BasicLogicAgent->InputTask = TaskIndividual::NonTask;
 ///<<< END WRITING YOUR CODE
 }

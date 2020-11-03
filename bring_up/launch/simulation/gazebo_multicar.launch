@@ -1,0 +1,74 @@
+<launch>
+    <!-- 全局参数 -->
+    <param name="use_sim_time" value="true"/>
+    <rosparam>
+        total_robot_ip: ["tcp://192.168.31.144:6661","tcp://192.168.31.144:6662"]
+    </rosparam>
+    <arg name="host_ip_address" default="tcp://192.168.31.8:" />
+    <arg name="total_car_number" default="1" />
+    <arg name="map" default="lab_car_map.yaml" /> 
+    <arg name="simulator" value="gazebo"/>
+    <!-- 第一辆车的参数 -->
+    <arg name="car_id1" value="1"/>
+    <arg name="robot_name1" value="robot$(arg car_id1)"/>
+    <arg name="my_ip_address1" value="tcp://192.168.31.144:6661" />
+    <arg name="robot1_x" value="-7"/>
+    <arg name="robot1_y" value="-7"/>
+    <arg name="robot1_z" value="0.1"/>
+    <!-- 第二辆车的参数 -->
+    <arg name="car_id2" value="2"/>
+    <arg name="robot_name2" value="robot$(arg car_id2)"/>
+    <arg name="my_ip_address2" value="tcp://192.168.31.144:6662" />
+    <arg name="robot2_x" value="8"/>
+    <arg name="robot2_y" value="8"/>
+    <arg name="robot2_z" value="0.1"/>
+
+    
+
+
+    <!-- gazebo环境 -->
+    <include file="$(find gazebo_pioneer3at)/launch/pioneer_world.launch"/>
+
+    <!-- 运行地图服务器，并且加载设置的地图-->
+    <node name="map_server" pkg="map_server" type="map_server" args="$(find bring_up)/map/$(arg map)" />
+
+    <!-- amcl robot -->
+    <include file="$(find gazebo_pioneer3at)/launch/pioneer.launch" >
+        <arg name="robot_name" value="$(arg robot_name1)"/>
+        <arg name = "x" value="$(arg robot1_x)" />
+        <arg name = "y" value="$(arg robot1_y)" />
+        <arg name = "z" value="$(arg robot1_z)" />
+    </include>
+
+    <!-- amcl,robot -->
+    <include file="$(find gazebo_pioneer3at)/launch/pioneer.launch" >
+        <arg name="robot_name" value="$(arg robot_name2)"/>
+        <arg name = "x" value="$(arg robot2_x)" />
+        <arg name = "y" value="$(arg robot2_y)" />
+        <arg name = "z" value="$(arg robot2_z)" />
+    </include>
+
+    <!-- rviz -->
+    <node pkg="rviz" type="rviz" name="rviz" args="-d $(find bring_up)/rviz/gazebo_multicar.rviz"/>
+
+    <!-- 我们的程序部分 -->
+    <include file="$(find bring_up)/launch/simulation/labcar_simulation.launch" >
+        <arg name="car_id" value="$(arg car_id1)" />
+        <arg name="robot_name" value="$(arg robot_name1)"/>
+        <arg name="simulator"  value="$(arg simulator)"/>
+        <arg name="total_car_number" value="$(arg total_car_number)" />
+        <arg name="host_ip_address" value="$(arg host_ip_address)" />
+        <arg name="my_ip_address" value="$(arg my_ip_address1)" />
+    </include>
+
+    <!-- 我们的程序部分 -->
+    <include file="$(find bring_up)/launch/simulation/labcar_simulation.launch" >
+        <arg name="car_id" value="$(arg car_id2)" />
+        <arg name="robot_name" value="$(arg robot_name2)"/>
+        <arg name="total_car_number" value="$(arg total_car_number)" />
+        <arg name="host_ip_address" value="$(arg host_ip_address)" />
+        <arg name="my_ip_address" value="$(arg my_ip_address2)" />
+        <arg name="simulator"  value="$(arg simulator)"/>
+    </include>
+
+</launch>

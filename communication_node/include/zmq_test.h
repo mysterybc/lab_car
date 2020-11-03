@@ -20,7 +20,7 @@ public:
     ZMQ_TEST();
     ~ZMQ_TEST();
     void run();
-    void zmq_init(int server_or_client, int sub_or_pub, int port, string ip);
+    void zmq_init(int server_or_client, int sub_or_pub, string ip);
     void send_data(string payload);
 
     void *context;

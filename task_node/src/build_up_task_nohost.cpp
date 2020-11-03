@@ -4,7 +4,12 @@ BuildUpTask::BuildUpTask()
     :build_up_action(nh,"build_up_action",boost::bind(&BuildUpTask::BuildUpExcuteCB,this,_1),false),
     task_state(ActionState::PENDING),plan_action(nh,"move_base",true)
 {
-    nh.getParam("car_id",car_id);
+    //获取group空间名
+    std::string namespace_;
+    namespace_ = nh.getNamespace();
+    //获取group下的参数
+    nh.getParam(namespace_+"/car_id",car_id);
+    nh.getParam(namespace_+"/tf_ns",tf_ns);
     build_up_action.registerPreemptCallback(std::bind(&BuildUpTask::BuildUpPreemptCB,this));
     statue_sub_ = nh.subscribe("move_base/status",10,&BuildUpTask::MoveBaseStatusCB,this);
     report_path_client = nh.serviceClient<robot_msgs::ReportPath>("report_path");
@@ -46,7 +51,7 @@ bool BuildUpTask::MakePlanWithoutExcute(geometry_msgs::Pose goal){
     ros::Rate rate(100.0);
     while (ros::ok()){
         try{
-            tf_listener.lookupTransform("map", "base_link",ros::Time(0), transform);
+            tf_listener.lookupTransform("map", tf_ns+"base_link",ros::Time(0), transform);
         }
         catch (tf::TransformException &ex) {
             ros::Duration(0.5).sleep();

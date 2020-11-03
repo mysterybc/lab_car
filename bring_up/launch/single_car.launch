@@ -30,10 +30,10 @@
     <arg name="car_id" value="1"/>
     <param name="total_car_number" type="int" value="2" />
     <param name="car_id" type="int" value="$(arg car_id)" />
-    <param name="host_ip_address" type="string" value="tcp://192.168.0.30:" />
-    <param name="my_ip_address" type="string" value="tcp://192.168.0.14:" />
+    <param name="host_ip_address" type="string" value="tcp://192.168.0.30:6666" />
+    <param name="my_ip_address" type="string" value="tcp://192.168.0.14:6666" />
     <rosparam>
-        total_robot_ip: ["tcp://192.168.0.14:","tcp://192.168.0.20:"]
+        total_robot_ip: ["tcp://192.168.0.14:6666","tcp://192.168.0.20:6666"]
     </rosparam>
     <!-- 下面两个source_node使用 -->
     <!-- ttyUSB0为驱动接口，无需改变 -->
