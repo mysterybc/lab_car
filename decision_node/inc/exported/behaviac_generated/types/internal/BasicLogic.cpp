@@ -28,6 +28,21 @@ BasicLogic::~BasicLogic()
 ///<<< END WRITING YOUR CODE
 }
 
+void BasicLogic::Upper_Processing()
+{
+///<<< BEGIN WRITING YOUR CODE Upper_Processing
+if(InputTask==NonTask&&CurrentTask==NonTask&&g_BlackBoardAgent->TaksList.empty()!=1)//单步无任务时取出任务列表中的任务赋给InputTask变量
+		{
+			InputTask=(TaskIndividual)g_BlackBoardAgent->TaksList.back().mission.mission;
+
+			g_BlackBoardAgent->	goal = g_BlackBoardAgent->TaksList.back().goal.pose;
+			
+			g_BlackBoardAgent->TaksList.pop_back();
+		}
+
+///<<< END WRITING YOUR CODE
+}
+
 
 ///<<< BEGIN WRITING YOUR CODE FILE_UNINIT
 

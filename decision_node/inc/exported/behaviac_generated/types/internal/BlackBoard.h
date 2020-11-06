@@ -12,14 +12,17 @@
 #include "nav_msgs/OccupancyGrid.h"
 #include "nav_msgs/Odometry.h"
 #include "robot_msgs/HostCmd.h"
+#include "robot_msgs/HostCmdArray.h"
 #include "string"
 #include <geometry_msgs/PoseStamped.h>
 #include "std_msgs/String.h"
 #include "BasicLogic.h"
+#include "robot_msgs/DebugInfo.h"
 ///<<< BEGIN WRITING YOUR CODE FILE_INIT
-extern BasicLogic* g_BasicLogicAgent;
-///<<< END WRITING YOUR CODE
 
+///<<< END WRITING YOUR CODE
+class BasicLogic;
+extern BasicLogic* g_BasicLogicAgent;
 class BlackBoard : public behaviac::Agent
 ///<<< BEGIN WRITING YOUR CODE BlackBoard
 ///<<< END WRITING YOUR CODE
@@ -35,16 +38,18 @@ public:
 ///<<< BEGIN WRITING YOUR CODE CLASS_PART
 
 	public: behaviac::vector<behaviac::string> MissionTable;
+    public: void CmdCallback(const robot_msgs::HostCmdArrayConstPtr &msg);                   //**************************RECTIFY
+	public:void PubDecisionState(std::string state);
+    public:geometry_msgs::Pose GetGoal();
 public:
-    void CmdCallback(const robot_msgs::HostCmdConstPtr &msg);
-	void PubDecisionState(std::string state);
-    geometry_msgs::Pose GetGoal();
-private:
+    std::vector<robot_msgs::HostCmd> msgs;
+     std::vector<robot_msgs::HostCmd> TaksList;
     //! Goal info
+    ros::Publisher debug_pub;
     geometry_msgs::Pose goal;
     // car id 
     std::string decision_state;
-
+private:
     ros::Subscriber goal_sub;
     ros::Subscriber cmd_sub;
     ros::Publisher  decision_state_pub;

@@ -2,159 +2,165 @@
 <!--EXPORTED BY TOOL, DON'T MODIFY IT!-->
 <!--Source File: MainTree.xml-->
 <behavior name="MainTree" agenttype="behaviac::Agent" version="5">
-  <node class="Sequence" id="44">
-    <node class="DecoratorAlwaysSuccess" id="42">
-      <property DecorateWhenChildEnds="false" />
-      <node class="Sequence" id="0">
-        <node class="Assignment" id="3">
-          <property CastRight="false" />
-          <property Opl="TaskType BasicLogic.BasicLogic::InputType" />
-          <property Opr="const TaskType NonType" />
-        </node>
-        <node class="Condition" id="4">
-          <property Operator="Greater" />
-          <property Opl="TaskIndividual BasicLogic.BasicLogic::InputTask" />
-          <property Opr="const TaskIndividual NonTask" />
-        </node>
-        <node class="Assignment" id="5">
-          <property CastRight="false" />
-          <property Opl="TaskType BasicLogic.BasicLogic::InputType" />
-          <property Opr="const TaskType ForgrdType" />
-        </node>
-        <node class="Condition" id="6">
-          <property Operator="Greater" />
-          <property Opl="TaskIndividual BasicLogic.BasicLogic::InputTask" />
-          <property Opr="const TaskIndividual Assemble" />
-        </node>
-        <node class="Assignment" id="7">
-          <property CastRight="false" />
-          <property Opl="TaskType BasicLogic.BasicLogic::InputType" />
-          <property Opr="const TaskType BackgrdTask" />
-        </node>
-      </node>
+  <node class="Sequence" id="0">
+    <node class="Action" id="34">
+      <property Method="BasicLogic.BasicLogic::Upper_Processing()" />
+      <property ResultOption="BT_SUCCESS" />
     </node>
-    <node class="DecoratorAlwaysSuccess" id="35">
-      <property DecorateWhenChildEnds="false" />
-      <node class="Sequence" id="8">
-        <node class="Assignment" id="9">
-          <property CastRight="false" />
-          <property Opl="TaskType BasicLogic.BasicLogic::CurrentType" />
-          <property Opr="const TaskType NonType" />
-        </node>
-        <node class="Condition" id="10">
-          <property Operator="Greater" />
-          <property Opl="TaskIndividual BasicLogic.BasicLogic::CurrentTask" />
-          <property Opr="const TaskIndividual NonTask" />
-        </node>
-        <node class="Assignment" id="11">
-          <property CastRight="false" />
-          <property Opl="TaskType BasicLogic.BasicLogic::CurrentType" />
-          <property Opr="const TaskType ForgrdType" />
-        </node>
-        <node class="Condition" id="12">
-          <property Operator="Greater" />
-          <property Opl="TaskIndividual BasicLogic.BasicLogic::CurrentTask" />
-          <property Opr="const TaskIndividual Assemble" />
-        </node>
-        <node class="Assignment" id="13">
-          <property CastRight="false" />
-          <property Opl="TaskType BasicLogic.BasicLogic::CurrentType" />
-          <property Opr="const TaskType BackgrdTask" />
-        </node>
-      </node>
-    </node>
-    <node class="Selector" id="2">
-      <node class="Sequence" id="15">
-        <node class="Condition" id="17">
-          <property Operator="Equal" />
-          <property Opl="TaskType BasicLogic.BasicLogic::InputType" />
-          <property Opr="const TaskType BackgrdTask" />
-        </node>
-        <node class="Selector" id="18">
-          <node class="Sequence" id="39">
-            <node class="Condition" id="40">
-              <property Operator="Equal" />
-              <property Opl="TaskIndividual BasicLogic.BasicLogic::InputTask" />
-              <property Opr="const TaskIndividual STOP" />
-            </node>
-            <node class="Action" id="41">
-              <property Method="BackgrdFunc.BackgrdFunc::STOP()" />
-              <property ResultOption="BT_SUCCESS" />
-            </node>
+    <node class="Sequence" id="44">
+      <node class="DecoratorAlwaysSuccess" id="42">
+        <property DecorateWhenChildEnds="false" />
+        <node class="Sequence" id="1">
+          <node class="Assignment" id="3">
+            <property CastRight="false" />
+            <property Opl="TaskType BasicLogic.BasicLogic::InputType" />
+            <property Opr="const TaskType NonType" />
           </node>
-          <node class="Sequence" id="36">
-            <node class="Condition" id="37">
-              <property Operator="Equal" />
-              <property Opl="TaskIndividual BasicLogic.BasicLogic::InputTask" />
-              <property Opr="const TaskIndividual Pause" />
-            </node>
-            <node class="Action" id="38">
-              <property Method="BackgrdFunc.BackgrdFunc::Pause()" />
-              <property ResultOption="BT_SUCCESS" />
-            </node>
+          <node class="Condition" id="4">
+            <property Operator="Greater" />
+            <property Opl="TaskIndividual BasicLogic.BasicLogic::InputTask" />
+            <property Opr="const TaskIndividual NonTask" />
           </node>
-          <node class="Sequence" id="19">
-            <node class="Condition" id="20">
-              <property Operator="Equal" />
-              <property Opl="TaskIndividual BasicLogic.BasicLogic::InputTask" />
-              <property Opr="const TaskIndividual Resume" />
-            </node>
-            <node class="Action" id="32">
-              <property Method="BackgrdFunc.BackgrdFunc::Resume()" />
-              <property ResultOption="BT_SUCCESS" />
-            </node>
-            <node class="End" id="33">
-              <property EndOutside="false" />
-              <property EndStatus="const behaviac::EBTStatus BT_SUCCESS" />
-            </node>
+          <node class="Assignment" id="5">
+            <property CastRight="false" />
+            <property Opl="TaskType BasicLogic.BasicLogic::InputType" />
+            <property Opr="const TaskType ForgrdType" />
+          </node>
+          <node class="Condition" id="6">
+            <property Operator="Greater" />
+            <property Opl="TaskIndividual BasicLogic.BasicLogic::InputTask" />
+            <property Opr="const TaskIndividual Assemble" />
+          </node>
+          <node class="Assignment" id="7">
+            <property CastRight="false" />
+            <property Opl="TaskType BasicLogic.BasicLogic::InputType" />
+            <property Opr="const TaskType BackgrdTask" />
           </node>
         </node>
       </node>
-      <node class="Sequence" id="16">
-        <node class="Condition" id="22">
-          <property Operator="Equal" />
-          <property Opl="TaskType BasicLogic.BasicLogic::InputType" />
-          <property Opr="const TaskType ForgrdType" />
-        </node>
-        <node class="DecoratorAlwaysSuccess" id="23">
-          <property DecorateWhenChildEnds="false" />
-          <node class="IfElse" id="29">
-            <node class="Condition" id="30">
-              <property Operator="NotEqual" />
-              <property Opl="TaskType BasicLogic.BasicLogic::CurrentType" />
-              <property Opr="const TaskType NonType" />
-            </node>
-            <node class="Action" id="21">
-              <property Method="BackgrdFunc.BackgrdFunc::STOP()" />
-              <property ResultOption="BT_SUCCESS" />
-            </node>
-            <node class="Noop" id="31" />
+      <node class="DecoratorAlwaysSuccess" id="35">
+        <property DecorateWhenChildEnds="false" />
+        <node class="Sequence" id="8">
+          <node class="Assignment" id="9">
+            <property CastRight="false" />
+            <property Opl="TaskType BasicLogic.BasicLogic::CurrentType" />
+            <property Opr="const TaskType NonType" />
           </node>
-        </node>
-        <node class="Selector" id="25">
-          <node class="Sequence" id="26">
-            <node class="Condition" id="27">
-              <property Operator="Equal" />
-              <property Opl="TaskIndividual BasicLogic.BasicLogic::InputTask" />
-              <property Opr="const TaskIndividual Assemble" />
-            </node>
-            <node class="Action" id="28">
-              <property Method="ForegrdFunc.ForegrdFunc::Assemble()" />
-              <property ResultOption="BT_SUCCESS" />
-            </node>
+          <node class="Condition" id="10">
+            <property Operator="Greater" />
+            <property Opl="TaskIndividual BasicLogic.BasicLogic::CurrentTask" />
+            <property Opr="const TaskIndividual NonTask" />
           </node>
-        </node>
-        <node class="Assignment" id="24">
-          <property CastRight="false" />
-          <property Opl="TaskIndividual BasicLogic.BasicLogic::CurrentTask" />
-          <property Opr="TaskIndividual BasicLogic.BasicLogic::InputTask" />
+          <node class="Assignment" id="11">
+            <property CastRight="false" />
+            <property Opl="TaskType BasicLogic.BasicLogic::CurrentType" />
+            <property Opr="const TaskType ForgrdType" />
+          </node>
+          <node class="Condition" id="12">
+            <property Operator="Greater" />
+            <property Opl="TaskIndividual BasicLogic.BasicLogic::CurrentTask" />
+            <property Opr="const TaskIndividual Assemble" />
+          </node>
+          <node class="Assignment" id="13">
+            <property CastRight="false" />
+            <property Opl="TaskType BasicLogic.BasicLogic::CurrentType" />
+            <property Opr="const TaskType BackgrdTask" />
+          </node>
         </node>
       </node>
-    </node>
-    <node class="Assignment" id="14">
-      <property CastRight="false" />
-      <property Opl="TaskIndividual BasicLogic.BasicLogic::InputTask" />
-      <property Opr="const TaskIndividual NonTask" />
+      <node class="Selector" id="2">
+        <node class="Sequence" id="15">
+          <node class="Condition" id="17">
+            <property Operator="Equal" />
+            <property Opl="TaskType BasicLogic.BasicLogic::InputType" />
+            <property Opr="const TaskType BackgrdTask" />
+          </node>
+          <node class="Selector" id="18">
+            <node class="Sequence" id="39">
+              <node class="Condition" id="40">
+                <property Operator="Equal" />
+                <property Opl="TaskIndividual BasicLogic.BasicLogic::InputTask" />
+                <property Opr="const TaskIndividual STOP" />
+              </node>
+              <node class="Action" id="41">
+                <property Method="BackgrdFunc.BackgrdFunc::STOP()" />
+                <property ResultOption="BT_SUCCESS" />
+              </node>
+            </node>
+            <node class="Sequence" id="36">
+              <node class="Condition" id="37">
+                <property Operator="Equal" />
+                <property Opl="TaskIndividual BasicLogic.BasicLogic::InputTask" />
+                <property Opr="const TaskIndividual Pause" />
+              </node>
+              <node class="Action" id="38">
+                <property Method="BackgrdFunc.BackgrdFunc::Pause()" />
+                <property ResultOption="BT_SUCCESS" />
+              </node>
+            </node>
+            <node class="Sequence" id="19">
+              <node class="Condition" id="20">
+                <property Operator="Equal" />
+                <property Opl="TaskIndividual BasicLogic.BasicLogic::InputTask" />
+                <property Opr="const TaskIndividual Resume" />
+              </node>
+              <node class="Action" id="32">
+                <property Method="BackgrdFunc.BackgrdFunc::Resume()" />
+                <property ResultOption="BT_SUCCESS" />
+              </node>
+              <node class="End" id="33">
+                <property EndOutside="false" />
+                <property EndStatus="const behaviac::EBTStatus BT_SUCCESS" />
+              </node>
+            </node>
+          </node>
+        </node>
+        <node class="Sequence" id="16">
+          <node class="Condition" id="22">
+            <property Operator="Equal" />
+            <property Opl="TaskType BasicLogic.BasicLogic::InputType" />
+            <property Opr="const TaskType ForgrdType" />
+          </node>
+          <node class="DecoratorAlwaysSuccess" id="23">
+            <property DecorateWhenChildEnds="false" />
+            <node class="IfElse" id="29">
+              <node class="Condition" id="30">
+                <property Operator="NotEqual" />
+                <property Opl="TaskType BasicLogic.BasicLogic::CurrentType" />
+                <property Opr="const TaskType NonType" />
+              </node>
+              <node class="Action" id="21">
+                <property Method="BackgrdFunc.BackgrdFunc::STOP()" />
+                <property ResultOption="BT_SUCCESS" />
+              </node>
+              <node class="Noop" id="31" />
+            </node>
+          </node>
+          <node class="Selector" id="25">
+            <node class="Sequence" id="26">
+              <node class="Condition" id="27">
+                <property Operator="Equal" />
+                <property Opl="TaskIndividual BasicLogic.BasicLogic::InputTask" />
+                <property Opr="const TaskIndividual Assemble" />
+              </node>
+              <node class="Action" id="28">
+                <property Method="ForegrdFunc.ForegrdFunc::Assemble()" />
+                <property ResultOption="BT_SUCCESS" />
+              </node>
+            </node>
+          </node>
+          <node class="Assignment" id="24">
+            <property CastRight="false" />
+            <property Opl="TaskIndividual BasicLogic.BasicLogic::CurrentTask" />
+            <property Opr="TaskIndividual BasicLogic.BasicLogic::InputTask" />
+          </node>
+        </node>
+      </node>
+      <node class="Assignment" id="14">
+        <property CastRight="false" />
+        <property Opl="TaskIndividual BasicLogic.BasicLogic::InputTask" />
+        <property Opr="const TaskIndividual NonTask" />
+      </node>
     </node>
   </node>
 </behavior>

@@ -6,7 +6,7 @@
 #include <jsoncpp/json/json.h>
 #include "geometry_msgs/Pose.h"
 #include "tf/transform_broadcaster.h"
-#include "robot_msgs/HostCmd.h"
+#include "robot_msgs/HostCmdArray.h"
 #include "robot_msgs/GetConfigCmd.h"
 #include "ros/ros.h"
 

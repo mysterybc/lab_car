@@ -8,11 +8,27 @@ SeparateGoal::SeparateGoal(){
     std::string namespace_;
     namespace_ = nh.getNamespace();
     //获取group下的参数
-    nh.getParam(namespace_+"/car_id",car_id);
-    nh.getParam(namespace_+"/tf_ns",tf_ns);
+    if(!nh.getParam(namespace_+"/car_id",car_id)){
+        car_id = 1;
+        ROS_WARN("SEPARATE SERVICE FAILED TO GET CAR ID");
+        ROS_WARN("SEPARATE SERVICE RESET CAR ID TO 1");
+    }
+    if(!nh.getParam(namespace_+"/tf_ns",tf_ns)){
+        ROS_WARN("SEPARATE SERVICE FAILED TO GET TF FRAME");
+    }
+    debug_pub = nh.advertise<robot_msgs::DebugInfo>("/debug_info",10);
     robots_state_sub = nh.subscribe("robot_states",10,&SeparateGoal::RobotStateCallback,this);
     map_sub = nh.subscribe("/map",10,&SeparateGoal::MapCallback,this);
     separate_service = nh.advertiseService("separate_goal",&SeparateGoal::CalGoal,this);
+    //Debug info
+    robot_msgs::DebugInfo info;
+    std_msgs::String data;
+    data.data = "car " + std::to_string(car_id) + " separate goal service Initialized";
+    info.info.push_back(data);
+    data.data.clear();
+    data.data = "car " + std::to_string(car_id) + " tf frame is " + tf_ns;
+    info.info.push_back(data);
+    debug_pub.publish(info);
 }
 
 bool SeparateGoal::CalGoal(robot_msgs::Separate::Request &req,

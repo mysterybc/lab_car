@@ -8,16 +8,33 @@ BuildUpTask::BuildUpTask()
     std::string namespace_;
     namespace_ = nh.getNamespace();
     //获取group下的参数
-    nh.getParam(namespace_+"/car_id",car_id);
-    nh.getParam(namespace_+"/tf_ns",tf_ns);
+    if(!nh.getParam(namespace_+"/car_id",car_id)){
+        car_id = 1;
+        ROS_WARN("BUILD UP TASK FAILED TO GET CAR ID");
+        ROS_WARN("BUILD UP TASK RESET CAR ID TO 1");
+    }
+    if(!nh.getParam(namespace_+"/tf_ns",tf_ns)){
+        car_id = 1;
+        ROS_WARN("BUILD UP TASK FAILED TO GET TF FRAME");
+    }
     build_up_action.registerPreemptCallback(std::bind(&BuildUpTask::BuildUpPreemptCB,this));
+    debug_pub = nh.advertise<robot_msgs::DebugInfo>("/debug_info",10);
     statue_sub_ = nh.subscribe("move_base/status",10,&BuildUpTask::MoveBaseStatusCB,this);
     report_path_client = nh.serviceClient<robot_msgs::ReportPath>("report_path");
     get_host_config_client = nh.serviceClient<robot_msgs::GetConfigCmd>("get_config_cmd");
     make_plan_client = nh.serviceClient<nav_msgs::GetPlan>("move_base/make_plan");
     separate_goal_client = nh.serviceClient<robot_msgs::Separate>("separate_goal");
     build_up_action.start();
-    ROS_INFO("build up task initialized");
+    
+    //Debug info
+    robot_msgs::DebugInfo info;
+    std_msgs::String data;
+    data.data = "car " + std::to_string(car_id) + " build up task Initialized";
+    info.info.push_back(data);
+    data.data.clear();
+    data.data = "car " + std::to_string(car_id) + " tf frame is " + tf_ns;
+    info.info.push_back(data);
+    debug_pub.publish(info);
 }
 
 
@@ -39,7 +56,7 @@ void BuildUpTask::BuildUpPreemptCB(){
             plan_action.cancelGoal();
         }
             task_state = ActionState::PENDING;
-        result.succeed = false;
+        result.succeed = CANCEL;
         build_up_action.setPreempted(result,"goal cancel");
     }
 }

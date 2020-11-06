@@ -18,7 +18,7 @@ int IMU::UpDateIMU(){
     { 
         //获取imu port
         std::string imu_port;
-        nh.param<std::string>("imu_port",imu_port,"/dev/ttyUSB1");
+        nh.param<std::string>("/imu_port",imu_port,"/dev/ttyUSB1");
         //设置串口属性，并打开串口 
         ser.setPort(imu_port); 
         ser.setBaudrate(115200); 

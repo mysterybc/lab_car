@@ -5,7 +5,7 @@
 // -------------------------------------------------------------------------------
 
 #include "ForegrdFunc.h"
-
+#define _cancel  2
 ///<<< BEGIN WRITING YOUR CODE FILE_INIT
 
 ///<<< END WRITING YOUR CODE
@@ -61,17 +61,20 @@ void ForegrdFunc::Assemble()
     }
 
     void ForegrdFunc::DoneCallback(const actionlib::SimpleClientGoalState &state, const robot_msgs::BuildUpResultConstPtr &result){
-        if(result->succeed){
+        if(result->succeed==true){
 			ROS_INFO("DoneCallback_succeed");
             g_BasicLogicAgent->CurrentTask=TaskIndividual::NonTask;
             this->fore_func_state = ForeFuncState::Success;
             g_BlackBoardAgent->PubDecisionState("build up task done");
         }
-        else{
+        else if(result->succeed==false){
 			ROS_INFO("DoneCallback_fail");
             this->fore_func_state = ForeFuncState::Failure;
-            //g_BasicLogicAgent->CurrentTask=TaskIndividual::NonTask;
-        }
+            g_BasicLogicAgent->CurrentTask=TaskIndividual::NonTask;
+            std::vector<robot_msgs::HostCmd>().swap(g_BlackBoardAgent->msgs);//if fail on one Task,clear the TaskList,and return failure.
+        }else if(result->succeed==  _cancel){
+			ROS_INFO("Mission_Cancel");//STOP不在callback中清CurrentT,Pause不需要清CurrentT,所以callback不处理cancel
+		}
         return ;
     }
 

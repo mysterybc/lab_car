@@ -7,21 +7,31 @@
 #include "BlackBoard.h"
 
 ///<<< BEGIN WRITING YOUR CODE FILE_INIT
+
 ///<<< END WRITING YOUR CODE
 
 BlackBoard::BlackBoard()
 {
     ros::NodeHandle nh;
-	car_number = 0;
 ///<<< BEGIN WRITING YOUR CODE CONSTRUCTOR
-    cmd_sub = nh.subscribe<robot_msgs::HostCmd>("/host_cmd",10,&BlackBoard::CmdCallback,this);   
-    ROS_INFO("init blackborad");                                              
+    cmd_sub = nh.subscribe("/host_cmd",10,&BlackBoard::CmdCallback,this);                                                            //1、2
     decision_state_pub = nh.advertise<std_msgs::String>("decision_state",10);
-    nh.getParam("car_id",car_number);
+    debug_pub = nh.advertise<robot_msgs::DebugInfo>("/debug_info",10);
+    //获取group空间名
     std::string namespace_;
     namespace_ = nh.getNamespace();
     //获取group下的参数
-    nh.getParam(namespace_+"/car_id",car_number);
+    if(!nh.getParam(namespace_+"/car_id",car_number)){
+        car_number = 1;
+        ROS_WARN("behavior tree FAILED TO GET CAR ID");
+        ROS_WARN("behavior tree RESET CAR ID TO 1");
+    }
+    //Debug info
+    robot_msgs::DebugInfo info;
+    std_msgs::String data;
+    data.data = "car " + std::to_string(car_number) + " behavior tree Initialized";
+    info.info.push_back(data);
+    debug_pub.publish(info);
     g_BasicLogicAgent->InputTask = TaskIndividual::NonTask;
 ///<<< END WRITING YOUR CODE
 }
@@ -34,30 +44,66 @@ BlackBoard::~BlackBoard()
 }
 
 
+
 ///<<< BEGIN WRITING YOUR CODE FILE_UNINIT
-void BlackBoard::CmdCallback(const robot_msgs::HostCmdConstPtr &msg){
-    //首先判断我是否需要执行该指令；
-    bool my_cmd = false;
-    for(int i = 0; i < msg->car_id.size(); i++){
-        if(msg->car_id.at(i) == car_number){
-            my_cmd = true;
-        }
-    }
-    if(!my_cmd){
-        return ;
+void BlackBoard::CmdCallback(const robot_msgs::HostCmdArrayConstPtr &msg){
+
+        //1.清空list
+        //2.反向初始化，复制局部变量vector到类内变量,（BasicLogic::UpperCope()通过指向BlackBoard的全局指针访问）
+        //3.本车任务转换
+        //4.第一个InputTask立即给出，来立即打断执行中的任务。(单步行为树支持state=pause、running、IDLE下的新任务)
+        //5.如果还有任务，交给任务列表
+        //6.list到InputTask的转换由行为树中的BasicLogic::UpperCope()依时序实现。
+        
+//     if(msg->host_cmd_array.size()==1)//单任务，不会影响复合任务列表，Pause目前必须单任务输入。
+// {
+//                     g_BasicLogicAgent->InputTask=(TaskIndividual) msg->host_cmd_array.back().mission.mission;
+//                      if(g_BasicLogicAgent->InputTask==Assemble)
+//                            goal = msg->host_cmd_array.back().goal.pose;
+// }
+//     else//复合任务：允许使用"Motion+Pause","Pause+Motion”是错误使用，会被自动当作"STOP+Motion"。
+//                                   //Resume的一切复合使用都是非法的。（事实上Resume要求执行上一次的任务这与复合Motion的逻辑矛盾，如果这么给程序逻辑未知！！！！）
+// {
+        std::vector<robot_msgs::HostCmd>().swap(msgs);//1
+
+        msgs.assign(msg->host_cmd_array.rbegin(),msg->host_cmd_array.rend());//2反向初始化：rbegin->rend.
+        std::vector<robot_msgs::HostCmd>::iterator lr1=msgs.begin();
+        std::vector<robot_msgs::HostCmd>::iterator lr2=msgs.begin();
+        do
+        {
+            for(int i=0;i<lr1->car_id.size();i++){
+                if(lr1->car_id.at(i)==car_number){
+                    (*lr2++)=(*lr1);
+                    break;
+                }
+            }
+            if(lr1>=lr2){
+            msgs.erase(lr1);//
+            }
+            else
+                lr1++;
+        }while(lr1!=msgs.end());//3
+        if(!msgs.empty())
+    {
+        g_BasicLogicAgent->InputTask  = (TaskIndividual)  msgs.back().mission.mission;;
+        if(g_BasicLogicAgent->InputTask==Assemble)
+        goal = msgs.back().goal.pose;
+        msgs.pop_back();//4
+       if(!msgs.empty())
+       {
+        std::vector<robot_msgs::HostCmd>().swap(TaksList);//1
+        TaksList.assign(msg->host_cmd_array.begin(),msg->host_cmd_array.end());//5
+       }
     }
 
-    g_BasicLogicAgent->InputTask  = (TaskIndividual)msg->mission.mission;
-    goal = msg->goal.pose;
 }
-
-void BlackBoard::PubDecisionState(std::string state){
-    std_msgs::String msg;
-    msg.data = state;
-    decision_state_pub.publish(msg);
-}
+	void BlackBoard::PubDecisionState(std::string state){
+        std_msgs::String msg;
+        msg.data = state;
+        decision_state_pub.publish(msg);
+    }
 	
-geometry_msgs::Pose BlackBoard::GetGoal(){
-    return goal;
-}
-///<<< END WRITING YOUR CODE
+	geometry_msgs::Pose BlackBoard::GetGoal(){
+        return goal;
+    }
+    ///<<< END WRITING YOUR CODE

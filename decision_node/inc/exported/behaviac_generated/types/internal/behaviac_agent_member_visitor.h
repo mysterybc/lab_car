@@ -10,6 +10,12 @@
 // Agent property and method handlers
 
 
+struct METHOD_TYPE_BasicLogic_Upper_Processing { };
+template<> inline void BasicLogic::_Execute_Method_<METHOD_TYPE_BasicLogic_Upper_Processing>()
+{
+	this->BasicLogic::Upper_Processing();
+}
+
 
 
 struct METHOD_TYPE_ForegrdFunc_Assemble { };

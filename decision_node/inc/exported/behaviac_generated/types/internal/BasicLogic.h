@@ -8,9 +8,11 @@
 #define _BEHAVIAC_BASICLOGIC_H_
 
 #include "behaviac_headers.h"
-
+#include "BlackBoard.h"
 ///<<< BEGIN WRITING YOUR CODE FILE_INIT
-
+extern std::vector<robot_msgs::HostCmd> msgs;
+class BlackBoard;
+extern BlackBoard* g_BlackBoardAgent;
 ///<<< END WRITING YOUR CODE
 
 class BasicLogic : public behaviac::Agent
@@ -30,6 +32,8 @@ public:
 	public: TaskIndividual InputTask;
 
 	public: TaskType InputType;
+
+	private: void Upper_Processing();
 
 ///<<< BEGIN WRITING YOUR CODE CLASS_PART
 
