@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--EXPORTED BY TOOL, DON'T MODIFY IT!-->
-<agents version="1" signature="2217163688">
-  <agent type="BasicLogic" base="behaviac::Agent" signature="4255834472">
+<agents version="1" signature="2198742996">
+  <agent type="BasicLogic" base="behaviac::Agent" signature="2308046977">
     <properties>
       <property name="CurrentTask" type="TaskIndividual" member="false" static="false" defaultvalue="NonTask" />
       <property name="CurrentType" type="TaskType" member="false" static="false" defaultvalue="NonType" />

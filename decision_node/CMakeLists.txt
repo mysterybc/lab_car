@@ -29,6 +29,3 @@ aux_source_directory(inc/exported/behaviac_generated/types/internal  SRC_LIST2)
 add_executable(decision_node ${SRC_LIST1} ${SRC_LIST2})
 target_link_libraries(decision_node  pthread ${catkin_LIBRARIES}
 ${PROJECT_SOURCE_DIR}/libs/libbehaviac_gcc_release.a)
-
-
-

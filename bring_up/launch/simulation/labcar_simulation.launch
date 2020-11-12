@@ -14,7 +14,7 @@
 
     <group ns="$(arg robot_name)">
         <!-- 每辆车的参数 -->
-        <param name="car_id" value="$(arg car_id)"/>
+        <param name="car_id" value="$(arg car_id)" default="1"/>
         <param name="my_ip_address" value="$(arg my_ip_address)"/>
         <!-- tf用到的frame前缀 -->
         <param name="tf_ns" value="$(arg robot_name)/"/>

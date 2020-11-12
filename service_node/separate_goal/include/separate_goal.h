@@ -7,6 +7,7 @@
 #include "geometry_msgs/Pose.h"
 #include "geometry_msgs/Point.h"
 #include "robot_msgs/RobotStates.h"
+#include "robot_msgs/DebugInfo.h"
 #include "string"
 
 
@@ -35,6 +36,7 @@ public:
 private:
     std::vector<RobotInfo> robots_info;
     ros::Subscriber robots_state_sub;
+    ros::Publisher debug_pub;
     ros::ServiceServer separate_service; 
     ros::Subscriber map_sub;
     ros::NodeHandle nh;

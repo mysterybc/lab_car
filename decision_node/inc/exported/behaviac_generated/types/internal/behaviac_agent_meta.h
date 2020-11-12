@@ -30,6 +30,7 @@ namespace behaviac
 	inline const void* Get_BasicLogic_InputType(Agent* self) { return &((BasicLogic*)self)->InputType; };
 
 	inline void FunctionPointer_BasicLogic_LogMessage(char* param0) { BasicLogic::LogMessage(param0); }
+	inline void FunctionPointer_BasicLogic_Upper_Processing(Agent* self) { ((BasicLogic*)self)->_Execute_Method_<METHOD_TYPE_BasicLogic_Upper_Processing, void >(); }
 
 	inline void Set_BlackBoard_car_number(Agent* self, int value) { ((BlackBoard*)self)->car_number = value; };
 	inline const void* Get_BlackBoard_car_number(Agent* self) { return &((BlackBoard*)self)->car_number; };

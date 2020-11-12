@@ -29,7 +29,7 @@ int GPS::UpDateGPS()
     { 
         //获取gps port
         std::string gps_port;
-        nh.param<std::string>("gps_port",gps_port,"/dev/ttyUSB2");
+        nh.param<std::string>("/gps_port",gps_port,"/dev/ttyUSB2");
         //设置串口属性，并打开串口 
         ser.setPort(gps_port);
         ser.setBaudrate(115200); 

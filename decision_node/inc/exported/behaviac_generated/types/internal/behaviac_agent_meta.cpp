@@ -237,7 +237,7 @@ namespace behaviac
 
 		virtual bool load()
 		{
-			AgentMeta::SetTotalSignature(2217163688u);
+			AgentMeta::SetTotalSignature(2198742996u);
 
 			AgentMeta* meta = NULL;
 			BEHAVIAC_UNUSED_VAR(meta);
@@ -253,13 +253,14 @@ namespace behaviac
 			meta->RegisterMethod(502968959u, BEHAVIAC_NEW CMethod_behaviac_Agent_VectorRemove());
 
 			// BasicLogic
-			meta = BEHAVIAC_NEW AgentMeta(4255834472u);
+			meta = BEHAVIAC_NEW AgentMeta(2308046977u);
 			AgentMeta::GetAgentMetas()[3030865775u] = meta;
 			meta->RegisterMemberProperty(3122630375u, BEHAVIAC_NEW CMemberProperty< TaskIndividual >("CurrentTask", Set_BasicLogic_CurrentTask, Get_BasicLogic_CurrentTask));
 			meta->RegisterMemberProperty(3010945600u, BEHAVIAC_NEW CMemberProperty< TaskType >("CurrentType", Set_BasicLogic_CurrentType, Get_BasicLogic_CurrentType));
 			meta->RegisterMemberProperty(2409883058u, BEHAVIAC_NEW CMemberProperty< TaskIndividual >("InputTask", Set_BasicLogic_InputTask, Get_BasicLogic_InputTask));
 			meta->RegisterMemberProperty(2261453077u, BEHAVIAC_NEW CMemberProperty< TaskType >("InputType", Set_BasicLogic_InputType, Get_BasicLogic_InputType));
 			meta->RegisterMethod(1045109914u, BEHAVIAC_NEW CAgentStaticMethodVoid_1<char*>(FunctionPointer_BasicLogic_LogMessage));
+			meta->RegisterMethod(1127271997u, BEHAVIAC_NEW CAgentMethodVoid(FunctionPointer_BasicLogic_Upper_Processing));
 			meta->RegisterMethod(2521019022u, BEHAVIAC_NEW CMethod_behaviac_Agent_VectorAdd());
 			meta->RegisterMethod(2306090221u, BEHAVIAC_NEW CMethod_behaviac_Agent_VectorClear());
 			meta->RegisterMethod(3483755530u, BEHAVIAC_NEW CMethod_behaviac_Agent_VectorContains());

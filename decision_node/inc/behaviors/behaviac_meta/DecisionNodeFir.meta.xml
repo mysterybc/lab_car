@@ -49,6 +49,7 @@
       <Member Name="InputType" DisplayName="InputType" Desc="InputType" Class="BasicLogic" Type="TaskType" TypeFullName="XMLPluginBehaviac.TaskType" defaultvalue="NonType" Static="false" Public="true" Readonly="false" />
       <Member Name="CurrentTask" DisplayName="CurrentTask" Desc="CurrentTask" Class="BasicLogic" Type="TaskIndividual" TypeFullName="XMLPluginBehaviac.TaskIndividual" defaultvalue="NonTask" Static="false" Public="true" Readonly="false" />
       <Member Name="CurrentType" DisplayName="CurrentType" Desc="CurrentType" Class="BasicLogic" Type="TaskType" TypeFullName="XMLPluginBehaviac.TaskType" defaultvalue="NonType" Static="false" Public="true" Readonly="false" />
+      <Method Name="Upper_Processing" DisplayName="Upper_Processing" Desc="Upper_Processing" Class="BasicLogic" ReturnType="void" ReturnTypeFullName="System.Void" Static="false" Public="false" istask="false" />
     </agent>
     <agent classfullname="BlackBoard" base="behaviac::Agent" DisplayName="BlackBoard" Desc="BlackBoard" IsRefType="true" IsCustomized="true">
       <Member Name="car_number" DisplayName="car_number" Desc="car_number" Class="BlackBoard" Type="int" TypeFullName="System.Int32" defaultvalue="0" Static="false" Public="true" Readonly="false" />

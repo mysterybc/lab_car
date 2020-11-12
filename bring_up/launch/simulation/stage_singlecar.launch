@@ -26,7 +26,7 @@
     <!-- tf用到的frame前缀 -->
     <param name="tf_ns" value=""/>
     <!--  ************** Navigation ***************  -->
-    <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base" >
     <rosparam file="$(find bring_up)/cfg/$(arg simulator)/single_car/costmap_common_params.yaml" command="load" ns="global_costmap" />
     <rosparam file="$(find bring_up)/cfg/$(arg simulator)/single_car/costmap_common_params.yaml" command="load" ns="local_costmap" />
     <rosparam file="$(find bring_up)/cfg/$(arg simulator)/single_car/local_costmap_params.yaml" command="load" />
@@ -46,7 +46,7 @@
     <!-- behavior tree -->
     <node pkg="decision_node" type="decision_node"      name="decision_node"  output="screen"   />
     <!-- separate goal -->
-    <node pkg="service_node" type="separate_goal"      name="separate_goal"   />
+    <node pkg="service_node" type="separate_goal"      name="separate_goal"   output="screen"/>
     <!-- cmd recv -->
     <!-- <node pkg="communication_node" name="receive_host_cmd" type="receive_host_cmd" /> -->
     <!-- send robot state -->

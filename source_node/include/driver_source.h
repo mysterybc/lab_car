@@ -7,6 +7,7 @@
 #include <geometry_msgs/Quaternion.h>
 #include <geometry_msgs/TransformStamped.h>
 #include "tf/transform_broadcaster.h"
+#include "robot_msgs/DebugInfo.h"
 #include "robot_msgs/Cmd.h"
 #include <nav_msgs/Odometry.h>
 #include "std_msgs/String.h"
@@ -25,6 +26,7 @@ public:
     void cmdVelCallback(const geometry_msgs::Twist::ConstPtr& cmd_vel);
 private:    
     serial::Serial sp;
+    ros::Publisher debug_pub;
     ros::Publisher vel_pub;
     ros::Publisher odom_pub_;
     int car_id;

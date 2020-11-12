@@ -1,0 +1,6 @@
+<launch>
+	<node args="_myid:=1 __log:=rob1.log" pkg="bitrobot" type="bitrobot_form" name="bitform1" />
+	<node args="_myid:=2 __log:=rob2.log" pkg="bitrobot" type="bitrobot_form" name="bitform2" />
+	<node args="_myid:=3 __log:=rob3.log" pkg="bitrobot" type="bitrobot_form" name="bitform3" />
+	<node args="_myid:=4 __log:=rob4.log" pkg="bitrobot" type="bitrobot_form" name="bitform4" />
+</launch>
