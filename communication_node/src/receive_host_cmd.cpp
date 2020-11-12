@@ -108,7 +108,6 @@ void HostMessage::DecodeMission(Json::Value json){
         }
         host_joy.publish(joy);
     }
-    
 }
 
 void HostMessage::run()
