@@ -2,15 +2,15 @@
     <!-- 全局参数 -->
     <param name="use_sim_time" value="true"/>
     <rosparam>
-        total_robot_ip: ["tcp://192.168.31.144:6661","tcp://192.168.31.144:6662"]
+        total_robot_ip: ["tcp://127.0.0.1:6661"]
     </rosparam>
     <arg name="total_car_number" value="1" />
-    <arg name="host_ip_address" value="tcp://192.168.31.8:6666" />
+    <arg name="host_ip_address" value="127.0.0.1:6666" />
     <arg name="simulator" value="stage"/>
     <!-- 第一辆车的参数 -->
     <arg name="car_id" value="1"/>
     <arg name="robot_name" value="robot$(arg car_id)"/>
-    <arg name="my_ip_address" value="tcp://192.168.31.144:6661" />
+    <arg name="my_ip_address" value="127.0.0.1:6661" />
 
     <!-- stage环境 -->
     <node pkg="stage_ros" type="stageros" name="stageros" args="$(find simulation)/worlds/robot2020.world" />
@@ -46,13 +46,11 @@
     <!-- behavior tree -->
     <node pkg="decision_node" type="decision_node"      name="decision_node"  output="screen"   />
     <!-- separate goal -->
-    <node pkg="service_node" type="separate_goal"      name="separate_goal"   output="screen"/>
-    <!-- cmd recv -->
-    <!-- <node pkg="communication_node" name="receive_host_cmd" type="receive_host_cmd" /> -->
+    <node pkg="service_node" type="separate_goal"      name="separate_goal"  />
     <!-- send robot state -->
-    <node pkg="communication_node" name="publish_robot_state" type="publish_robot_state" output="screen"/>
+    <node pkg="communication_node" name="publisher" type="publisher" output="screen"/>
     <!-- receive other robot state -->
-    <node pkg="communication_node" name="receive_robot_state" type="receive_robot_state" output="screen" />
+    <node pkg="communication_node" name="receiver" type="receiver" output="screen" />
 
 
 </launch>
