@@ -13,16 +13,23 @@
 #include "nav_msgs/Odometry.h"
 #include "robot_msgs/HostCmd.h"
 #include "robot_msgs/HostCmdArray.h"
+#include "robot_msgs/RobotStates.h"
 #include "string"
 #include <geometry_msgs/PoseStamped.h>
 #include "std_msgs/String.h"
 #include "BasicLogic.h"
-#include "robot_msgs/DebugInfo.h"
+#include "GroupLogic.h"
+#include "ForegrdFunc.h"
+#include<utility>
 ///<<< BEGIN WRITING YOUR CODE FILE_INIT
 
 ///<<< END WRITING YOUR CODE
 class BasicLogic;
+class GroupLogic;
+class ForegrdFunc;
 extern BasicLogic* g_BasicLogicAgent;
+extern GroupLogic* g_GroupLogicAgent;
+extern ForegrdFunc* g_ForegrdFuncAgent;
 class BlackBoard : public behaviac::Agent
 ///<<< BEGIN WRITING YOUR CODE BlackBoard
 ///<<< END WRITING YOUR CODE
@@ -34,23 +41,24 @@ public:
 	BEHAVIAC_DECLARE_AGENTTYPE(BlackBoard, behaviac::Agent)
 
 	public: int car_number;
-
 ///<<< BEGIN WRITING YOUR CODE CLASS_PART
 
 	public: behaviac::vector<behaviac::string> MissionTable;
-    public: void CmdCallback(const robot_msgs::HostCmdArrayConstPtr &msg);                   //**************************RECTIFY
-	public:void PubDecisionState(std::string state);
+    public: void CmdCallback(const robot_msgs::HostCmdArrayConstPtr &msg);
+    public: void GroupStateCallback(const robot_msgs::RobotStatesConstPtr &msg); 
+	public:void PubDecisionState(ForeFuncState state);
     public:geometry_msgs::Pose GetGoal();
 public:
     std::vector<robot_msgs::HostCmd> msgs;
-     std::vector<robot_msgs::HostCmd> TaksList;
+    std::vector<robot_msgs::HostCmd> TaskList;
     //! Goal info
-    ros::Publisher debug_pub;
     geometry_msgs::Pose goal;
     // car id 
-    std::string decision_state;
+    ForeFuncState decision_state;
+
+   // std::vector<std::pair<int,ForeFuncState>>  CurrentGroupState;//pair<car_number,car_state>
 private:
-    ros::Subscriber goal_sub;
+    ros::Subscriber group_state_sub;
     ros::Subscriber cmd_sub;
     ros::Publisher  decision_state_pub;
 ///<<< END WRITING YOUR CODE

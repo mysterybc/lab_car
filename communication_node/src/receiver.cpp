@@ -7,6 +7,7 @@
 #include "ros/ros.h"
 #include "robot_msgs/RobotStates.h"
 #include "tf/transform_datatypes.h"
+#include "std_msgs/UInt8MultiArray.h"
 //my lib
 #include "zmq_lib.h"
 #include "msgs.h"
@@ -20,32 +21,20 @@ std::vector<std::string> fmtInputIp(std::vector<std::string> &ips, std::string m
 }
 
 //解码机器人状态消息
-void decodeRobotMsgs(std::vector<std::string> msgs,std::map<int,RobotState> &id2states){
-    for(auto msg:msgs){
-        if(msg.size() <= 5){
-            continue;
-        }
-        RobotState state;
-        Json::Value json;
-        Json::Reader reader;
-        reader.parse(msg.c_str(),json);
-        if(json["message_type"].asString() != "state")
-            continue ;
-        state.have_config = true;
-        state.id = json["id"].asInt();
-        state.robot_state = json["state"].asString();
-        state.robot_pose.position.x = json["pose"][0].asDouble();
-        state.robot_pose.position.y = json["pose"][1].asDouble();
-        state.robot_pose.position.z = 0;
-        double yaw = json["pose"][2].asDouble();
-        yaw = yaw / 180.0 * 3.1415926;
-        state.robot_pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
-        id2states[state.id] = state;
-    }
+void decodeRobotMsgs(std::string msg,std::map<int,RobotState> &id2states)
+{
+    RobotState state;
+    state.json2Robostate(msg);
+    id2states[state.id] = state;
 }
 
 //解码上位机消息
-void decodeHostMsgs(std::vector<std::string> msgs){
+void decodeHostMsg(std::string msg){
+    Json::Value json;
+    Json::Reader reader;
+    reader.parse(msg.c_str(),json);
+    std::string message_type = json["message_type"].asString();
+    
     
 }
 
@@ -62,7 +51,7 @@ void pubStatus(std::map<int,RobotState> id2states,ros::Publisher &pub){
         robot_msgs::RobotState state_msg;
         state_msg.car_id = state.second.id;
         state_msg.robot_pose = state.second.robot_pose;
-        state_msg.robot_state.data = state.second.robot_state;
+        state_msg.robot_state.robot_states_enum = state.second.robot_state;
         robot_states_msg.robot_states.push_back(state_msg);     
     }
     pub.publish(robot_states_msg);
@@ -71,6 +60,25 @@ void pubStatus(std::map<int,RobotState> id2states,ros::Publisher &pub){
 //发布host cmd
 void pubHostCmd(){
 
+}
+
+//transform algomsg 2 array
+void algomsg2multiarr(const std::string& msg, std_msgs::UInt8MultiArray& data) {
+	data.layout.dim.resize(1);
+	data.layout.data_offset = 0;
+	data.layout.dim[0].size = msg.size();
+	data.layout.dim[0].stride = 1;
+
+	data.data.resize(msg.size());
+	for (unsigned i=0;i<msg.size();++i) {
+		data.data[i] = (uint8_t)msg[i];
+	}
+}
+//pub algomsg
+void pubAlgomsg(std::string &msg,ros::Publisher& algomsg_pub){
+    std_msgs::UInt8MultiArray algomsg;
+    algomsg2multiarr(msg,algomsg);
+    algomsg_pub.publish(algomsg);
 }
 
 
@@ -114,25 +122,34 @@ int main(int argc, char** argv){
     //message init
     std::map<int,RobotState> id2states;
     std::vector<std::string> robot_msgs;
-    std::vector<std::string> host_msgs;
+    std::string host_msg;
 
     //ros pub
     ros::Publisher robot_state_pub = nh.advertise<robot_msgs::RobotStates>("robot_states",10);
+    ros::Publisher algomsg_pub = nh.advertise<std_msgs::UInt8MultiArray>("algomsg_others",10);
 
     
 
     ros::Rate loop(20);
     while(ros::ok()){
         robot_msgs.clear();
-        // host_msgs.clear();
+        //deal with msgs from host
         state_receive.receiveMsg(robot_msgs);
         // host_receive.receiveMsg(host_msgs);
         // if(!host_msgs.empty()){
-        //     decodeHostMsgs(host_msgs);
+        //     decodeHostMsg(host_msg);
         //     pubHostCmd();
         // }
+        //deal with msgs from robots
         if(!robot_msgs.empty()){
-            decodeRobotMsgs(robot_msgs,id2states);
+            for(auto msg:robot_msgs){
+                if(msg.size() == 81){
+                    pubAlgomsg(msg,algomsg_pub);
+                }
+                else{
+                    decodeRobotMsgs(msg,id2states);
+                }
+            }
             pubStatus(id2states,robot_state_pub);
         }
         ros::spinOnce();

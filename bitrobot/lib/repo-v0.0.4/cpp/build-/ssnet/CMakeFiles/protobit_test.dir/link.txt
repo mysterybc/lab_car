@@ -1,0 +1,1 @@
+/usr/bin/c++     CMakeFiles/protobit_test.dir/proto/proto_bit.cpp.o CMakeFiles/protobit_test.dir/proto/proto_bit_test.cpp.o CMakeFiles/protobit_test.dir/proto/proto_util.cpp.o  -o bin/protobit_test 

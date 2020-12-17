@@ -29,3 +29,6 @@ include_directories(
 
 add_executable(host_cmd_pub src/host_cmd_pub.cpp)
 target_link_libraries(host_cmd_pub ${catkin_LIBRARIES})
+
+add_executable(send_march_mission src/send_march_mission.cpp)
+target_link_libraries(send_march_mission ${catkin_LIBRARIES})

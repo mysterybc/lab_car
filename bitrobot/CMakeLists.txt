@@ -13,13 +13,15 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
   nav_msgs
+  robot_msgs
+  roslib
 #  move_base_msgs
 #  actionlib
 )
 
 
 # TODO Change bitctrl_DIR to the install dir of bitctrl
-set(bitctrl_DIR /home/lovezy/packs/repo-v0.0.4/cpp/install-all/lib/cmake/bitctrl)
+set(bitctrl_DIR ./lib/repo-v0.0.4/cpp/install-all/lib/cmake/bitctrl)
 find_package(bitctrl REQUIRED)
 
 ## System dependencies are found with CMake's conventions

@@ -57,14 +57,19 @@ window
 floorplan
 ( 
   name "robot somulation Map"
-  bitmap "/home/lovezy/catkin_car/src/bring_up/map/play_field.pgm"
+  bitmap "/home/lovebc/workspace/ros/lab_car_ws/src/bring_up/map/play_field.pgm"
   size [25.000    25.400   1.000 ]
   pose [12.500  12.700   0.000  0.000 ]
 )
 
 # throw in a robot
- car(pose [ 3.000  3.000  0.000 0.000 ] name "car0" color "blue" )
- car(pose [ 3.000  22.000 0.000 0.000 ] name "car3" color "yellow" )
- car(pose [ 22.000 22.000 0.000 0.000 ] name "car2" color "red" )
- car(pose [ 22.000 3.000  0.000 0.000 ] name "car1" color "black" )
+# car(pose [ 3.000  3.000  0.000 0.000 ] name "car0" color "blue" )
+# car(pose [ 3.000  22.000 0.000 0.000 ] name "car3" color "yellow" )
+# car(pose [ 22.000 22.000 0.000 0.000 ] name "car2" color "red" )
+# car(pose [ 22.000 3.000  0.000 0.000 ] name "car1" color "black" )
+
+ car(pose [ 2 4  0.000 0.000 ] name "car0" color "blue" )
+ car(pose [ 4 4 0.000 0.000 ] name "car3" color "yellow" )
+ car(pose [ 4 2 0.000 0.000 ] name "car2" color "red" )
+ car(pose [ 2 2  0.000 0.000 ] name "car1" color "black" )
   

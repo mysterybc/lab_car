@@ -1,0 +1,1 @@
+/home/lovezy/catkin_car/src/bitrobot/lib/repo-v0.0.4/cpp/install-all/bin/simurobot

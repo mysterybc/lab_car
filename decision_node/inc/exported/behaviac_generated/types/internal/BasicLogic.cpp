@@ -28,18 +28,33 @@ BasicLogic::~BasicLogic()
 ///<<< END WRITING YOUR CODE
 }
 
-void BasicLogic::Upper_Processing()
+void BasicLogic::Upper_Processing()//尝试写成树的逻辑
 {
 ///<<< BEGIN WRITING YOUR CODE Upper_Processing
-if(InputTask==NonTask&&CurrentTask==NonTask&&g_BlackBoardAgent->TaksList.empty()!=1)//单步无任务时取出任务列表中的任务赋给InputTask变量
+g_GroupLogicAgent->GroupLogicProcessing();
+
+if(g_GroupLogicAgent->GroupPermission==true && InputTask==NonTask&&CurrentTask==NonTask&&g_BlackBoardAgent->TaskList.empty()!=1)//单步无任务时取出任务列表中的任务赋给InputTask变量&&旧任务都完成才完成
 		{
-			InputTask=(TaskIndividual)g_BlackBoardAgent->TaksList.back().mission.mission;
+			g_GroupLogicAgent->GroupMember.assign(g_BlackBoardAgent->TaskList.back().car_id.begin(),g_BlackBoardAgent->TaskList.back().car_id.end());
+    // //test
+    // if(g_BlackBoardAgent->car_number==2)
+	// 			ROS_INFO("Member_num:%d",g_GroupLogicAgent->GroupMember.size());
+    // //test
 
-			g_BlackBoardAgent->	goal = g_BlackBoardAgent->TaksList.back().goal.pose;
+
+
+			while(g_GroupLogicAgent->GroupPermission==false)
+			{
+				g_GroupLogicAgent->GroupLogicProcessing();
+				ROS_INFO("wait for others");
+			}//新任务组员都空闲
+			InputTask=(TaskIndividual)g_BlackBoardAgent->TaskList.back().mission.mission;
+
+			g_BlackBoardAgent->	goal = g_BlackBoardAgent->TaskList.back().goal.pose;
 			
-			g_BlackBoardAgent->TaksList.pop_back();
-		}
 
+			g_BlackBoardAgent->TaskList.pop_back();
+		}
 ///<<< END WRITING YOUR CODE
 }
 

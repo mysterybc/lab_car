@@ -12,6 +12,7 @@
 #include "BasicLogic.h"
 #include "BackgrdFunc.h"
 #include "robot_msgs/BuildUpAction.h"
+#include "robot_msgs/MarchAction.h"
 #include "actionlib/client/simple_action_client.h"
 #include <iostream>
 #include <string>
@@ -40,15 +41,26 @@ public:
 	public: ForeFuncState fore_func_state;
 
 	public: void Assemble();
-	public: void FeedbackCallback(const robot_msgs::BuildUpFeedbackConstPtr &feedback);
-	public: void ActiveCallback(void);
-	public: void DoneCallback(const actionlib::SimpleClientGoalState &state, const robot_msgs::BuildUpResultConstPtr &result);
+	public: void Assemble_FeedbackCallback(const robot_msgs::BuildUpFeedbackConstPtr &feedback);
+	public: void Assemble_ActiveCallback(void);
+	public: void Assemble_DoneCallback(const actionlib::SimpleClientGoalState &state, const robot_msgs::BuildUpResultConstPtr &result);
+
+	public: void March_gps();
+	public: void March_laser();
+	public: void March_FeedbackCallback(const robot_msgs::MarchFeedbackConstPtr &feedback);
+	public: void March_ActiveCallback(void);
+	public: void March_DoneCallback(const actionlib::SimpleClientGoalState &state, const robot_msgs::MarchResultConstPtr &result);
+
+
 	public: actionlib::SimpleActionClient<robot_msgs::BuildUpAction>* build_up_action;
+	public:actionlib::SimpleActionClient<robot_msgs::MarchAction>* gps_march_action;
+	public:actionlib::SimpleActionClient<robot_msgs::MarchAction>* laser_march_action;
 ///<<< BEGIN WRITING YOUR CODE CLASS_PART
 private:
     ros::NodeHandle nh;
     
-    robot_msgs::BuildUpGoal goal;
+    robot_msgs::BuildUpGoal assemble_goal;
+	robot_msgs::MarchGoal march_goal;
 ///<<< BEGIN WRITING YOUR CODE CLASS_PART
 
 ///<<< END WRITING YOUR CODE
@@ -59,5 +71,3 @@ private:
 ///<<< END WRITING YOUR CODE
 
 #endif
-
-

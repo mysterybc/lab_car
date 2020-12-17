@@ -148,6 +148,28 @@
                 <property ResultOption="BT_SUCCESS" />
               </node>
             </node>
+            <node class="Sequence" id="43">
+              <node class="Condition" id="45">
+                <property Operator="Equal" />
+                <property Opl="TaskIndividual BasicLogic.BasicLogic::InputTask" />
+                <property Opr="const TaskIndividual March_gps" />
+              </node>
+              <node class="Action" id="46">
+                <property Method="ForegrdFunc.ForegrdFunc::March_gps()" />
+                <property ResultOption="BT_SUCCESS" />
+              </node>
+            </node>
+            <node class="Sequence" id="47">
+              <node class="Condition" id="48">
+                <property Operator="Equal" />
+                <property Opl="TaskIndividual BasicLogic.BasicLogic::InputTask" />
+                <property Opr="const TaskIndividual March_laser" />
+              </node>
+              <node class="Action" id="49">
+                <property Method="ForegrdFunc.ForegrdFunc::March_laser()" />
+                <property ResultOption="BT_SUCCESS" />
+              </node>
+            </node>
           </node>
           <node class="Assignment" id="24">
             <property CastRight="false" />

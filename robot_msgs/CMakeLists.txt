@@ -24,6 +24,7 @@ add_message_files(
   Cmd.msg
   PerceptionNodeMsg.msg
   SourceNodeMsg.msg
+  robot_states_enum.msg
   RobotState.msg
   RobotStates.msg
 )
@@ -37,9 +38,10 @@ add_service_files(
 )
 
 add_action_files(
-    DIRECTORY action
-    FILES
-    BuildUp.action
+  DIRECTORY action
+  FILES
+  BuildUp.action
+  March.action
 )
 
 generate_messages(

@@ -25,6 +25,8 @@ BackgrdFunc::~BackgrdFunc()
 }
 void BackgrdFunc::Pause()
 {
+ROS_INFO("%d",g_BasicLogicAgent->InputTask);
+
 ///<<< BEGIN WRITING YOUR CODE Pause
 switch (g_BasicLogicAgent->CurrentTask)
 {
@@ -50,8 +52,8 @@ g_BasicLogicAgent->CurrentTask=TaskIndividual::NonTask;
 
 void BackgrdFunc::STOP()
 {
-            ROS_INFO("STOP!!!");
 ///<<< BEGIN WRITING YOUR CODE STOP
+ROS_INFO("%d",g_BasicLogicAgent->InputTask);
 switch (g_BasicLogicAgent->CurrentTask)
 {
 case Assemble:

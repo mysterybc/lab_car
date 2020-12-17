@@ -13,6 +13,8 @@ BEHAVIAC_BEGIN_ENUM_EX(TaskIndividual, TaskIndividual)
 	BEHAVIAC_ENUMCLASS_DISPLAY_INFO_EX(L"TaskIndividual", L"");
 
 	BEHAVIAC_ENUM_ITEM_EX(NonTask, "NonTask");
+	BEHAVIAC_ENUM_ITEM_EX(March_gps, "March_gps");
+	BEHAVIAC_ENUM_ITEM_EX(March_laser, "March_laser");
 	BEHAVIAC_ENUM_ITEM_EX(Assemble, "Assemble");
 	BEHAVIAC_ENUM_ITEM_EX(STOP, "STOP");
 	BEHAVIAC_ENUM_ITEM_EX(Pause, "Pause");

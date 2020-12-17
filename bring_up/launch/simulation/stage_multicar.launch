@@ -5,7 +5,7 @@
         total_robot_ip: ["127.0.0.1:6661","127.0.0.1:6662","127.0.0.1:6663","127.0.0.1:6664"]
     </rosparam>
     <arg name="simulator" value="stage"/>
-    <arg name="total_car_number" value="2" />
+    <arg name="total_car_number" value="4" />
     <arg name="host_ip_address" value="127.0.0.1:6666" />
     <!-- 第一辆车的参数 -->
     <arg name="car_id1" value="1"/>

@@ -1,0 +1,13 @@
+/home/lovezy/catkin_car/src/bitrobot/lib/repo-v0.0.4/cpp/build-/simu/CMakeFiles/install/strip.dir
+/home/lovezy/catkin_car/src/bitrobot/lib/repo-v0.0.4/cpp/build-/simu/CMakeFiles/install/local.dir
+/home/lovezy/catkin_car/src/bitrobot/lib/repo-v0.0.4/cpp/build-/simu/CMakeFiles/edit_cache.dir
+/home/lovezy/catkin_car/src/bitrobot/lib/repo-v0.0.4/cpp/build-/simu/CMakeFiles/rebuild_cache.dir
+/home/lovezy/catkin_car/src/bitrobot/lib/repo-v0.0.4/cpp/build-/simu/CMakeFiles/list_install_components.dir
+/home/lovezy/catkin_car/src/bitrobot/lib/repo-v0.0.4/cpp/build-/simu/CMakeFiles/install.dir
+/home/lovezy/catkin_car/src/bitrobot/lib/repo-v0.0.4/cpp/build-/simu/simulation/CMakeFiles/install/strip.dir
+/home/lovezy/catkin_car/src/bitrobot/lib/repo-v0.0.4/cpp/build-/simu/simulation/CMakeFiles/install/local.dir
+/home/lovezy/catkin_car/src/bitrobot/lib/repo-v0.0.4/cpp/build-/simu/simulation/CMakeFiles/simurobot.dir
+/home/lovezy/catkin_car/src/bitrobot/lib/repo-v0.0.4/cpp/build-/simu/simulation/CMakeFiles/edit_cache.dir
+/home/lovezy/catkin_car/src/bitrobot/lib/repo-v0.0.4/cpp/build-/simu/simulation/CMakeFiles/rebuild_cache.dir
+/home/lovezy/catkin_car/src/bitrobot/lib/repo-v0.0.4/cpp/build-/simu/simulation/CMakeFiles/install.dir
+/home/lovezy/catkin_car/src/bitrobot/lib/repo-v0.0.4/cpp/build-/simu/simulation/CMakeFiles/list_install_components.dir

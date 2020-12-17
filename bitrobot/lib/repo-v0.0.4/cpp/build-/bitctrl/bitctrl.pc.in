@@ -1,0 +1,10 @@
+prefix=/home/lovezy/catkin_car/src/bitrobot/lib/repo-v0.0.4/cpp/install-all
+exec_prefix=/home/lovezy/catkin_car/src/bitrobot/lib/repo-v0.0.4/cpp/install-all
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: bitctrl
+Description: Control Algorithm Library by Chengsi Shang
+Version: 1.0
+Libs: -L${libdir} -lbitctrl
+Cflags: -I${includedir}

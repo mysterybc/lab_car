@@ -8,8 +8,12 @@ find_package(catkin REQUIRED COMPONENTS
   robot_msgs
   roscpp
   std_msgs
+  roslib
   tf
 )
+
+set(bitctrl_DIR ../bitrobot/lib/repo-v0.0.4/cpp/install-all/lib/cmake/bitctrl)
+find_package(bitctrl REQUIRED)
 
 catkin_package()
 
@@ -24,5 +28,15 @@ target_link_libraries(build_up_task ${catkin_LIBRARIES})
 
 add_executable(build_up_task_nohost src/build_up_task_nohost.cpp)
 target_link_libraries(build_up_task_nohost ${catkin_LIBRARIES})
+
+
+####march action####
+
+add_executable(gps_march_task src/gps_march_task.cpp)
+target_link_libraries(gps_march_task ${catkin_LIBRARIES} bitctrl)
+
+
+add_executable(laser_march_task src/laser_march_task.cpp)
+target_link_libraries(laser_march_task ${catkin_LIBRARIES} bitctrl)
 
 

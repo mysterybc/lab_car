@@ -7,7 +7,10 @@
 #include "nav_msgs/Path.h"
 #include "std_msgs/String.h"
 #include "robot_msgs/ReportPath.h"
+#include "iostream"
+#include "robot_msgs/robot_states_enum.h"
 #include "tf/transform_listener.h"
+#include "std_msgs/UInt8MultiArray.h"
 //my lib
 #include "zmq_lib.h"
 #include "msgs.h"
@@ -49,8 +52,27 @@ bool ReportPath(robot_msgs::ReportPath::Request  &req,
 
 
 //接收状态信息
-void DecisionSubCB(const std_msgs::StringConstPtr &msg, StateMsg &state_msg){
-    state_msg.state = msg->data;
+void DecisionSubCB(const robot_msgs::robot_states_enumConstPtr &msg, StateMsg &state_msg){
+    state_msg.state = msg->robot_states_enum;
+}
+
+std::string multiarr2algomsg(const std_msgs::UInt8MultiArray& msg) {
+	std::string data(81, '\0');
+	if (msg.layout.dim.size() == 1) {
+		unsigned len = msg.layout.dim[0].size;
+		unsigned offset = msg.layout.data_offset;
+		//total 81 byte = id + 80 byte msg 
+		for (unsigned i =0;i<len && i< 81;++i) {
+			data[i] = (char)msg.data[offset + i];
+		}
+	}
+	return data;
+}
+
+//send algo msg
+void OnNewAlgomsg(const std_msgs::UInt8MultiArrayConstPtr &msg, zmq_lib::Sender &sender){
+    std::string send_msg = multiarr2algomsg(*msg);
+    sender.sendMsg(send_msg);
 }
 
 
@@ -98,11 +120,12 @@ int main(int argc,char **argv)
 
     //sub 
     ros::Subscriber state_subs;
+    ros::Subscriber algomsg_subs;
     ros::ServiceServer report_path_server;
     report_path_server = nh.advertiseService<robot_msgs::ReportPath::Request,robot_msgs::ReportPath::Response>\
                             ("report_path",boost::bind(&ReportPath,_1,_2,std::ref(path_msg),std::ref(sender)));
-    state_subs = nh.subscribe<std_msgs::String>("decision_state",10,boost::bind(&DecisionSubCB,_1,std::ref(state_msg)));
-
+    state_subs = nh.subscribe<robot_msgs::robot_states_enum>("decision_state",10,boost::bind(&DecisionSubCB,_1,std::ref(state_msg)));
+    algomsg_subs = nh.subscribe<std_msgs::UInt8MultiArray>("algomsg_my",10,boost::bind(&OnNewAlgomsg,_1,std::ref(sender)));
 
     //loop
     //in loop send state message

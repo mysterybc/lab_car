@@ -9,10 +9,13 @@
 
 #include "behaviac_headers.h"
 #include "BlackBoard.h"
+#include "GroupLogic.h"
 ///<<< BEGIN WRITING YOUR CODE FILE_INIT
 extern std::vector<robot_msgs::HostCmd> msgs;
 class BlackBoard;
 extern BlackBoard* g_BlackBoardAgent;
+class GroupLogic;
+extern GroupLogic* g_GroupLogicAgent;
 ///<<< END WRITING YOUR CODE
 
 class BasicLogic : public behaviac::Agent

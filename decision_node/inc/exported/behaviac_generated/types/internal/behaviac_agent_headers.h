@@ -12,5 +12,6 @@
 #include "BlackBoard.h"
 #include "ForegrdFunc.h"
 #include "BackgrdFunc.h"
+#include "GroupLogic.h"
 
 #endif // _BEHAVIAC_AGENT_HEADERS_H_

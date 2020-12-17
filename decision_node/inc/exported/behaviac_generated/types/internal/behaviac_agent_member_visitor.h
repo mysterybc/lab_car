@@ -24,6 +24,19 @@ template<> inline void ForegrdFunc::_Execute_Method_<METHOD_TYPE_ForegrdFunc_Ass
 	this->ForegrdFunc::Assemble();
 }
 
+struct METHOD_TYPE_ForegrdFunc_March_gps { };
+template<> inline void ForegrdFunc::_Execute_Method_<METHOD_TYPE_ForegrdFunc_March_gps>()
+{
+	this->ForegrdFunc::March_gps();
+}
+
+struct METHOD_TYPE_ForegrdFunc_March_laser { };
+template<> inline void ForegrdFunc::_Execute_Method_<METHOD_TYPE_ForegrdFunc_March_laser>()
+{
+	this->ForegrdFunc::March_laser();
+}
+
+
 
 
 #endif // _BEHAVIAC_MEMBER_VISITOR_H_

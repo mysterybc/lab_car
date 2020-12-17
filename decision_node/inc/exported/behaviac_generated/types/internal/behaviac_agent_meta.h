@@ -36,15 +36,31 @@ namespace behaviac
 	inline const void* Get_BlackBoard_car_number(Agent* self) { return &((BlackBoard*)self)->car_number; };
 
 	inline void FunctionPointer_BlackBoard_LogMessage(char* param0) { BlackBoard::LogMessage(param0); }
-
-	inline void Set_ForegrdFunc_fore_func_state(Agent* self, ForeFuncState value) { ((ForegrdFunc*)self)->fore_func_state = value; };
-	inline const void* Get_ForegrdFunc_fore_func_state(Agent* self) { return &((ForegrdFunc*)self)->fore_func_state; };
-
 	inline void FunctionPointer_ForegrdFunc_Assemble(Agent* self) { ((ForegrdFunc*)self)->_Execute_Method_<METHOD_TYPE_ForegrdFunc_Assemble, void >(); }
 	inline void FunctionPointer_ForegrdFunc_LogMessage(char* param0) { ForegrdFunc::LogMessage(param0); }
+	inline void FunctionPointer_ForegrdFunc_March_gps(Agent* self) { ((ForegrdFunc*)self)->_Execute_Method_<METHOD_TYPE_ForegrdFunc_March_gps, void >(); }
+	inline void FunctionPointer_ForegrdFunc_March_laser(Agent* self) { ((ForegrdFunc*)self)->_Execute_Method_<METHOD_TYPE_ForegrdFunc_March_laser, void >(); }
 	inline void FunctionPointer_BackgrdFunc_LogMessage(char* param0) { BackgrdFunc::LogMessage(param0); }
 	inline void FunctionPointer_BackgrdFunc_Pause(Agent* self) { ((BackgrdFunc*)self)->Pause(); }
 	inline void FunctionPointer_BackgrdFunc_Resume(Agent* self) { ((BackgrdFunc*)self)->Resume(); }
 	inline void FunctionPointer_BackgrdFunc_STOP(Agent* self) { ((BackgrdFunc*)self)->STOP(); }
+
+	inline void Set_GroupLogic_GroupMember(Agent* self, behaviac::vector<int> value) { ((GroupLogic*)self)->GroupMember = value; };
+	inline const void* Get_GroupLogic_GroupMember(Agent* self) { return &((GroupLogic*)self)->GroupMember; };
+
+	inline void Set_GroupLogic_GroupMember(Agent* self, int value, int index) { ((GroupLogic*)self)->GroupMember[index] = value; };
+	inline const void* Get_GroupLogic_GroupMember(Agent* self, int index) { return &((GroupLogic*)self)->GroupMember[index]; };
+
+	inline void Set_GroupLogic_GroupPermission(Agent* self, bool value) { ((GroupLogic*)self)->GroupPermission = value; };
+	inline const void* Get_GroupLogic_GroupPermission(Agent* self) { return &((GroupLogic*)self)->GroupPermission; };
+
+	inline void Set_GroupLogic_GroupState(Agent* self, behaviac::vector<ForeFuncState> value) { ((GroupLogic*)self)->GroupState = value; };
+	inline const void* Get_GroupLogic_GroupState(Agent* self) { return &((GroupLogic*)self)->GroupState; };
+
+	inline void Set_GroupLogic_GroupState(Agent* self, ForeFuncState value, int index) { ((GroupLogic*)self)->GroupState[index] = value; };
+	inline const void* Get_GroupLogic_GroupState(Agent* self, int index) { return &((GroupLogic*)self)->GroupState[index]; };
+
+	inline void FunctionPointer_GroupLogic_GroupLogicProcessing(Agent* self) { ((GroupLogic*)self)->GroupLogicProcessing(); }
+	inline void FunctionPointer_GroupLogic_LogMessage(char* param0) { GroupLogic::LogMessage(param0); }
 }
 #endif // _BEHAVIAC_AGENT_PROPERTIES_H_

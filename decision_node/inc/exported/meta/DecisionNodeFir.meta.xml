@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--EXPORTED BY TOOL, DON'T MODIFY IT!-->
-<agents version="1" signature="2198742996">
+<agents version="1" signature="334470205">
   <agent type="BasicLogic" base="behaviac::Agent" signature="2308046977">
     <properties>
       <property name="CurrentTask" type="TaskIndividual" member="false" static="false" defaultvalue="NonTask" />
@@ -14,9 +14,11 @@
       <property name="car_number" type="int" member="false" static="false" defaultvalue="0" />
     </properties>
   </agent>
-  <agent type="ForegrdFunc" base="behaviac::Agent" signature="3411094798">
+  <agent type="GroupLogic" base="behaviac::Agent" signature="1178654980">
     <properties>
-      <property name="fore_func_state" type="ForeFuncState" member="false" static="false" defaultvalue="IDLE" />
+      <property name="GroupMember" type="vector&lt;int&gt;" member="false" static="false" defaultvalue="0:" />
+      <property name="GroupPermission" type="bool" member="false" static="false" defaultvalue="false" />
+      <property name="GroupState" type="vector&lt;ForeFuncState&gt;" member="false" static="false" defaultvalue="0:" />
     </properties>
   </agent>
 </agents>

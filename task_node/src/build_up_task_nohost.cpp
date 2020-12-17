@@ -49,7 +49,6 @@ void BuildUpTask::ResetTask(){
 }
 
 void BuildUpTask::BuildUpPreemptCB(){
-    
     if(build_up_action.isPreemptRequested()){
         ROS_INFO("action_preempt");
         if(task_state == ActionState::ACTIVE){

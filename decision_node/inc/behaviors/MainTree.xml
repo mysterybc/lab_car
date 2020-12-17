@@ -41,8 +41,57 @@
                   </Node>
                 </Connector>
               </Node>
-              <Node Class="PluginBehaviac.Nodes.Selector" HasOwnPrefabData="false" Id="2" PrefabName="../Prefabs/exe_single_step" PrefabNodeId="2">
+              <Node Class="PluginBehaviac.Nodes.Selector" Enable="true" HasOwnPrefabData="false" Id="2" PrefabName="../Prefabs/exe_single_step" PrefabNodeId="2">
                 <Comment Background="NoColor" Text="" />
+                <Connector Identifier="GenericChildren">
+                  <Node Class="PluginBehaviac.Nodes.Sequence" HasOwnPrefabData="false" Id="15" PrefabName="../Prefabs/exe_single_step" PrefabNodeId="15">
+                    <Comment Background="NoColor" Text="" />
+                  </Node>
+                  <Node Class="PluginBehaviac.Nodes.Sequence" Enable="true" HasOwnPrefabData="false" Id="16" PrefabName="../Prefabs/exe_single_step" PrefabNodeId="16">
+                    <Comment Background="NoColor" Text="" />
+                    <Connector Identifier="GenericChildren">
+                      <Node Class="PluginBehaviac.Nodes.Condition" HasOwnPrefabData="false" Id="22" PrefabName="../Prefabs/exe_single_step" PrefabNodeId="22">
+                        <Comment Background="NoColor" Text="" />
+                      </Node>
+                      <Node Class="PluginBehaviac.Nodes.DecoratorAlwaysSuccess" HasOwnPrefabData="false" Id="23" PrefabName="../Prefabs/exe_single_step" PrefabNodeId="23">
+                        <Comment Background="NoColor" Text="" />
+                      </Node>
+                      <Node Class="PluginBehaviac.Nodes.Selector" Enable="true" HasOwnPrefabData="true" Id="25" PrefabName="../Prefabs/exe_single_step" PrefabNodeId="25">
+                        <Comment Background="NoColor" Text="" />
+                        <Connector Identifier="GenericChildren">
+                          <Node Class="PluginBehaviac.Nodes.Sequence" HasOwnPrefabData="false" Id="26" PrefabName="../Prefabs/exe_single_step" PrefabNodeId="26">
+                            <Comment Background="NoColor" Text="" />
+                          </Node>
+                          <Node Class="PluginBehaviac.Nodes.Sequence" Enable="true" HasOwnPrefabData="false" Id="43" PrefabName="../Prefabs/exe_single_step" PrefabNodeId="26">
+                            <Comment Background="NoColor" Text="" />
+                            <Connector Identifier="GenericChildren">
+                              <Node Class="PluginBehaviac.Nodes.Condition" Enable="true" HasOwnPrefabData="true" Id="45" Operator="Equal" Opl="TaskIndividual BasicLogic.BasicLogic::InputTask" Opr="const TaskIndividual March_gps" PrefabName="../Prefabs/exe_single_step" PrefabNodeId="27">
+                                <Comment Background="NoColor" Text="" />
+                              </Node>
+                              <Node Class="PluginBehaviac.Nodes.Action" Enable="true" HasOwnPrefabData="true" Id="46" Method="ForegrdFunc.ForegrdFunc::March_gps()" PrefabName="../Prefabs/exe_single_step" PrefabNodeId="28" ResultFunctor="&quot;&quot;" ResultOption="BT_SUCCESS">
+                                <Comment Background="NoColor" Text="" />
+                              </Node>
+                            </Connector>
+                          </Node>
+                          <Node Class="PluginBehaviac.Nodes.Sequence" Enable="true" HasOwnPrefabData="false" Id="47" PrefabName="../Prefabs/exe_single_step" PrefabNodeId="26">
+                            <Comment Background="NoColor" Text="" />
+                            <Connector Identifier="GenericChildren">
+                              <Node Class="PluginBehaviac.Nodes.Condition" Enable="true" HasOwnPrefabData="true" Id="48" Operator="Equal" Opl="TaskIndividual BasicLogic.BasicLogic::InputTask" Opr="const TaskIndividual March_laser" PrefabName="../Prefabs/exe_single_step" PrefabNodeId="27">
+                                <Comment Background="NoColor" Text="" />
+                              </Node>
+                              <Node Class="PluginBehaviac.Nodes.Action" Enable="true" HasOwnPrefabData="true" Id="49" Method="ForegrdFunc.ForegrdFunc::March_laser()" PrefabName="../Prefabs/exe_single_step" PrefabNodeId="28" ResultFunctor="&quot;&quot;" ResultOption="BT_SUCCESS">
+                                <Comment Background="NoColor" Text="" />
+                              </Node>
+                            </Connector>
+                          </Node>
+                        </Connector>
+                      </Node>
+                      <Node Class="PluginBehaviac.Nodes.Assignment" HasOwnPrefabData="false" Id="24" PrefabName="../Prefabs/exe_single_step" PrefabNodeId="24">
+                        <Comment Background="NoColor" Text="" />
+                      </Node>
+                    </Connector>
+                  </Node>
+                </Connector>
               </Node>
               <Node Class="PluginBehaviac.Nodes.Assignment" HasOwnPrefabData="false" Id="14" PrefabName="../Prefabs/exe_single_step" PrefabNodeId="14">
                 <Comment Background="NoColor" Text="" />

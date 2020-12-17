@@ -1,0 +1,162 @@
+﻿size_t Combined::getCtrlMsgBackup(void* buf){
+	if (DebugMode == 1) {
+		return 0;
+	}
+
+	static int last_loop_send = -1;
+	assert(sizeof(char) == 1 && "size char != 1");
+	assert(sizeof(short) == 2 && "size short != 2");
+	assert(sizeof(int) == 4 && "size int != 4");
+	if (sizeof(short) != 2) {
+		LOGWARN("[Ctrl] Error: sizeof(short) is {}, not 2 !!", sizeof(short));
+	}
+
+	char* dest = (char*)buf;
+	char& fst = *dest;                  // 0
+	char  sgn = 0;                      // 0: low four
+	char  shp = 0;                      // 0: upper four
+	char& hfr = *(dest + 1);			// 1
+	short& hfx = *(short*)(dest + 2);	// 2, 3
+	short& hfy = *(short*)(dest + 4);	// 4, 5
+	short* latTest = (short*)(dest + 6);   // 67, 89, 1011, 1112
+	unsigned char& check = *(unsigned char*)(dest + 20);
+	
+	size_t byte_num = 80;
+	std::fill(dest, dest + byte_num, getMyID());
+	
+	std::string log_msg;
+	if (enableFDetect() && iamfaulty){
+		sgn |= IAM_FAULTY;
+		log_msg += " iam_fault";
+	}
+	
+	if (enableHFieldMulti()) {
+		log_msg += " hfield";
+		sgn |= USE_HFIELD;
+		float val;
+		val = saturate(hfMe.ratio, 1.0f);
+		hfr = (uint8_t)(hfMe.ratio * 100);
+		val = saturate(hfMe.x, 200.0f);
+		hfx = (uint16_t)(val * 100);
+		val = saturate(hfMe.y, 200.0f);
+		hfy = (uint16_t)(val * 100);
+	}
+	else{
+		uint8_t my_id = (uint8_t)getMyID();
+		for (size_t i = 0; i < 5; ++i){
+			(&hfr)[i] = my_id;
+		}
+	}
+	if (enableLatencyTest()) {
+		if (latency_test.onSendMessage(nullptr) <= 4) {
+			latency_test.onSendMessage(latTest);
+		}
+	}
+	if (use_autoselect && needShapeSelection()) {
+		// Even if shape_selected = true for me,
+		// since others may miss some messages,
+		// I have to keep broadcasting my decisions.
+		sgn |= CHG_SHAPES;
+		shp = getMyShapeIndex();
+		log_msg += fmt::format(" shape-{}", (int)shp);
+	}
+	fst = (sgn & 0xf) | ((shp & 0xf) << 4);     // This is the first byte
+	
+	check = 0;
+	for (int i = 0; i < 20; ++i){
+		check += dest[i];
+	}
+
+	if (last_loop_send != (int)lastTime.loopCounter) {
+		if (log_msg.empty()) 
+			log_msg = " (None)";
+		
+		LOGDEBUGLV2(DEBUG_INFO_COM_SEND, "[Ctrl] Sending{}", log_msg);
+		last_loop_send = (int)lastTime.loopCounter;
+	}
+	return byte_num;
+}
+
+void Combined::handleMsgBackup(int srcID, void* dat, size_t size){
+	if (DebugMode == 1) {
+		return ;
+	}
+	std::string log_msg = fmt::format("#{}:", srcID);
+	size_t byte_num = 80;
+	if (size >= byte_num){
+		// Valid
+		char* dest = (char*)dat;
+		char& fst = *dest;                  // 0
+		char  sgn = *dest & 0xf;	        // 0: low four
+		char  shp = ((*dest) >> 4) & 0xf;   // 1: upper four
+		char&  hfr = *(dest + 1);			// 1
+		short& hfx = *(short*)(dest + 2);	// 2, 3
+		short& hfy = *(short*)(dest + 4);	// 4, 5
+		short* latTest = (short*)(dest + 6);   // 67, 89, 1011, 1112
+		unsigned char& check = *(unsigned char*)(dest + 20);
+
+		unsigned char check_compute = 0;
+		for (int i = 0; i < 20; ++i){
+			check_compute += dest[i];
+		}
+		if (check != check_compute) {
+			//LOGWARN("[Ctrl] Error: Check Failed for Message from {}: {:X} <> {:X}(get)", srcID, check_compute, check);
+			BadMsgCounter++;
+			return;
+		}
+		GoodMsgCounter++;
+
+		if (sgn & IAM_FAULTY){
+			if (enableFDetect()){
+				errList.insert(srcID);
+				log_msg += " iam_fault";
+			}
+			else{
+				log_msg += " iam_fault(OFF)";
+			}
+		}
+		if (enableLatencyTest()) {
+			latency_test.onRecvMessage(srcID, latTest);
+		}
+		if (sgn & USE_HFIELD){
+			if (enableHFieldMulti()){
+				log_msg += " hfield";
+				hfNet[srcID].ratio = hfr / 100.0f;
+				hfNet[srcID].x = hfx / 100.0f;
+				hfNet[srcID].y = hfy / 100.0f;
+			}
+		}
+		if (sgn & CHG_SHAPES){
+			// 如果有人想要变换队形, 那么我也应该变换队形
+			log_msg += fmt::format(" shape-{}", (int)shp);
+			shapeReceive[srcID] = shp;
+		}
+		if (log_msg.empty()){
+			log_msg = " (None)";
+		}
+	}
+	else{
+		log_msg += fmt::format(" INVALID_SIZE: {}", size);
+		MisSizeCounter++;
+	}
+
+	LOGDEBUGLV2(DEBUG_INFO_COM_RECV, "[Ctrl] Recv: {}", log_msg);
+	return;
+}
+
+void Combined::print_com_stat() {
+	int total = BadMsgCounter + GoodMsgCounter + MisSizeCounter;
+	if (total == GoodMsgCounter && total > 0)
+		return;
+
+	std::string msg = fmt::format("[Ctrl] Message Get {}", total, GoodMsgCounter);
+	if (GoodMsgCounter != total)
+		msg += fmt::format(": Good {}", GoodMsgCounter);
+	if (BadMsgCounter > 0) {
+		msg += fmt::format(", Bad {}({:.1f}%)", BadMsgCounter, BadMsgCounter*(100.0/total));
+	}
+	if (MisSizeCounter > 0) {
+		msg += fmt::format(", Mis {}({:.1f}%)", MisSizeCounter, MisSizeCounter*(100.0 / total));
+	}
+	LOGDEBUGLV2(DEBUG_INFO_STATES, msg);
+}

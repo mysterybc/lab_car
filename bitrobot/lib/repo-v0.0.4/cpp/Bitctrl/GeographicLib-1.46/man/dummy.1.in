@@ -1,0 +1,9 @@
+.TH @TOOL@ 1 "" "GeographicLib Utilities" "GeographicLib Utilities"
+.SH NAME
+@TOOL@ \-\- a GeographicLib utility
+.SH DESCRIPTION
+.B @TOOL@
+is part of GeographicLib, <http://geographiclib.sourceforge.net>.  For
+documentation, see
+.PP
+    http://geographiclib.sourceforge.net/@PROJECT_VERSION@/@TOOL@.1.html

@@ -1,0 +1,52 @@
+﻿Files:
+- LoggingUtil.hpp
+- NSAvoidAlgo.hpp
+  - ObstacleMan, AlgoNSAvoid
+- NSAvoid.hpp
+  - NSProblem, NSResult, NSSolver, NSConstraint, NSBound
+- NSAvoidBound.hpp
+  - NSBoundFunctor, 
+- NSAvoidItem.hpp
+  - NSConsDelegate, NSConsConfig, NSConsLine, NSConsPoint, NSConsConvexPoly
+- NSAvoidUtil.hpp
+  - namespace impl::util
+- EigenQP.hpp
+  - QPProblem, QPSolver, QPResult
+
+Class Structures
+Bascially, a null-space algorithm is one that use an NSSolver to solve an NSProblem to get an NSResult.
+
+NSProblem: collection of constraints and target functions:
+  - Target function: V(u) = |dot(x) - a|^2_w
+  - Target dynamics: dot(x) = Ju + d  
+  - Dynamic constraints: g, of NSConstraints
+  - Static constraints: MEu, MIu, MEx, MIx
+  
+NSSolver: wrapper of a QPSolver
+NSResult: contains information about constraints in the resulting QP.
+  - QPResult: ret_qp
+  - Constraint status: info, of NSResult.Info, 
+                             public of NSConstraint::ConsInfo
+  - Dimensions: dim_u, dim_relax
+  - Stats:  nCI, nMI, nME
+
+NSConstraint:
+   An interface class to specify a constraint:
+        vlim.vmin <= Dg/dx(x) + Dg/dt(x) <= vmax
+   The specified operation is "ConsInfo compute(const VecX& x) const"
+   where ConsInfo contains the following:
+   - Validity: valid
+   - Value of g(x):     value, Scalar
+   - Value of Dg/dx(x): grad, VecX
+   - Value of Dg/dt(x): grad_dt, Scalar
+   - Value struture of velocity limit: vlim, Bound(->vmin, vmax)
+   - If it's relaxed:  penalty, Scalar
+   
+In practice, the function of NSConstraint is divided by two parts.
+- The first part computes:  g(x), dg_dx(x), dg_dt(x)
+- The second part computes: validity, velocity limit, penalty
+Therefore, we have:
+
+
+NSConsConfig
+ 

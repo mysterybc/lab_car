@@ -3,6 +3,8 @@
   <types>
     <enumtype Type="TaskIndividual" Namespace="" IsCustomized="true" DisplayName="TaskIndividual" Desc="">
       <enum NativeValue="NonTask" Value="NonTask" DisplayName="NonTask" Desc="" MemberValue="-1" />
+      <enum NativeValue="March_gps" Value="March_gps" DisplayName="March_gps" Desc="" MemberValue="-1" />
+      <enum NativeValue="March_laser" Value="March_laser" DisplayName="March_laser" Desc="" MemberValue="-1" />
       <enum NativeValue="Assemble" Value="Assemble" DisplayName="Assemble" Desc="" MemberValue="-1" />
       <enum NativeValue="STOP" Value="STOP" DisplayName="STOP" Desc="" MemberValue="-1" />
       <enum NativeValue="Pause" Value="Pause" DisplayName="Pause" Desc="" MemberValue="-1" />
@@ -55,13 +57,20 @@
       <Member Name="car_number" DisplayName="car_number" Desc="car_number" Class="BlackBoard" Type="int" TypeFullName="System.Int32" defaultvalue="0" Static="false" Public="true" Readonly="false" />
     </agent>
     <agent classfullname="ForegrdFunc" base="behaviac::Agent" DisplayName="ForegrdFunc" Desc="ForegrdFunc" IsRefType="true" IsCustomized="true">
-      <Member Name="fore_func_state" DisplayName="fore_func_state" Desc="fore_func_state" Class="ForegrdFunc" Type="ForeFuncState" TypeFullName="XMLPluginBehaviac.ForeFuncState" defaultvalue="IDLE" Static="false" Public="true" Readonly="false" />
       <Method Name="Assemble" DisplayName="Assemble" Desc="Assemble" Class="ForegrdFunc" ReturnType="void" ReturnTypeFullName="System.Void" Static="false" Public="false" istask="false" />
+      <Method Name="March_gps" DisplayName="March_gps" Desc="March_gps" Class="ForegrdFunc" ReturnType="void" ReturnTypeFullName="System.Void" Static="false" Public="false" istask="false" />
+      <Method Name="March_laser" DisplayName="March_laser" Desc="March_laser" Class="ForegrdFunc" ReturnType="void" ReturnTypeFullName="System.Void" Static="false" Public="false" istask="false" />
     </agent>
     <agent classfullname="BackgrdFunc" base="behaviac::Agent" DisplayName="BackgrdFunc" Desc="BackgrdFunc" IsRefType="true" IsCustomized="true">
       <Method Name="STOP" DisplayName="STOP" Desc="STOP" Class="BackgrdFunc" ReturnType="void" ReturnTypeFullName="System.Void" Static="false" Public="true" istask="false" />
       <Method Name="Pause" DisplayName="Pause" Desc="Pause" Class="BackgrdFunc" ReturnType="void" ReturnTypeFullName="System.Void" Static="false" Public="true" istask="false" />
       <Method Name="Resume" DisplayName="Resume" Desc="Resume" Class="BackgrdFunc" ReturnType="void" ReturnTypeFullName="System.Void" Static="false" Public="true" istask="false" />
+    </agent>
+    <agent classfullname="GroupLogic" base="behaviac::Agent" DisplayName="GroupLogic" Desc="GroupLogic" IsRefType="true" IsCustomized="true">
+      <Member Name="GroupMember" DisplayName="GroupMember" Desc="GroupMember" Class="GroupLogic" Type="vector&lt;int&gt;" TypeFullName="System.Collections.Generic.List`1[[System.Int32, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]" defaultvalue="0:" Static="false" Public="true" Readonly="false" />
+      <Member Name="GroupState" DisplayName="GroupState" Desc="GroupState" Class="GroupLogic" Type="vector&lt;ForeFuncState&gt;" TypeFullName="System.Collections.Generic.List`1[[XMLPluginBehaviac.ForeFuncState, XMLPluginBehaviac, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]" defaultvalue="0:" Static="false" Public="true" Readonly="false" />
+      <Member Name="GroupPermission" DisplayName="GroupPermission" Desc="GroupPermission" Class="GroupLogic" Type="bool" TypeFullName="System.Boolean" defaultvalue="false" Static="false" Public="true" Readonly="false" />
+      <Method Name="GroupLogicProcessing" DisplayName="GroupLogicProcessing" Desc="GroupLogicProcessing" Class="GroupLogic" ReturnType="void" ReturnTypeFullName="System.Void" Static="false" Public="true" istask="false" />
     </agent>
   </agents>
   <instances>
@@ -69,5 +78,6 @@
     <instance name="BlackBoard" class="BlackBoard" DisplayName="BlackBoard" Desc="BlackBoard" />
     <instance name="ForegrdFunc" class="ForegrdFunc" DisplayName="ForegrdFunc" Desc="ForegrdFunc" />
     <instance name="BackgrdFunc" class="BackgrdFunc" DisplayName="BackgrdFunc" Desc="BackgrdFunc" />
+    <instance name="GroupLogic" class="GroupLogic" DisplayName="GroupLogic" Desc="GroupLogic" />
   </instances>
 </meta>

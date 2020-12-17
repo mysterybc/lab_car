@@ -266,19 +266,19 @@ name="pioneer3at">
 			<inertia ixx="1.0" ixy="0.0" ixz="0.0"
 				 iyy="1.0" iyz="0.0" izz="1.0"/>
   	 	</inertial>
-	<visual>
-		<origin xyz="0 0 0" rpy="0 0 0"/>
-		<geometry name="pioneer_geom">
-			<mesh filename="package://amr_robots_description/meshes/p3at_meshes/${side}_hubcap.stl"/>
-		</geometry>
-		<material name="HubcapYellow"/>
-	</visual>
-	<collision>
-		<origin xyz="0 0 0" rpy="0 0 0"/>
-		<geometry>
-			<mesh filename="package://amr_robots_description/meshes/p3at_meshes/${side}_hubcap.stl"/>
-		</geometry>
-	</collision>
+		<visual>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+			<geometry name="pioneer_geom">
+				<mesh filename="package://amr_robots_description/meshes/p3at_meshes/${side}_hubcap.stl"/>
+			</geometry>
+			<material name="HubcapYellow"/>
+		</visual>
+		<collision>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+			<geometry>
+				<mesh filename="package://amr_robots_description/meshes/p3at_meshes/${side}_hubcap.stl"/>
+			</geometry>
+		</collision>
 	</link>
 	<gazebo reference="${ns}p3at_back_${side}_hub">
 		<material value="Gazebo/Yellow"/>
@@ -298,29 +298,29 @@ name="pioneer3at">
                                                       iyy="0.015218160428" iyz="0" 
                                                                            izz="0.011763977943"/>
       </inertial>
-	<visual>
-		<origin xyz="0 0 0" rpy="0 0 0"/>
-		<geometry name="pioneer_geom">
-			<mesh filename="package://amr_robots_description/meshes/p3at_meshes/wheel.stl"/>
-		</geometry>
-		<material name="WheelBlack"/>
-	</visual>
-	<collision>
-		<origin xyz="0 0 0" rpy="${-3.1415927/2} 0 0"/>
-		<geometry>
-	    <!--mesh filename="package://amr_robots_description/meshes/p3at_meshes/wheel.stl"/-->
-	    <cylinder radius="0.111" length="0.075"/>
-		</geometry>
-	</collision>
+		<visual>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+			<geometry name="pioneer_geom">
+				<mesh filename="package://amr_robots_description/meshes/p3at_meshes/wheel.stl"/>
+			</geometry>
+			<material name="WheelBlack"/>
+		</visual>
+		<collision>
+			<origin xyz="0 0 0" rpy="${-3.1415927/2} 0 0"/>
+			<geometry>
+			<!--mesh filename="package://amr_robots_description/meshes/p3at_meshes/wheel.stl"/-->
+			<cylinder radius="0.111" length="0.075"/>
+			</geometry>
+		</collision>
 	</link>
 	<gazebo reference="${ns}p3at_back_${side}_wheel">
 		<material value="Gazebo/Black"/>
 	</gazebo>
 
 	<joint name="${ns}p3at_back_${side}_wheel_joint" type="continuous">
-	  <axis xyz="0 1 0"/>
-    <anchor xyz="0 0 0"/>
-    <limit effort="100" velocity="100" />
+		<axis xyz="0 1 0"/>
+		<anchor xyz="0 0 0"/>
+		<limit effort="100" velocity="100" />
     <joint_properties damping="0.7"/>
 		<origin xyz="0 0 0" rpy="0 0 0"/>
 		<parent link="${ns}p3at_back_${side}_hub"/>
