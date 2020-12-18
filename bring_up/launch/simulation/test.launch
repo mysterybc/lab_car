@@ -1,27 +1,69 @@
+<!-- 
+    全局参数包括：
+        1、全部车辆数量
+        2、车辆id（从1开始）
+        3、车辆ip地址、hostip地址
+        4、硬件端口号
+
+    运行的节点包括：
+        1、坐标系变换：static tf
+        2、资源节点：driver_source_node
+        3、控制节点：remote_control_node
+        4、遥控接收：joy_node（库）
+        5、地图：    map_server（库）
+        6、定位节点：ndt_localization
+        7、决策树：  decision_node
+        8、任务节点：task_node
+        9、规划节点：move_base（库）
+        10、激光driver
+        11、pointcloud 2 laserscan
+        12、服务节点:散点
+        14、通讯节点:
+        15、可视化:  rviz（库）
+ -->
+
 <launch>
     <!-- 全局参数 -->
-    <param name="use_sim_time" value="true"/>
+    <!-- ip只有通讯节点使用 -->
+    <arg name="car_id" value="1"/>
+    <param name="total_car_number" type="int" value="1" />
+    <param name="car_id" type="int" value="$(arg car_id)" />
+    <param name="host_ip_address" type="string" value="127.0.0.1:6666" />
+    <param name="my_ip_address" type="string" value="127.0.0.1:6661" />
+    <param name="tf_ns" value="/"/>
     <rosparam>
-        total_robot_ip: ["tcp://192.168.31.144:6661","tcp://192.168.31.144:6662"]
+        total_robot_ip: ["tcp://127.0.0.1:6661"]
     </rosparam>
-    <arg name="total_car_number" value="1" />
-    <arg name="host_ip_address" value="tcp://192.168.31.8:6666" />
-    <arg name="simulator" value="stage"/>
+    <!-- 下面两个source_node使用 -->
+    <!-- ttyUSB0为驱动接口，无需改变 -->
+    <param name="imu_port" type="string" value="/dev/ttyUSB1" />
+    <param name="gps_port" type="string" value="/dev/ttyUSB2" />
+    <!-- 遥控器接口 -->
+    <arg name="joy_port" value="/dev/input/js0"/>
 
-    <!-- stage环境 -->
-    <node pkg="stage_ros" type="stageros" name="stageros" args="$(find simulation)/worlds/testbit.world" />
-    <!-- 定位用tf -->
-    <node pkg="tf" type="static_transform_publisher" name="map_to_base_link0" args="0 0 0 0 0 0 map robot_0/odom 100" />
-    <node pkg="tf" type="static_transform_publisher" name="map_to_base_link1" args="0 0 0 0 0 0 map robot_1/odom 100" />
-    <node pkg="tf" type="static_transform_publisher" name="map_to_base_link2" args="0 0 0 0 0 0 map robot_2/odom 100" />
-    <node pkg="tf" type="static_transform_publisher" name="map_to_base_link3" args="0 0 0 0 0 0 map robot_3/odom 100" />
-    <!-- mapserver -->
-    <!-- <node name="map_server" pkg="map_server" type="map_server" args="$(find bring_up)/map/stage_map.yaml" respawn="false" /> -->
-    <!-- rviz -->
-    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find bring_up)/rviz/stage_multicar.rviz" />
-
-
-
-
+    <!-- 1 -->
+    <node pkg="tf" type="static_transform_publisher" name="world_map_broadcaster" args="0 0 -0.4 0 0 0 /world /map 100" />
+    <node pkg="tf" type="static_transform_publisher" name="lidar_base_broadcaster" args="-0.2 0 -0.4 0 0 0 /lidar_link /base_link 100" />
+    <node pkg="tf" type="static_transform_publisher" name="lidar_velodyne_broadcaster" args="0 0 0 0 0 0 /lidar_link /velodyne 100" />
+    <!-- 2 -->
+    <node pkg="source_node"  type="driver_source_node"      name="driver_source_node"     output="screen"/> 
+    <node pkg="source_node"  type="navigation_source_node"  name="navigation_source_node" output="screen"/> 
+    <!-- 3 -->
+    <node pkg="control_node" type="remote_control_node" name="remote_control_node" output="screen"/> 
+    <!-- 4 -->
+    <node respawn="true" pkg="joy" type="joy_node" name="gamepad" >
+        <param name="dev" type="string" value="$(arg joy_port)" />
+        <param name="deadzone" value="0.0" />
+        <param name="autorepeat_rate" value="10.0" />
+    </node>
+    <!-- 5 -->
+    <node name="map_server" pkg="map_server" type="map_server"  args="$(find bring_up)/map/map0611.yaml"/>
+    <!-- 8 -->
+    <node pkg="decision_node" type="decision_node"  name="decision_node"   output="screen"  />
+    <!-- 12 -->
+    <node pkg="communication_node" name="receiver" type="receiver"  output="screen"/>
+    <node pkg="communication_node" name="publisher" type="publisher" output="screen" />
+    <!-- 14 -->
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find bring_up)/rviz/single_car_real_world.rviz" />
 
 </launch>

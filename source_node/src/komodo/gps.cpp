@@ -22,14 +22,14 @@ int GPS::UpDateGPS()
     odom_.header.frame_id = "gps_odom";
     odom_.child_frame_id = "base_link";
 
-    gps_odom_tf.header.frame_id = "base_link";
+    gps_odom_tf.header.frame_id = "map";
     gps_odom_tf.child_frame_id = "gps_odom";
 
     try 
     { 
         //获取gps port
         std::string gps_port;
-        nh.param<std::string>("/gps_port",gps_port,"/dev/ttyUSB2");
+        nh.param<std::string>("/gps_port",gps_port,"/dev/ttyUSB1");
         //设置串口属性，并打开串口 
         ser.setPort(gps_port);
         ser.setBaudrate(115200); 
@@ -90,13 +90,14 @@ int GPS::UpDateGPS()
             //发布odom信息和tf信息
             double x,y;
             gps_common::UTM(GI320_data.latitude,GI320_data.longitude,&x,&y);
+           
             //time stamp
             ros::Time current_time = ros::Time::now();
             odom_.header.stamp = current_time;
             //position
-            odom_.pose.pose.position.x = x-GPS_OFFSET_X;
-            odom_.pose.pose.position.y = y-GPS_OFFSET_Y;
-            odom_.pose.pose.position.z = GI320_data.altitude;
+            odom_.pose.pose.position.x = y-GPS_OFFSET_Y;
+            odom_.pose.pose.position.y = GPS_OFFSET_X-x;
+            odom_.pose.pose.position.z = GI320_data.altitude-36;
             
             geometry_msgs::Quaternion q = tf::createQuaternionMsgFromRollPitchYaw(0,
                                                                                   0,
@@ -110,12 +111,12 @@ int GPS::UpDateGPS()
             
 
             gps_odom_tf.header.stamp = current_time;
-            gps_odom_tf.transform.translation.x = x;
-            gps_odom_tf.transform.translation.y = y;
+            gps_odom_tf.transform.translation.x = y-GPS_OFFSET_Y;
+            gps_odom_tf.transform.translation.y = GPS_OFFSET_X-x;
 
             gps_odom_tf.transform.translation.z = GI320_data.altitude;
             gps_odom_tf.transform.rotation = q;
-            //tf_broadcaster_.sendTransform(gps_odom_tf);
+            tf_broadcaster_.sendTransform(gps_odom_tf);
 
 
             q = tf::createQuaternionMsgFromRollPitchYaw(deg2rad(GI320_data.pitch),
@@ -137,16 +138,13 @@ int GPS::UpDateGPS()
             if(count++%10==0){
                 gps_imu_pub.publish(imu);
                 gps_odom_pub_.publish(odom_);
-                std::cout << "roll angle is" << GI320_data.roll << std::endl;
-                std::cout << "yaw angle is" << GI320_data.yaw << std::endl;
-                std::cout << "pitch angle is" << GI320_data.pitch << std::endl;
+                // std::cout << "roll angle is" << GI320_data.roll << std::endl;
+                // std::cout << "yaw angle is" << GI320_data.yaw << std::endl;
+                // std::cout << "pitch angle is" << GI320_data.pitch << std::endl;
             }
             if(count >10000){
                 count = 0;
             }
-            
-
-            
             //发布gps经纬度信息
             nav_msg.header.stamp = current_time;
             nav_msg.latitude = GI320_data.latitude;
@@ -243,7 +241,7 @@ void GPS::TransData()
     GI320_data.loctionMode = temp_dat[65]&0x3f;
     GI320_data.sulutionMode = temp_dat[65]>>6;
     InfoGpsState();
-    //InfoData();
+    // InfoData();
 
 }
 

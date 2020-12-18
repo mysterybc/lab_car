@@ -13,6 +13,7 @@
 #include <algorithm>
 #include "ros/package.h"
 #include "actionlib/server/simple_action_server.h"
+#include "actionlib/client/simple_action_client.h"
 #include "robot_msgs/MarchAction.h"
 #include <std_msgs/String.h>
 #include <std_msgs/UInt8MultiArray.h>
@@ -20,6 +21,7 @@
 #include "ros/package.h"
 #include "robot_msgs/RobotStates.h"
 #include "tf/transform_listener.h"
+#include "robot_msgs/BuildUpAction.h"
 
 
 inline double m2cm(double x) { return x * 100; }
@@ -38,14 +40,23 @@ ros::Publisher  msg_pub;
 std::string robot_frame;
 
 struct ActionConfig{
-	ActionConfig(ros::NodeHandle &node):march_action(node,"march_action_laser",boost::bind(&ActionConfig::on_new_action,this,_1),false){
+	ActionConfig(ros::NodeHandle &node):
+		march_action(node,"march_action_laser",boost::bind(&ActionConfig::on_new_action,this,_1),false),
+		buildup_action(node,"build_up_action",true)
+	{
 		march_action.registerPreemptCallback(boost::bind(&ActionConfig::cancel_action_request,this));
 		march_action.start();
+		tm.timeElapsed = 0;
+		tm.loopCounter = 0;
+		tm.globalTime  = 0;
 	}
 	int run_march_action();
 	void on_new_action(const robot_msgs::MarchGoalConstPtr &goal);
 	void cancel_action_request();
+	void config_controller(const robot_msgs::MarchGoalConstPtr &goal);
 	actionlib::SimpleActionServer<robot_msgs::MarchAction> march_action;
+	actionlib::SimpleActionClient<robot_msgs::BuildUpAction> buildup_action;
+	TimeInfo tm;
 };
 
 
@@ -120,8 +131,16 @@ void init_controller(const ConfigBIT& config, StateBIT& state) {
 	ControllerSetConfigDir(config.config_dir.c_str());
 	ControllerSetLogDir(config.log_dir.c_str());
 	ControllerInit(EXP_GENERAL, config.robotID);
-	ControllerSetDebugInfo(config.debug_info, 1);
-	
+	//ControllerSetDebugInfo(config.debug_info, 1);
+	ControllerSetDebugInfo(DEBUG_INFO_ALL, 0);
+
+	ControllerSetDebugInfo(DEBUG_INFO_STATES, 0);
+	ControllerSetDebugInfo(DEBUG_INFO_COMPUTE, 0);
+	ControllerSetDebugInfo(DEBUG_INFO_FUNCTION, 0);
+	ControllerSetDebugInfo(DEBUG_INFO_COM_SEND, 0);
+	ControllerSetDebugInfo(DEBUG_INFO_COM_RECV, 0);
+	// printf("Turn off Debug Info99999!!!\n");
+
 	state.me.ID = config.robotID;
 	state.me.x = 0;
 	state.me.y = 0;
@@ -151,6 +170,7 @@ StateInfo pose2stateinfo(const robot_msgs::RobotState &state) {
 	one.heading = (float)rad2deg(yaw);
 	one.v = 0;  // TBD
 	one.w = 0;  // TBD
+	//printf("robot %d - x y yaw is %lf %lf %lf\n",one.ID,one.x,one.y,one.heading);
 	return one;
 }
 
@@ -302,11 +322,8 @@ void get_new_pose(){
 
 //bit ctrl
 int ActionConfig::run_march_action(){
-	TimeInfo tm;
-	tm.timeElapsed = 0;
-	tm.loopCounter = 0;
-	tm.globalTime  = 0;
-	
+
+
 	// Temporary Variable
 	std::vector<StateInfo> others;
 	
@@ -316,11 +333,17 @@ int ActionConfig::run_march_action(){
 	ros::Rate loop_rate(20);
 	while (node.ok()) {
 		//printf("Loop %d starts.\n", tm.loopCounter);
+
+		if(!march_action.isActive()){
+			ControllerSetFunction(FUNC_ALL, 0);
+			return -1;
+		}
 	
 		// Check for new tasks
 		if (mydata.new_path) {
 			ROS_INFO("Starting a new path following task\n");
 			
+
 			ControllerSetFormationGroup(0);
 			
 			uint num = myconfig.idform.size();
@@ -386,12 +409,17 @@ int ActionConfig::run_march_action(){
 		tm.loopCounter += 1;
 		tm.globalTime += 50;
 		
+		//判断任务是否结束
+		if(ControllerTaskProgress() == 1){
+			ROS_INFO("march task finish!");
+			break;
+		}
 		//printf("Loop %d ends.\n", tm.loopCounter - 1);
 	
 		ros::spinOnce();
 		loop_rate.sleep();
 	}	
-	ControllerStop();
+	ControllerSetFunction(FUNC_ALL, 0);
     return 0;
 }
 
@@ -399,26 +427,46 @@ int ActionConfig::run_march_action(){
 void ActionConfig::on_new_action(const robot_msgs::MarchGoalConstPtr &goal){
     ROS_INFO("get new march goal!");
 	on_new_goal(goal->goal);
+	config_controller(goal);
     robot_msgs::MarchResult result;
     if(this->run_march_action()){
+		if(!march_action.isActive()){
+			return ;
+		}
         result.succeed = false;
         march_action.setAborted(result,"action fail");
     }
     else{
-        result.succeed = true;
-        march_action.setAborted(result,"action success");
-    }
-
+			
+		result.succeed = true;
+		march_action.setAborted(result,"action success");
+	}
 }
 
 void ActionConfig::cancel_action_request(){
+	ROS_INFO("get cancel request!");
     if(march_action.isPreemptRequested()){
         robot_msgs::MarchResult result;
         result.succeed = 2;
         march_action.setPreempted(result,"goal cancel");
+		buildup_action.cancelAllGoals();
+		ROS_INFO("cancel cation!");
     }
 }
 
+void ActionConfig::config_controller(const robot_msgs::MarchGoalConstPtr &goal){
+	myconfig.idlist.clear();
+	myconfig.idform.clear();
+	mydata.others.id2msg.clear();
+	mydata.others.id2state.clear();
+	for(auto number:goal->idList){
+		myconfig.idlist.push_back(number);
+		myconfig.idform.push_back(number);
+	}
+	for(auto number:myconfig.idlist){
+		std::cout << " id is " << number << std::endl;
+	}
+}
 
 
 
@@ -467,6 +515,9 @@ int main(int argc, char* argv[]) {
     }
 	printf("This is Robot %d\n", myID);
 	robot_frame = tf_frame + "base_link";
+	ROS_INFO("ROBOT FRAME IS %s",robot_frame.c_str());
+	std::cout << robot_frame << std::endl;
+	myconfig.robotID = myID;
 	
 	
 	// ----------------------- 
@@ -485,18 +536,20 @@ int main(int argc, char* argv[]) {
 	// ----------------------- 
 	// Initializing Controller
 	// ----------------------- 
-	myconfig.robotID = myID;
-	init_controller(myconfig, mydata);  // If it fails, it will crash.
-										// So, don't worry.
+	
+	// init_controller(myconfig, mydata);  // If it fails, it will crash.
+	// 									// So, don't worry.
 
 	ActionConfig marchconfig(node);
-
-	ros::Rate loop(20);
+	init_controller(myconfig, mydata);
+	ros::Rate loop(50);
 	while(ros::ok()){
 		get_new_pose();
 		loop.sleep();
 		ros::spinOnce();
 	}
+	ControllerStop();
+
 	
 	return 0;
 }

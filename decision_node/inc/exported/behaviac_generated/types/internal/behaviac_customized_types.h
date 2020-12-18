@@ -13,13 +13,13 @@
 
 enum TaskIndividual
 {
-	NonTask = 0,
-	March_gps = 1,
-	March_laser = 2,
-	Assemble = 3,
-	STOP = 4,
-	Pause = 5,
-	Resume = 6
+	NonTask,
+	March_gps,
+	March_laser,
+	Assemble,
+	STOP,
+	Pause,
+	Resume,
 };
 
 DECLARE_BEHAVIAC_ENUM_EX(TaskIndividual, TaskIndividual);

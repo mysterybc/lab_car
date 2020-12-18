@@ -286,6 +286,13 @@ namespace impl{
 			}
 			dxy_desire = dxy_base;
 			onFormationChange();
+
+			std::string idnames;
+			for (size_t i=0;i<num;++i) {
+				idnames += fmt::format(" {}", id[i]);
+			}
+
+			LOGDEBUGLV2(DEBUG_INFO_FUNCTION, "[Ctrl] setFormationShape: gp={}, idsize={}, id={}", getFormationGroup(), id.size(), idnames);
 			return true;
 		}
 		return false;

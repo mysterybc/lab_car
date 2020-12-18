@@ -13,12 +13,13 @@
 #include <sstream> 
 #include <std_msgs/Empty.h> 
 #include <thread>
-#define GPS_OFFSET_X 440623;
-#define GPS_OFFSET_Y 4423414;
+
 
 
 class GPS{
 public:
+    double GPS_OFFSET_X = 440636.88;
+    double GPS_OFFSET_Y = 4423196.51;
     GPS() = default;
     ~GPS() = default;
     //显示收到的数据 debug用

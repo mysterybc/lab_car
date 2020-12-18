@@ -33,23 +33,24 @@ void ForegrdFunc::Assemble()
 ///<<< BEGIN WRITING YOUR CODE Assemble
     build_up_action->waitForServer();
     assemble_goal.goal =g_BlackBoardAgent->GetGoal();
+    if(g_BlackBoardAgent->car_number == 1){
         ROS_INFO("goal x is : %f",assemble_goal.goal.position.x);
         ROS_INFO("goal y is : %f",assemble_goal.goal.position.y);
         ROS_INFO("goal z is : %f",assemble_goal.goal.position.z);
-        build_up_action->sendGoal(   assemble_goal,
-                                    boost::bind(&ForegrdFunc::Assemble_DoneCallback,this,_1,_2),
-                                    boost::bind(&ForegrdFunc::Assemble_ActiveCallback,this),
-                                    boost::bind(&ForegrdFunc::Assemble_FeedbackCallback,this,_1));
+    }
+    build_up_action->sendGoal(   assemble_goal,
+                                boost::bind(&ForegrdFunc::Assemble_DoneCallback,this,_1,_2),
+                                boost::bind(&ForegrdFunc::Assemble_ActiveCallback,this),
+                                boost::bind(&ForegrdFunc::Assemble_FeedbackCallback,this,_1));
 }
 void ForegrdFunc::Assemble_FeedbackCallback(const robot_msgs::BuildUpFeedbackConstPtr &feedback){
     if(feedback->error_occured){
         fore_func_state= ForeFuncState::Failure;
-        g_BlackBoardAgent->PubDecisionState(fore_func_state);
     }
     else{
         fore_func_state = ForeFuncState::Running;
-        g_BlackBoardAgent->PubDecisionState(fore_func_state);
     }
+        g_BlackBoardAgent->PubDecisionState(fore_func_state);
     return ;
 }
 
@@ -60,16 +61,15 @@ void ForegrdFunc::Assemble_ActiveCallback(void){
 }
 
 void ForegrdFunc::Assemble_DoneCallback(const actionlib::SimpleClientGoalState &state, const robot_msgs::BuildUpResultConstPtr &result){
-        if(result->succeed!=_cancel)
-        {
-            fore_func_state = ForeFuncState::IDLE;
-            g_BasicLogicAgent->CurrentTask=TaskIndividual::NonTask;
-        }
-        else
+    if(result->succeed!=_cancel)
+    {
         fore_func_state = ForeFuncState::IDLE;
-        
-        g_BlackBoardAgent->PubDecisionState(fore_func_state);
-
+        g_BasicLogicAgent->CurrentTask=TaskIndividual::NonTask;
+    }
+    else
+        fore_func_state = ForeFuncState::IDLE;
+    
+    g_BlackBoardAgent->PubDecisionState(fore_func_state);
     return ;
 }
 
@@ -79,9 +79,14 @@ void ForegrdFunc::March_gps()
     ROS_INFO("March_gps");
     gps_march_action->waitForServer();
     march_goal.goal =g_BlackBoardAgent->GetGoal();
-    ROS_INFO("goal x is : %f",march_goal.goal.position.x);
-    ROS_INFO("goal y is : %f",march_goal.goal.position.y);
-    ROS_INFO("goal z is : %f",march_goal.goal.position.z);
+    for(int i = 0 ; i < g_GroupLogicAgent->GroupMember.size(); i++){
+        march_goal.idList.push_back(g_GroupLogicAgent->GroupMember[i]);
+    }
+    if(g_BlackBoardAgent->car_number == 1){
+        ROS_INFO("goal x is : %f",march_goal.goal.position.x);
+        ROS_INFO("goal y is : %f",march_goal.goal.position.y);
+        ROS_INFO("goal z is : %f",march_goal.goal.position.z);
+    }
     gps_march_action->sendGoal(   march_goal,
                                 boost::bind(&ForegrdFunc::March_DoneCallback,this,_1,_2),
                                 boost::bind(&ForegrdFunc::March_ActiveCallback,this),
@@ -95,13 +100,18 @@ void ForegrdFunc::March_laser()
     ROS_INFO("March_laser");
     laser_march_action->waitForServer();
     march_goal.goal =g_BlackBoardAgent->GetGoal();
+    for(int i = 0 ; i < g_GroupLogicAgent->GroupMember.size(); i++){
+        march_goal.idList.push_back(g_GroupLogicAgent->GroupMember[i]);
+    }
+    if(g_BlackBoardAgent->car_number == 1){
         ROS_INFO("goal x is : %f",march_goal.goal.position.x);
         ROS_INFO("goal y is : %f",march_goal.goal.position.y);
         ROS_INFO("goal z is : %f",march_goal.goal.position.z);
-        laser_march_action->sendGoal(   march_goal,
-                                    boost::bind(&ForegrdFunc::March_DoneCallback,this,_1,_2),
-                                    boost::bind(&ForegrdFunc::March_ActiveCallback,this),
-                                    boost::bind(&ForegrdFunc::March_FeedbackCallback,this,_1));
+    }
+    laser_march_action->sendGoal(   march_goal,
+                                boost::bind(&ForegrdFunc::March_DoneCallback,this,_1,_2),
+                                boost::bind(&ForegrdFunc::March_ActiveCallback,this),
+                                boost::bind(&ForegrdFunc::March_FeedbackCallback,this,_1));
 ///<<< END WRITING YOUR CODE
 }
 
@@ -109,12 +119,11 @@ void ForegrdFunc::March_laser()
  void ForegrdFunc::March_FeedbackCallback(const robot_msgs::MarchFeedbackConstPtr &feedback){
     if(feedback->error_occured){
         fore_func_state= ForeFuncState::Failure;
-        g_BlackBoardAgent->PubDecisionState(fore_func_state);
     }
     else{
         fore_func_state = ForeFuncState::Running;
-        g_BlackBoardAgent->PubDecisionState(fore_func_state);
     }
+    g_BlackBoardAgent->PubDecisionState(fore_func_state);
     return ;
 }
 
@@ -125,16 +134,15 @@ void ForegrdFunc::March_ActiveCallback(void){
 }
 
 void ForegrdFunc::March_DoneCallback(const actionlib::SimpleClientGoalState &state, const robot_msgs::MarchResultConstPtr &result){
-        if(result->succeed!=_cancel)
-        {
-            fore_func_state = ForeFuncState::IDLE;
-            g_BasicLogicAgent->CurrentTask=TaskIndividual::NonTask;
-        }
-        else
+    if(result->succeed!=_cancel)
+    {
         fore_func_state = ForeFuncState::IDLE;
-        
-        g_BlackBoardAgent->PubDecisionState(fore_func_state);
-
+        g_BasicLogicAgent->CurrentTask=TaskIndividual::NonTask;
+    }
+    else
+        fore_func_state = ForeFuncState::IDLE;
+    
+    g_BlackBoardAgent->PubDecisionState(fore_func_state);
     return ;
 }
 

@@ -45,13 +45,13 @@ unset(_expectedTargets)
 add_library(bitctrl SHARED IMPORTED)
 
 set_target_properties(bitctrl PROPERTIES
-  INTERFACE_INCLUDE_DIRECTORIES "/home/lovebc/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/Bitctrl"
+  INTERFACE_INCLUDE_DIRECTORIES "/home/lovebc/Desktop/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/Bitctrl"
 )
 
 # Import target "bitctrl" for configuration "Debug"
 set_property(TARGET bitctrl APPEND PROPERTY IMPORTED_CONFIGURATIONS DEBUG)
 set_target_properties(bitctrl PROPERTIES
-  IMPORTED_LOCATION_DEBUG "/home/lovebc/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/build-Debug/bitctrl/libbitctrl_d.so"
+  IMPORTED_LOCATION_DEBUG "/home/lovebc/Desktop/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/build-Debug/bitctrl/libbitctrl_d.so"
   IMPORTED_SONAME_DEBUG "libbitctrl_d.so"
   )
 

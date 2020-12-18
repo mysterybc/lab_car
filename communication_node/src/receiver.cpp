@@ -29,13 +29,8 @@ void decodeRobotMsgs(std::string msg,std::map<int,RobotState> &id2states)
 }
 
 //解码上位机消息
-void decodeHostMsg(std::string msg){
-    Json::Value json;
-    Json::Reader reader;
-    reader.parse(msg.c_str(),json);
-    std::string message_type = json["message_type"].asString();
-    
-    
+void decodeHostMsg(std::string msg, HostCmd &host_cmd){
+    host_cmd.json2Msg(msg);
 }
 
 
@@ -58,8 +53,8 @@ void pubStatus(std::map<int,RobotState> id2states,ros::Publisher &pub){
 }
 
 //发布host cmd
-void pubHostCmd(){
-
+void pubHostCmd(HostCmd &host_cmd, ros::Publisher &cmd_pub){
+    cmd_pub.publish(host_cmd.host_cmd_array);
 }
 
 //transform algomsg 2 array
@@ -123,10 +118,12 @@ int main(int argc, char** argv){
     std::map<int,RobotState> id2states;
     std::vector<std::string> robot_msgs;
     std::string host_msg;
+    HostCmd host_cmd;
 
     //ros pub
     ros::Publisher robot_state_pub = nh.advertise<robot_msgs::RobotStates>("robot_states",10);
     ros::Publisher algomsg_pub = nh.advertise<std_msgs::UInt8MultiArray>("algomsg_others",10);
+    ros::Publisher cmd_pub = nh.advertise<robot_msgs::HostCmdArray>("/host_cmd",10);
 
     
 
@@ -135,11 +132,13 @@ int main(int argc, char** argv){
         robot_msgs.clear();
         //deal with msgs from host
         state_receive.receiveMsg(robot_msgs);
-        // host_receive.receiveMsg(host_msgs);
-        // if(!host_msgs.empty()){
-        //     decodeHostMsg(host_msg);
-        //     pubHostCmd();
-        // }
+        host_receive.receiveMsg(host_msg);
+        if(!host_msg.empty()){
+            decodeHostMsg(host_msg,host_cmd);
+            if(host_cmd.message_type != HostCmd::HostMessageType::Cmd){
+                pubHostCmd(host_cmd,cmd_pub);
+            }
+        }
         //deal with msgs from robots
         if(!robot_msgs.empty()){
             for(auto msg:robot_msgs){
@@ -150,8 +149,8 @@ int main(int argc, char** argv){
                     decodeRobotMsgs(msg,id2states);
                 }
             }
-            pubStatus(id2states,robot_state_pub);
         }
+        pubStatus(id2states,robot_state_pub);
         ros::spinOnce();
         loop.sleep();
     }

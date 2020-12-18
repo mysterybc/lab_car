@@ -6,42 +6,25 @@
 
 #include "BasicLogic.h"
 
-///<<< BEGIN WRITING YOUR CODE FILE_INIT
-
-///<<< END WRITING YOUR CODE
-
 BasicLogic::BasicLogic()
 {
 	CurrentTask = NonTask;
 	CurrentType = NonType;
 	InputTask = NonTask;
 	InputType = NonType;
-///<<< BEGIN WRITING YOUR CODE CONSTRUCTOR
-
-///<<< END WRITING YOUR CODE
 }
 
 BasicLogic::~BasicLogic()
 {
-///<<< BEGIN WRITING YOUR CODE DESTRUCTOR
-
-///<<< END WRITING YOUR CODE
 }
 
 void BasicLogic::Upper_Processing()//尝试写成树的逻辑
 {
-///<<< BEGIN WRITING YOUR CODE Upper_Processing
 g_GroupLogicAgent->GroupLogicProcessing();
 
 if(g_GroupLogicAgent->GroupPermission==true && InputTask==NonTask&&CurrentTask==NonTask&&g_BlackBoardAgent->TaskList.empty()!=1)//单步无任务时取出任务列表中的任务赋给InputTask变量&&旧任务都完成才完成
 		{
 			g_GroupLogicAgent->GroupMember.assign(g_BlackBoardAgent->TaskList.back().car_id.begin(),g_BlackBoardAgent->TaskList.back().car_id.end());
-    // //test
-    // if(g_BlackBoardAgent->car_number==2)
-	// 			ROS_INFO("Member_num:%d",g_GroupLogicAgent->GroupMember.size());
-    // //test
-
-
 
 			while(g_GroupLogicAgent->GroupPermission==false)
 			{
@@ -55,10 +38,5 @@ if(g_GroupLogicAgent->GroupPermission==true && InputTask==NonTask&&CurrentTask==
 
 			g_BlackBoardAgent->TaskList.pop_back();
 		}
-///<<< END WRITING YOUR CODE
 }
 
-
-///<<< BEGIN WRITING YOUR CODE FILE_UNINIT
-
-///<<< END WRITING YOUR CODE

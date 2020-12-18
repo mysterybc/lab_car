@@ -19,55 +19,73 @@ BackgrdFunc::BackgrdFunc()
 
 BackgrdFunc::~BackgrdFunc()
 {
-///<<< BEGIN WRITING YOUR CODE DESTRUCTOR
-
-///<<< END WRITING YOUR CODE
 }
 void BackgrdFunc::Pause()
 {
-ROS_INFO("%d",g_BasicLogicAgent->InputTask);
-
 ///<<< BEGIN WRITING YOUR CODE Pause
 switch (g_BasicLogicAgent->CurrentTask)
 {
 case Assemble:
 g_ForegrdFuncAgent->build_up_action->cancelGoal();
     break;
+case March_gps:
+{
+        ROS_INFO("cancel_gps_action");
+                ROS_INFO("cancel_gps_action");
+                        ROS_INFO("cancel_gps_action");
+g_ForegrdFuncAgent->gps_march_action->cancelGoal();
+break;
+}
+case March_laser:
+{
+        ROS_INFO("cancel_laser_action");
+                ROS_INFO("cancel_laser_action");
+                        ROS_INFO("cancel_laser_action");
+    g_ForegrdFuncAgent->laser_march_action->cancelGoal();
+    break;
+}
 default:
     break;
 }
 
-///<<< END WRITING YOUR CODE
+
 }
 
 void BackgrdFunc::Resume()
 {
-///<<< BEGIN WRITING YOUR CODE Resume
 g_BasicLogicAgent->InputTask=g_BasicLogicAgent->CurrentTask;
-// if(g_BasicLogicAgent->InputTask==TaskIndividual::Assemble)
-// ROS_INFO("Resume:Input is assemble");
 g_BasicLogicAgent->CurrentTask=TaskIndividual::NonTask;
-///<<< END WRITING YOUR CODE
 }
 
 void BackgrdFunc::STOP()
 {
-///<<< BEGIN WRITING YOUR CODE STOP
-ROS_INFO("%d",g_BasicLogicAgent->InputTask);
 switch (g_BasicLogicAgent->CurrentTask)
 {
 case Assemble:
 g_ForegrdFuncAgent->build_up_action->cancelGoal();
     break;
+case March_gps:
+{
+g_ForegrdFuncAgent->gps_march_action->cancelGoal();
+ROS_INFO("cancel_gps_action");
+ROS_INFO("cancel_gps_action");
+ROS_INFO("cancel_gps_action");
+    break; 
+}
+case March_laser:
+{
+    ROS_INFO("cancel_laser_action");
+            ROS_INFO("cancel_laser_action");
+                    ROS_INFO("cancel_laser_action");
+    g_ForegrdFuncAgent->laser_march_action->cancelGoal();
+    break;
+}
 default:
     break;
 }
-
 g_BasicLogicAgent->CurrentTask=TaskIndividual::NonTask;
-///<<< END WRITING YOUR CODE
+behaviac::vector<int>().swap(g_GroupLogicAgent->GroupMember);
+g_ForegrdFuncAgent->fore_func_state=ForeFuncState::IDLE;
+g_BlackBoardAgent->PubDecisionState(g_ForegrdFuncAgent->fore_func_state);
 }
 
-
-///<<< BEGIN WRITING YOUR CODE FILE_UNINIT
-
-///<<< END WRITING YOUR CODE

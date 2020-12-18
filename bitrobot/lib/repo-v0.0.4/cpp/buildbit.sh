@@ -6,7 +6,8 @@ SRC_DIR=$(pwd)
 CURR_DIR=$(pwd)
 BUILD_PREFIX=build-$BUILD_TYPE
 INSTALL_DIR=$CURR_DIR/install-all
-BUILD_ITEM="geo ssnet bitctrl simu"
+#BUILD_ITEM="geo ssnet bitctrl simu"
+BUILD_ITEM="bitctrl"
 
 
 mkdir $BUILD_PREFIX

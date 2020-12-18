@@ -78,6 +78,12 @@ namespace zmq_lib{
                 vec.push_back(str);
             }
         }
+        int receiveMsg(std::string& vec){
+            zmq::message_t recv_msg;
+            while(sub.recv(&recv_msg,ZMQ_DONTWAIT)){
+                vec = recv_msg.to_string();
+            }
+        }
         //动态添加
         void addIp(const std::string ip){
             sub.connect(ip);

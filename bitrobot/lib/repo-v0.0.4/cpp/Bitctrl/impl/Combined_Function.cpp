@@ -165,7 +165,13 @@ namespace impl{
 				LOGDEBUGLV2(DEBUG_INFO_FUNCTION, "[Ctrl] WARN: Shape incompatiable for last {} steps.", shape_mismatch_counter);
 			}
 			if (shape_missing_counter > 0 && shape_missing_counter % 10 == 0) {
-				LOGDEBUGLV2(DEBUG_INFO_FUNCTION, "[Ctrl] WARN: Missing shape info for last {} steps.", shape_missing_counter);
+				LOGDEBUGLV2(DEBUG_INFO_FUNCTION, "[Ctrl] WARN: Missing shape info for last {} steps: {}/{}", 
+					shape_missing_counter, shapeReceive.size() + 1, swarm_size);
+				std::map<int, char>::iterator it = shapeReceive.begin();
+				while (it != shapeReceive.end()) {
+					LOGDEBUGLV2(DEBUG_INFO_FUNCTION, "[Ctrl] WARN: Missing shape -> ShapeRecv[{}]={}", it->first, (int)it->second);
+					++it;
+				}
 			}
 
             // We have to get a continuous 10 good match

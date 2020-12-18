@@ -38,10 +38,10 @@ gen_thresh_tracking     30  # float, cm
 gen_thresh_theta        5  # float, deg
 
 # Tracking Config
-gen_track_kn        1     # float
+gen_track_kn        1       # float
 gen_track_kt        1       # float, 
 gen_track_ndzone    0       # float
-gen_track_ethresh   45     # in cm, 
+gen_track_ethresh   100     # in cm, 
 gen_track_strict    false   # if strict, path_t will not advance if err >= ethresh
 gen_track_endreach_pos  30  # Endreach counter limit for position
 gen_track_endreach_th   30  # Endreach counter limit for theta
@@ -50,7 +50,7 @@ gen_tsingle_kn      1       # float
 gen_tsingle_kt      1       # float
 gen_tsingle_ndzone    0     # float
 gen_tsingle_ethresh   100   # in cm 
-gen_tsingle_strict    true  # if strict, path_t will not advance if err >= ethresh
+gen_tsingle_strict    false  # if strict, path_t will not advance if err >= ethresh
 
 # Formation Config
 gen_use_autoselect  true    # whether perform auto-shape selection on Formation Experiments
@@ -190,8 +190,8 @@ latTestStatWindow 100  # i.e lat(k+1) = p*lat(k) + lat_now. win_size=1/(1-p)
                        # 0 if not used
 
 # Options of debug info output
-IDshowAll 0     # which one would print every one's state on DEBUG_INFO_STATE
-DebugMode 0     # 0: normal, 1: no neighbour info
+IDshowAll 10     # which one would print every one's state on DEBUG_INFO_STATE
+DebugMode 0      # 0: normal, 1: no neighbour info
 
 # Planning Components
 withplan     false
@@ -209,3 +209,6 @@ tcpcom_ip    127.0.0.1  127.0.0.1  127.0.0.1  127.0.0.1   127.0.0.1   127.0.0.1 
 #tcpcom_ip    192.168.56.102 192.168.56.102 192.168.56.102 192.168.56.102  192.168.1.161  192.168.1.161  192.168.1.161  192.168.1.161
 tcpcom_port  18321      18322      18323      18324       18325       18326       18327       18328
 strcom_port  18421      18422      18423      18424       18425       18426       18427       18428
+strcom_dontbind true
+
+

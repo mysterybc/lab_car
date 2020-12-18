@@ -6,11 +6,6 @@
 #include "BlackBoard.h"
 #include "algorithm"
 #include "vector"
-///<<< BEGIN WRITING YOUR CODE FILE_INIT
-
-///<<< END WRITING YOUR CODE
-
-
 
 
 
@@ -18,20 +13,18 @@ BlackBoard::BlackBoard()
 {
 		ros::NodeHandle nh;
     	car_number = 0;
-///<<< BEGIN WRITING YOUR CODE CONSTRUCTOR
         cmd_sub = nh.subscribe("/host_cmd",10,&BlackBoard::CmdCallback,this);                                                            //1、2
 		decision_state_pub = nh.advertise<robot_msgs::robot_states_enum>("decision_state",10);
         group_state_sub=nh.subscribe("robot_states",10,&BlackBoard::GroupStateCallback,this);
-        nh.getParam("car_id",car_number);
+        std::string namespace_=nh.getNamespace();
+        nh.getParam(namespace_+"/car_id",car_number);
         g_BasicLogicAgent->InputTask = TaskIndividual::NonTask;
-///<<< END WRITING YOUR CODE
+
 }
 
 BlackBoard::~BlackBoard()
 {
-///<<< BEGIN WRITING YOUR CODE DESTRUCTOR
 
-///<<< END WRITING YOUR CODE
 }
 void BlackBoard::GroupStateCallback(const robot_msgs::RobotStatesConstPtr &msg)
 {
@@ -52,26 +45,14 @@ for(int i=0;i<g_GroupLogicAgent->GroupMember.size();i++)
         if(*(iter1+i)==(iter2+j)->car_id)//carid==GroupMember[i]
         {
             g_GroupLogicAgent->GroupState.push_back((ForeFuncState)(iter2+j)->robot_state.robot_states_enum);
-
         }
     }
 
 }
 
-// if(car_number==2)
-// {
-// ROS_INFO("GroupMember_size:%d",g_GroupLogicAgent->GroupMember.size());
-// 			for(int i=0;i<g_GroupLogicAgent->GroupMember.size();i++)
-// 			{
-// 				ROS_INFO("Member:%d",g_GroupLogicAgent->GroupMember[i]);
-// 			}
-// ROS_INFO("GroupState_size:%d",g_GroupLogicAgent->GroupState.size());
-// }
-
 }
 
 
-///<<< BEGIN WRITING YOUR CODE FILE_UNINIT
 void BlackBoard::CmdCallback(const robot_msgs::HostCmdArrayConstPtr &msg){
 
         //1.清空list
@@ -104,12 +85,15 @@ void BlackBoard::CmdCallback(const robot_msgs::HostCmdArrayConstPtr &msg){
 
         if(!msgs.empty())//有本车命令
     {
+        if( (TaskIndividual)msgs.back().mission.mission<=Assemble)//ForegrdFunc Task
+        {
+            goal = msgs.back().goal.pose;
+            behaviac::vector<int>().swap(g_GroupLogicAgent->GroupMember);
+            g_GroupLogicAgent->GroupMember.assign(msgs.back().car_id.begin(),msgs.back().car_id.end());
+        }
+        
         g_BasicLogicAgent->InputTask  = (TaskIndividual)msgs.back().mission.mission;
-        ROS_INFO("%d",g_BasicLogicAgent->InputTask);
-        //if(g_BasicLogicAgent->InputTask==Assemble)
-        goal = msgs.back().goal.pose;
-        behaviac::vector<int>().swap(g_GroupLogicAgent->GroupMember);
-        g_GroupLogicAgent->GroupMember.assign(msgs.back().car_id.begin(),msgs.back().car_id.end());
+
         msgs.pop_back();//4
         
        if(!msgs.empty())//本车命令总数>2

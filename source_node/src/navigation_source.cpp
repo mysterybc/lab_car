@@ -12,7 +12,8 @@ NavigationSource::NavigationSource(){
     }
     state_pub = nh.advertise<robot_msgs::SourceNodeMsg>("navigation_state",10);
     cmd_sub = nh.subscribe<robot_msgs::Cmd>("navigation_cmd",10,&NavigationSource::CmdCallback,this);
-    imu_.Start();
+    // imu_.Start();
+    gps_.Start();
 }
 
 

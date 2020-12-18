@@ -98,7 +98,7 @@ int main(int argc, char** argv)
 
 		count ++;
 		if(count == 20){										//ROS_Info，1hz
-		if(g_BlackBoardAgent->car_number==1){//INFO 2车 state
+		if(g_BlackBoardAgent->car_number){//INFO 2车 state
 			switch(g_BasicLogicAgent->InputTask){
 				case 0: ROS_INFO("InputTask:NONE TASK!!!");break;
 				case 1: ROS_INFO("InputTask:gps march!!!");break;

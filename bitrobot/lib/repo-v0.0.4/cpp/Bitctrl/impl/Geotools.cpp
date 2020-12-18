@@ -134,6 +134,8 @@ void FormationInfo::selectFormation(const std::map<int, pt2D>& dxy, const DataSe
 		loginfo(DEBUG_INFO_FUNCTION, "[SelectFormation] Not Enough Data");
 		return;
 	}
+	loginfo(DEBUG_INFO_FUNCTION, "[SelectFormation] dxy.size={}, sdxy.size={}", dxy.size(), sdxy.size());
+
 
 	pt2D center = mean(xy); // Potential Defect,
 							// for algorithm to converge, we must have the same formation center

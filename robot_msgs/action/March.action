@@ -1,5 +1,6 @@
 #goal
 geometry_msgs/Pose goal
+uint8[] idList
 ---
 #result
 bool succeed

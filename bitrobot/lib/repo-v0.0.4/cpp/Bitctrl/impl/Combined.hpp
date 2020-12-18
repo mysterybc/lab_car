@@ -68,7 +68,7 @@ namespace impl{
 		void setTargetPoint(PathPoint pt);
 		void setTargetHeading(real_t th, bool isRelative);
 		bool setFormationShape(const std::vector<int>& id, std::vector<float> dx, std::vector<float> dy, float dxy_scaling);
-		void setFormationGroup(int groupID) { formation_group = groupID; }
+		void setFormationGroup(int groupID) { formation_group = groupID;  LOGDEBUGLV2(DEBUG_INFO_FUNCTION, "[Ctrl] Set FM_Group {}", groupID);  }
 		int  getFormationGroup()            { return formation_group; }
 		bool computePath(std::vector<PathPoint>& path, pt2D q0, pt2D q1, real_t v, real_t safe);
 		bool computePath(std::vector<PathPoint>& path, const std::vector<PathPoint>& target, real_t safe, bool startAtMe);

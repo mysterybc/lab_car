@@ -106,7 +106,7 @@ void Combined::setHumanInput(InterventionInfo humanInput){
 		if (use_autoselect && needShapeSelection()) {
 			char shp = getMyShapeIndex();
 			compack.setShape(4, shp, (uint8_t)getFormationGroup(), 100);
-			log_msg += fmt::format(" shape-{}", (int)shp);
+			log_msg += fmt::format(" shape-{}, gp-{}", (int)shp, (int)getFormationGroup());
 		}
 
 		if (last_loop_send != (int)lastTime.loopCounter) {
@@ -162,6 +162,7 @@ void Combined::setHumanInput(InterventionInfo humanInput){
 			std::uint8_t n, shp, fmgroup;
 			std::uint16_t prior;
 			comrec.getShape(n, shp, fmgroup, prior);
+			log_msg += fmt::format(" gp-{}", (int)fmgroup);
 			if ((int)fmgroup == getFormationGroup()) {
 				// 只考虑本formation_group里人发来的信息
 				log_msg += fmt::format(" shape-{}", (int)shp);
