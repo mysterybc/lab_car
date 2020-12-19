@@ -7,7 +7,19 @@
 void Command();
 void GetMission(robot_msgs::HostCmd &cmd, int mission);
 void SetId(robot_msgs::HostCmd &cmd);
-ros::Publisher host_cmd_pub;
+struct RosPubs{
+    RosPubs(int total_car_number){
+        ros::NodeHandle nh;
+        for(int i = 0 ; i < total_car_number ; i++){
+            std::string topic_name = "/robot_" + std::to_string(i) + "/host_cmd";
+            ros::Publisher pub = nh.advertise<robot_msgs::HostCmdArray>(topic_name,10);
+            pubs.push_back(pub);
+        }
+        ros::Publisher pub = nh.advertise<robot_msgs::HostCmdArray>("/host_cmd",10);
+        pubs.push_back(pub);
+    }
+    std::vector<ros::Publisher> pubs;
+};
 robot_msgs::HostCmdArray host_cmd_array;
 bool new_cmd{false};
 char command = '0';
@@ -62,8 +74,10 @@ void GetMission(robot_msgs::HostCmd &cmd, int mission){
 }
 
 
-void MissionPub(){
-    host_cmd_pub.publish(host_cmd_array);
+void MissionPub(RosPubs &ros_pubs){
+    for(auto pub:ros_pubs.pubs){
+        pub.publish(host_cmd_array);
+    }
 }
 
 void Command(){
@@ -90,7 +104,9 @@ void Command(){
 int main(int argc, char **argv){
     ros::init(argc,argv,"host_cmd_pub_node");
     ros::NodeHandle nh;
-    host_cmd_pub = nh.advertise<robot_msgs::HostCmdArray>("host_cmd",10);
+    int total_car_number;
+    nh.param("/total_car_number",total_car_number,4);
+    RosPubs ros_pubs(total_car_number);
 
     ros::Rate loop(10);
     while(ros::ok()){
@@ -98,7 +114,7 @@ int main(int argc, char **argv){
         Command();
         if(new_cmd){
             SelectMission();
-            MissionPub();
+            MissionPub(ros_pubs);
             new_cmd = false;
             std::cout << "                TASK SET!!!" << std::endl;
             std::cout << std::endl;

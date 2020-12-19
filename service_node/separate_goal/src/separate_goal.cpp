@@ -36,14 +36,14 @@ bool SeparateGoal::CalGoal(robot_msgs::Separate::Request &req,
     goal_point = req.goal;  
     ROS_INFO("separate start!!");
     int x_flag{0}, y_flag{0};
-    int online_car{1};
+    int online_car{2};
     my_pose = GetMyPose();
     ROS_INFO("get my pose!!");
     for(auto it : robots_info){
         if(it.car_id == 0){
             continue;
         }
-        online_car++;
+        // online_car++;
         std::cout << "other car x" << it.robot_pose.position.x << std::endl;
         if(my_pose.position.x > it.robot_pose.position.x){
             x_flag++;

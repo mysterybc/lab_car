@@ -13,7 +13,7 @@ BlackBoard::BlackBoard()
 {
 		ros::NodeHandle nh;
     	car_number = 0;
-        cmd_sub = nh.subscribe("/host_cmd",10,&BlackBoard::CmdCallback,this);                                                            //1、2
+        cmd_sub = nh.subscribe("host_cmd",10,&BlackBoard::CmdCallback,this);                                                            //1、2
 		decision_state_pub = nh.advertise<robot_msgs::robot_states_enum>("decision_state",10);
         group_state_sub=nh.subscribe("robot_states",10,&BlackBoard::GroupStateCallback,this);
         std::string namespace_=nh.getNamespace();

@@ -79,6 +79,7 @@ void ForegrdFunc::March_gps()
     ROS_INFO("March_gps");
     gps_march_action->waitForServer();
     march_goal.goal =g_BlackBoardAgent->GetGoal();
+    march_goal.idList.clear();
     for(int i = 0 ; i < g_GroupLogicAgent->GroupMember.size(); i++){
         march_goal.idList.push_back(g_GroupLogicAgent->GroupMember[i]);
     }
@@ -100,6 +101,7 @@ void ForegrdFunc::March_laser()
     ROS_INFO("March_laser");
     laser_march_action->waitForServer();
     march_goal.goal =g_BlackBoardAgent->GetGoal();
+    march_goal.idList.clear();
     for(int i = 0 ; i < g_GroupLogicAgent->GroupMember.size(); i++){
         march_goal.idList.push_back(g_GroupLogicAgent->GroupMember[i]);
     }

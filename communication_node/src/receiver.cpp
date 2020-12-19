@@ -57,22 +57,10 @@ void pubHostCmd(HostCmd &host_cmd, ros::Publisher &cmd_pub){
     cmd_pub.publish(host_cmd.host_cmd_array);
 }
 
-//transform algomsg 2 array
-void algomsg2multiarr(const std::string& msg, std_msgs::UInt8MultiArray& data) {
-	data.layout.dim.resize(1);
-	data.layout.data_offset = 0;
-	data.layout.dim[0].size = msg.size();
-	data.layout.dim[0].stride = 1;
-
-	data.data.resize(msg.size());
-	for (unsigned i=0;i<msg.size();++i) {
-		data.data[i] = (uint8_t)msg[i];
-	}
-}
 //pub algomsg
 void pubAlgomsg(std::string &msg,ros::Publisher& algomsg_pub){
     std_msgs::UInt8MultiArray algomsg;
-    algomsg2multiarr(msg,algomsg);
+    json2multiarray(msg,algomsg);
     algomsg_pub.publish(algomsg);
 }
 
@@ -123,13 +111,14 @@ int main(int argc, char** argv){
     //ros pub
     ros::Publisher robot_state_pub = nh.advertise<robot_msgs::RobotStates>("robot_states",10);
     ros::Publisher algomsg_pub = nh.advertise<std_msgs::UInt8MultiArray>("algomsg_others",10);
-    ros::Publisher cmd_pub = nh.advertise<robot_msgs::HostCmdArray>("/host_cmd",10);
+    ros::Publisher cmd_pub = nh.advertise<robot_msgs::HostCmdArray>("host_cmd",10);
 
     
 
     ros::Rate loop(20);
     while(ros::ok()){
         robot_msgs.clear();
+        host_msg.clear();
         //deal with msgs from host
         state_receive.receiveMsg(robot_msgs);
         host_receive.receiveMsg(host_msg);
@@ -142,7 +131,8 @@ int main(int argc, char** argv){
         //deal with msgs from robots
         if(!robot_msgs.empty()){
             for(auto msg:robot_msgs){
-                if(msg.size() == 81){
+                Json::Value json = string2json(msg);
+                if(json["message_type"] == "control_msg"){
                     pubAlgomsg(msg,algomsg_pub);
                 }
                 else{

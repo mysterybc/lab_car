@@ -463,8 +463,9 @@ void ActionConfig::config_controller(const robot_msgs::MarchGoalConstPtr &goal){
 		myconfig.idlist.push_back(number);
 		myconfig.idform.push_back(number);
 	}
-	for(auto number:myconfig.idlist){
-		std::cout << " id is " << number << std::endl;
+	std::cout << "car " << myconfig.robotID << "get once!" << std::endl;
+	for(auto number:goal->idList){
+		std::cout  << "car " << myconfig.robotID <<  "get cmd" << " id is " << number << std::endl;
 	}
 }
 

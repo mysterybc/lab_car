@@ -97,11 +97,11 @@ int GPS::UpDateGPS()
             //position
             odom_.pose.pose.position.x = y-GPS_OFFSET_Y;
             odom_.pose.pose.position.y = GPS_OFFSET_X-x;
-            odom_.pose.pose.position.z = GI320_data.altitude-36;
+            odom_.pose.pose.position.z = GI320_data.altitude-46.8;
             
             geometry_msgs::Quaternion q = tf::createQuaternionMsgFromRollPitchYaw(0,
                                                                                   0,
-                                                                                  deg2rad(GI320_data.yaw)    );
+                                                                                  deg2rad(GI320_data.yaw-90)    );
 
             //liner speed 31b-39b
             odom_.twist.twist.linear.x = GI320_data.eastSpeed;
@@ -114,7 +114,7 @@ int GPS::UpDateGPS()
             gps_odom_tf.transform.translation.x = y-GPS_OFFSET_Y;
             gps_odom_tf.transform.translation.y = GPS_OFFSET_X-x;
 
-            gps_odom_tf.transform.translation.z = GI320_data.altitude;
+            gps_odom_tf.transform.translation.z = GI320_data.altitude-46.8;
             gps_odom_tf.transform.rotation = q;
             tf_broadcaster_.sendTransform(gps_odom_tf);
 
@@ -241,7 +241,7 @@ void GPS::TransData()
     GI320_data.loctionMode = temp_dat[65]&0x3f;
     GI320_data.sulutionMode = temp_dat[65]>>6;
     InfoGpsState();
-    // InfoData();
+    InfoData();
 
 }
 
