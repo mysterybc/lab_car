@@ -50,7 +50,6 @@ public:
     ros::NodeHandle nh;
     ros::Publisher goal_pub_;
     ros::Subscriber statue_sub_;
-    ros::Publisher debug_pub;
     ros::ServiceClient report_path_client;
     ros::ServiceClient get_host_config_client;
     ros::ServiceClient make_plan_client;

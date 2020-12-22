@@ -14,6 +14,7 @@
 #include "std_msgs/Int32.h"
 #include "thread"
 #include "string"
+#include "debug_info.h"
 
 
 
@@ -26,7 +27,6 @@ public:
     void cmdVelCallback(const geometry_msgs::Twist::ConstPtr& cmd_vel);
 private:    
     serial::Serial sp;
-    ros::Publisher debug_pub;
     ros::Publisher vel_pub;
     ros::Publisher odom_pub_;
     int car_id;
@@ -57,7 +57,7 @@ public:
     ros::Publisher  state_pub;
     ros::Subscriber cmd_sub;
 
-
+    int car_id;
     State node_state;
     Error node_error;
     uint8_t update_frequence;

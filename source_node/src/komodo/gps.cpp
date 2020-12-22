@@ -118,10 +118,6 @@ int GPS::UpDateGPS()
             gps_odom_tf.transform.rotation = q;
             tf_broadcaster_.sendTransform(gps_odom_tf);
 
-
-            q = tf::createQuaternionMsgFromRollPitchYaw(deg2rad(GI320_data.pitch),
-                                                        deg2rad(GI320_data.roll),
-                                                        deg2rad(GI320_data.yaw)    );
             odom_.pose.pose.orientation = q;
 
             sensor_msgs::Imu imu;
@@ -136,7 +132,7 @@ int GPS::UpDateGPS()
             imu.angular_velocity.z = -deg2rad(((double)GI320_data.yaw_gro)/100.0);
             imu.orientation = q;
             if(count++%10==0){
-                gps_imu_pub.publish(imu);
+                // gps_imu_pub.publish(imu);
                 gps_odom_pub_.publish(odom_);
                 // std::cout << "roll angle is" << GI320_data.roll << std::endl;
                 // std::cout << "yaw angle is" << GI320_data.yaw << std::endl;
@@ -179,15 +175,15 @@ void GPS::InfoGpsState()
     {
         state = GI320_data.loctionMode;
         count = 0;
-        ROS_INFO("GNSS state changed");
+        logger.DEBUGINFO(car_id,"GNSS state changed");
         switch(state)
         {
-            case 0:ROS_INFO("lacation mode:      SPP     ");break;
-            case 1:ROS_INFO("lacation mode:   RTK-FLOAT  ");break;
-            case 2:ROS_INFO("lacation mode:   RTK-FIXED  ");break;
-            case 3:ROS_INFO("lacation mode:    NO_GNSS   ");break;
-            case 4:ROS_INFO("lacation mode: OLD LOCATION ");break;
-            default:ROS_INFO("location mode :  data error ");
+            case 0:logger.DEBUGINFO(car_id,"lacation mode:      SPP     ");break;
+            case 1:logger.DEBUGINFO(car_id,"lacation mode:   RTK-FLOAT  ");break;
+            case 2:logger.DEBUGINFO(car_id,"lacation mode:   RTK-FIXED  ");break;
+            case 3:logger.DEBUGINFO(car_id,"lacation mode:    NO_GNSS   ");break;
+            case 4:logger.DEBUGINFO(car_id,"lacation mode: OLD LOCATION ");break;
+            default:logger.DEBUGINFO(car_id,"location mode :  data error ");
         }
     }
 }
@@ -195,21 +191,21 @@ void GPS::InfoGpsState()
 //显示收到的数据 debug用
 void GPS::InfoData()
 {
-    ROS_INFO("latitude:%lf",GI320_data.latitude);
-    ROS_INFO("longitude:%lf",GI320_data.longitude);
-    ROS_INFO("altitude:%f",GI320_data.altitude);
-    ROS_INFO("northSpeed:%f",GI320_data.northSpeed);
-    ROS_INFO("eastSpeed:%f",GI320_data.eastSpeed);
-    ROS_INFO("upSpeed:%f",GI320_data.upSpeed);
-    ROS_INFO("roll:%f",GI320_data.roll);
-    ROS_INFO("pitch:%f",GI320_data.pitch);
-    ROS_INFO("yaw:%f",GI320_data.yaw);
-    ROS_INFO("northAcc:%d",GI320_data.northAcc);
-    ROS_INFO("eastAcc:%d",GI320_data.eastAcc);
-    ROS_INFO("upAcc:%d",GI320_data.upAcc);
-    ROS_INFO("roll_gro:%d",GI320_data.roll_gro);
-    ROS_INFO("pitch_gro:%d",GI320_data.pitch_gro);
-    ROS_INFO("yaw_gro:%d",GI320_data.yaw_gro);
+    logger.DEBUGINFO(car_id,"latitude:%lf",GI320_data.latitude);
+    logger.DEBUGINFO(car_id,"longitude:%lf",GI320_data.longitude);
+    logger.DEBUGINFO(car_id,"altitude:%f",GI320_data.altitude);
+    logger.DEBUGINFO(car_id,"northSpeed:%f",GI320_data.northSpeed);
+    logger.DEBUGINFO(car_id,"eastSpeed:%f",GI320_data.eastSpeed);
+    logger.DEBUGINFO(car_id,"upSpeed:%f",GI320_data.upSpeed);
+    logger.DEBUGINFO(car_id,"roll:%f",GI320_data.roll);
+    logger.DEBUGINFO(car_id,"pitch:%f",GI320_data.pitch);
+    logger.DEBUGINFO(car_id,"yaw:%f",GI320_data.yaw);
+    logger.DEBUGINFO(car_id,"northAcc:%d",GI320_data.northAcc);
+    logger.DEBUGINFO(car_id,"eastAcc:%d",GI320_data.eastAcc);
+    logger.DEBUGINFO(car_id,"upAcc:%d",GI320_data.upAcc);
+    logger.DEBUGINFO(car_id,"roll_gro:%d",GI320_data.roll_gro);
+    logger.DEBUGINFO(car_id,"pitch_gro:%d",GI320_data.pitch_gro);
+    logger.DEBUGINFO(car_id,"yaw_gro:%d",GI320_data.yaw_gro);
 }
 //将数据保存到GI320_data中
 void GPS::TransData()
@@ -241,7 +237,7 @@ void GPS::TransData()
     GI320_data.loctionMode = temp_dat[65]&0x3f;
     GI320_data.sulutionMode = temp_dat[65]>>6;
     InfoGpsState();
-    InfoData();
+    //InfoData();
 
 }
 

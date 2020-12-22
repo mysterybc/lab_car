@@ -95,36 +95,33 @@ int main(int argc, char** argv)
 	// 	case 0:g_BlackBoardAgent->PubDecisionState(ForeFuncState::IDLE);
 	// 	case 1:g_BlackBoardAgent->PubDecisionState(ForeFuncState::Running);
 	// 	}
-
 		count ++;
 		if(count == 20){										//ROS_Info，1hz
-		if(g_BlackBoardAgent->car_number){//INFO 2车 state
 			switch(g_BasicLogicAgent->InputTask){
-				case 0: ROS_INFO("InputTask:NONE TASK!!!");break;
-				case 1: ROS_INFO("InputTask:gps march!!!");break;
-				case 2: ROS_INFO("InputTask:laser march!!!");break;
-				case 3: ROS_INFO("InputTask:ASSEMBLE TASK!!!");break;
-				case 4:ROS_INFO("InputTask:STOP TASK!!!");break;
-				case 5:ROS_INFO("InputTask:Pause TASK!!!");break;
-				case 6:ROS_INFO("InputTask:Resume TASK!!!");break;
+				case 0: logger.DEBUGINFO(g_BlackBoardAgent->car_id,"InputTask:NONE TASK!!!");break;
+				case 1: logger.DEBUGINFO(g_BlackBoardAgent->car_id,"InputTask:gps march!!!");break;
+				case 2: logger.DEBUGINFO(g_BlackBoardAgent->car_id,"InputTask:laser march!!!");break;
+				case 3: logger.DEBUGINFO(g_BlackBoardAgent->car_id,"InputTask:ASSEMBLE TASK!!!");break;
+				case 4:	logger.DEBUGINFO(g_BlackBoardAgent->car_id,"InputTask:STOP TASK!!!");break;
+				case 5:	logger.DEBUGINFO(g_BlackBoardAgent->car_id,"InputTask:Pause TASK!!!");break;
+				case 6:	logger.DEBUGINFO(g_BlackBoardAgent->car_id,"InputTask:Resume TASK!!!");break;
 			}
 			switch(g_BasicLogicAgent->CurrentTask){
-				case 0: ROS_INFO("CurrentTask:NONE TASK!!!");break;
-				case 1: ROS_INFO("CurrentTask:gps march!!!");break;
-				case 2: ROS_INFO("CurrentTask:laser march!!!");break;
-				case 3: ROS_INFO("CurrentTask:ASSEMBLE TASK!!!");break;
-				case 4:ROS_INFO("CurrentTask:STOP TASK!!!");break;
-				case 5:ROS_INFO("CurrentTask:Pause TASK!!!");break;
-				case 6:ROS_INFO("CurrentTask:Resume TASK!!!");break;
+				case 0: logger.DEBUGINFO(g_BlackBoardAgent->car_id,"CurrentTask:NONE TASK!!!");break;
+				case 1: logger.DEBUGINFO(g_BlackBoardAgent->car_id,"CurrentTask:gps march!!!");break;
+				case 2: logger.DEBUGINFO(g_BlackBoardAgent->car_id,"CurrentTask:laser march!!!");break;
+				case 3: logger.DEBUGINFO(g_BlackBoardAgent->car_id,"CurrentTask:ASSEMBLE TASK!!!");break;
+				case 4:	logger.DEBUGINFO(g_BlackBoardAgent->car_id,"CurrentTask:STOP TASK!!!");break;
+				case 5:	logger.DEBUGINFO(g_BlackBoardAgent->car_id,"CurrentTask:Pause TASK!!!");break;
+				case 6:	logger.DEBUGINFO(g_BlackBoardAgent->car_id,"CurrentTask:Resume TASK!!!");break;
 			}
 			    //test
-			for(int i=0;i<g_GroupLogicAgent->GroupMember.size();i++)
-			{
-				ROS_INFO("Member:%d,state:%d",g_GroupLogicAgent->GroupMember[i],g_GroupLogicAgent->GroupState[i]);
-			}
+			// for(int i=0;i<g_GroupLogicAgent->GroupMember.size();i++)
+			// {
+			// 	logger.DEBUGINFO(g_BlackBoardAgent->car_id,"Member:%d,state:%d",g_GroupLogicAgent->GroupMember[i],g_GroupLogicAgent->GroupState[i]);
+			// }
     //test
 
-		}
 
 			  count = 0;
 		}

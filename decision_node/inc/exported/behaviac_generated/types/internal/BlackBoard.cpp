@@ -7,18 +7,19 @@
 #include "algorithm"
 #include "vector"
 
-
+Debug::DebugLogger logger;
 
 BlackBoard::BlackBoard()
 {
-		ros::NodeHandle nh;
-    	car_number = 0;
-        cmd_sub = nh.subscribe("host_cmd",10,&BlackBoard::CmdCallback,this);                                                            //1、2
-		decision_state_pub = nh.advertise<robot_msgs::robot_states_enum>("decision_state",10);
-        group_state_sub=nh.subscribe("robot_states",10,&BlackBoard::GroupStateCallback,this);
-        std::string namespace_=nh.getNamespace();
-        nh.getParam(namespace_+"/car_id",car_number);
-        g_BasicLogicAgent->InputTask = TaskIndividual::NonTask;
+    ros::NodeHandle nh;
+    car_id = 0;
+    cmd_sub = nh.subscribe("host_cmd",10,&BlackBoard::CmdCallback,this);                                                            //1、2
+    decision_state_pub = nh.advertise<robot_msgs::robot_states_enum>("decision_state",10);
+    group_state_sub=nh.subscribe("robot_states",10,&BlackBoard::GroupStateCallback,this);
+    std::string namespace_=nh.getNamespace();
+    nh.getParam(namespace_+"/car_id",car_id);
+    logger.init_logger(car_id);
+    g_BasicLogicAgent->InputTask = TaskIndividual::NonTask;
 
 }
 
@@ -35,7 +36,7 @@ auto iter2=msg->robot_states.begin();
 behaviac::vector<ForeFuncState>().swap(g_GroupLogicAgent->GroupState);
 for(int i=0;i<g_GroupLogicAgent->GroupMember.size();i++)
 {
-    if(*(iter1+i)==car_number)//本车状态不在msg中，但要加入groupstates
+    if(*(iter1+i)==car_id)//本车状态不在msg中，但要加入groupstates
     {
         g_GroupLogicAgent->GroupState.push_back(g_ForegrdFuncAgent->fore_func_state);
     }
@@ -70,7 +71,7 @@ void BlackBoard::CmdCallback(const robot_msgs::HostCmdArrayConstPtr &msg){
         do
         {
             for(int i=0;i<lr1->car_id.size();i++){
-                if(lr1->car_id.at(i)==car_number){
+                if(lr1->car_id.at(i)==car_id){
                     (*lr2++)=(*lr1);
                     break;
                 }

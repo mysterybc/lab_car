@@ -20,6 +20,7 @@
 #include "BasicLogic.h"
 #include "GroupLogic.h"
 #include "ForegrdFunc.h"
+#include "debug_info.h"
 #include<utility>
 ///<<< BEGIN WRITING YOUR CODE FILE_INIT
 
@@ -40,7 +41,7 @@ public:
 
 	BEHAVIAC_DECLARE_AGENTTYPE(BlackBoard, behaviac::Agent)
 
-	public: int car_number;
+	public: int car_id;
 ///<<< BEGIN WRITING YOUR CODE CLASS_PART
 
 	public: behaviac::vector<behaviac::string> MissionTable;
@@ -56,7 +57,7 @@ public:
     // car id 
     ForeFuncState decision_state;
 
-   // std::vector<std::pair<int,ForeFuncState>>  CurrentGroupState;//pair<car_number,car_state>
+   // std::vector<std::pair<int,ForeFuncState>>  CurrentGroupState;//pair<car_id,car_state>
 private:
     ros::Subscriber group_state_sub;
     ros::Subscriber cmd_sub;

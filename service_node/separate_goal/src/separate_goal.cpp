@@ -1,6 +1,9 @@
 #include "separate_goal.h"
 #include "tf/transform_listener.h"
+#include "algorithm"
+#include "debug_info.h"
 
+Debug::DebugLogger logger;
 
 SeparateGoal::SeparateGoal(){
     ros::NodeHandle nh;
@@ -10,41 +13,38 @@ SeparateGoal::SeparateGoal(){
     //获取group下的参数
     if(!nh.getParam(namespace_+"/car_id",car_id)){
         car_id = 1;
-        ROS_WARN("SEPARATE SERVICE FAILED TO GET CAR ID");
-        ROS_WARN("SEPARATE SERVICE RESET CAR ID TO 1");
+        logger.WARNINFO(car_id,"SEPARATE SERVICE FAILED TO GET CAR ID");
+        logger.WARNINFO(car_id,"SEPARATE SERVICE RESET CAR ID TO 1");
     }
     if(!nh.getParam(namespace_+"/tf_ns",tf_ns)){
-        ROS_WARN("SEPARATE SERVICE FAILED TO GET TF FRAME");
+        logger.WARNINFO(car_id,"SEPARATE SERVICE FAILED TO GET TF FRAME");
     }
-    debug_pub = nh.advertise<robot_msgs::DebugInfo>("/debug_info",10);
     robots_state_sub = nh.subscribe("robot_states",10,&SeparateGoal::RobotStateCallback,this);
     map_sub = nh.subscribe("/map",10,&SeparateGoal::MapCallback,this);
     separate_service = nh.advertiseService("separate_goal",&SeparateGoal::CalGoal,this);
     //Debug info
-    robot_msgs::DebugInfo info;
-    std_msgs::String data;
-    data.data = "car " + std::to_string(car_id) + " separate goal service Initialized";
-    info.info.push_back(data);
-    data.data.clear();
-    data.data = "car " + std::to_string(car_id) + " tf frame is " + tf_ns;
-    info.info.push_back(data);
-    debug_pub.publish(info);
+    logger.init_logger(car_id);
+
 }
 
 bool SeparateGoal::CalGoal(robot_msgs::Separate::Request &req,
                            robot_msgs::Separate::Response &res){
     goal_point = req.goal;  
-    ROS_INFO("separate start!!");
+    logger.DEBUGINFO(car_id,"separate start!!");
     int x_flag{0}, y_flag{0};
-    int online_car{2};
+    //确定需要进行散点的车辆数
+    int online_car{1};
     my_pose = GetMyPose();
-    ROS_INFO("get my pose!!");
+    logger.DEBUGINFO(car_id,"get my pose!!");
+    //统计在线车辆，并判定散点方式
     for(auto it : robots_info){
         if(it.car_id == 0){
             continue;
         }
-        // online_car++;
-        std::cout << "other car x" << it.robot_pose.position.x << std::endl;
+        if(std::find(req.idList.begin(),req.idList.end(),it.car_id) == req.idList.end() ){
+            continue ;
+        }
+        online_car++;
         if(my_pose.position.x > it.robot_pose.position.x){
             x_flag++;
         }
@@ -52,6 +52,7 @@ bool SeparateGoal::CalGoal(robot_msgs::Separate::Request &req,
             y_flag++;
         }
     }
+    logger.WARNINFO(car_id,"online car number is %d",online_car);
     if(online_car == 1){
         res.goal = goal_point;
         return true;
@@ -79,16 +80,20 @@ bool SeparateGoal::CalGoal(robot_msgs::Separate::Request &req,
 
 }
 
-void RobotInfo::SetState(const robot_msgs::RobotState state){
-    car_id = state.car_id;
-    robot_pose = state.robot_pose;
-}
 
 //point should be in meters not pixels
 bool SeparateGoal::IsOccupied(geometry_msgs::Point p){
     // p.x = p.x / map.info.resolution;
     // p.y = p.y / map.info.resolution;
     // return map.data[map.info.width*p.x + p.y];
+}
+
+/**
+ * 获取其它机器人位姿 
+ */
+void RobotInfo::SetState(const robot_msgs::RobotState state){
+    car_id = state.car_id;
+    robot_pose = state.robot_pose;
 }
 
 void SeparateGoal::RobotStateCallback(const robot_msgs::RobotStatesConstPtr &msg){
@@ -101,6 +106,9 @@ void SeparateGoal::RobotStateCallback(const robot_msgs::RobotStatesConstPtr &msg
     }
 }
 
+/** 获取自己的位姿
+ * 
+ * */
 geometry_msgs::Pose SeparateGoal::GetMyPose(){
     geometry_msgs::Pose pose;
     tf::TransformListener listerner;
@@ -123,6 +131,9 @@ geometry_msgs::Pose SeparateGoal::GetMyPose(){
     return pose;
 }
 
+/** 
+ * 获取地图信息 用于获取障碍物，目前没用 
+ * */
 
 void SeparateGoal::MapCallback(const nav_msgs::OccupancyGridConstPtr &msg){
     map.data = msg->data;

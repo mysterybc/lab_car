@@ -13,8 +13,9 @@
 //my lib
 #include "zmq_lib.h"
 #include "msgs.h"
+#include "debug_info.h"
 
-
+Debug::DebugLogger logger;
 //通过tf寻找机器人位置
 void getPose(std::string map_frame,std::string robot_frame,StateMsg &state_msg ){
     tf::TransformListener listener;
@@ -80,18 +81,19 @@ int main(int argc,char **argv)
     nh.getParam(namespace_+"/my_ip_address",ip_address);
     nh.getParam(namespace_+"/tf_ns",tf_frame);
     //获取group下的参数
-    if(!nh.getParam(namespace_+"/my_ip_address",ip_address)){
-        ip_address = "127.0.0.1:6661";
-        ROS_WARN("PUBLISHER FAILED TO GET ip_address");
-        ROS_WARN("PUBLISHER RESET CAR ID TO 127.0.0.1");
-    }
     if(!nh.getParam(namespace_+"/car_id",car_id)){
         car_id = 1;
-        ROS_WARN("PUBLISHER FAILED TO GET CAR ID");
-        ROS_WARN("PUBLISHER RESET CAR ID TO 1");
+        logger.WARNINFO("PUBLISHER FAILED TO GET CAR ID");
+        logger.WARNINFO("PUBLISHER RESET CAR ID TO 1");
+    }
+    logger.init_logger(car_id);
+    if(!nh.getParam(namespace_+"/my_ip_address",ip_address)){
+        ip_address = "127.0.0.1:6661";
+        logger.WARNINFO(car_id,"PUBLISHER FAILED TO GET ip_address");
+        logger.WARNINFO(car_id,"PUBLISHER RESET CAR ID TO 127.0.0.1");
     }
     if(!nh.getParam(namespace_+"/tf_ns",tf_frame)){
-        ROS_WARN("PUBLISHER FAILED TO GET TF FRAME");
+        logger.WARNINFO(car_id,"PUBLISHER FAILED TO GET TF FRAME");
     }
 
     //zmq_init

@@ -37,7 +37,7 @@
         <!-- task node -->
         <node pkg="task_node"           type="build_up_task_nohost" name="build_up_task_nohost"     output="screen"  />
         <node pkg="task_node"           name="gps_march_task"       type="gps_march_task"           />
-        <node pkg="task_node"           name="laser_march_task"     type="laser_march_task"          output="screen"/>
+        <node pkg="task_node"           name="laser_march_task"     type="laser_march_task"          />
         <!-- behavior tree -->
         <node pkg="decision_node"       type="decision_node"        name="decision_node"            output="screen"  />
         <!-- separate goal -->

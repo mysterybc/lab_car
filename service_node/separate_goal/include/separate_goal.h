@@ -36,7 +36,6 @@ public:
 private:
     std::vector<RobotInfo> robots_info;
     ros::Subscriber robots_state_sub;
-    ros::Publisher debug_pub;
     ros::ServiceServer separate_service; 
     ros::Subscriber map_sub;
     ros::NodeHandle nh;

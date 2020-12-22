@@ -13,6 +13,7 @@
 #include <sstream> 
 #include <std_msgs/Empty.h> 
 #include <thread>
+#include "debug_info.h"
 
 
 
@@ -37,6 +38,7 @@ public:
         start_flag = false;
         delete gps_thread_;
     }
+    int car_id;
 
 
 private:

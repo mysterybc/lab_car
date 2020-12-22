@@ -1,5 +1,8 @@
 #include "build_up_task.h"
+#include "algorithm"
+#include "debug_info.h"
 
+Debug::DebugLogger logger;
 BuildUpTask::BuildUpTask()
     :build_up_action(nh,"build_up_action",boost::bind(&BuildUpTask::BuildUpExcuteCB,this,_1),false),
     task_state(ActionState::PENDING),plan_action(nh,"move_base",true)
@@ -10,15 +13,14 @@ BuildUpTask::BuildUpTask()
     //获取group下的参数
     if(!nh.getParam(namespace_+"/car_id",car_id)){
         car_id = 1;
-        ROS_WARN("BUILD UP TASK FAILED TO GET CAR ID");
-        ROS_WARN("BUILD UP TASK RESET CAR ID TO 1");
+        logger.WARNINFO(car_id,"BUILD UP TASK FAILED TO GET CAR ID");
+        logger.WARNINFO(car_id,"BUILD UP TASK RESET CAR ID TO 1");
     }
     if(!nh.getParam(namespace_+"/tf_ns",tf_ns)){
         car_id = 1;
-        ROS_WARN("BUILD UP TASK FAILED TO GET TF FRAME");
+        logger.WARNINFO(car_id,"BUILD UP TASK FAILED TO GET TF FRAME");
     }
     build_up_action.registerPreemptCallback(std::bind(&BuildUpTask::BuildUpPreemptCB,this));
-    debug_pub = nh.advertise<robot_msgs::DebugInfo>("/debug_info",10);
     statue_sub_ = nh.subscribe("move_base/status",10,&BuildUpTask::MoveBaseStatusCB,this);
     report_path_client = nh.serviceClient<robot_msgs::ReportPath>("report_path");
     get_host_config_client = nh.serviceClient<robot_msgs::GetConfigCmd>("get_config_cmd");
@@ -27,14 +29,7 @@ BuildUpTask::BuildUpTask()
     build_up_action.start();
     
     //Debug info
-    robot_msgs::DebugInfo info;
-    std_msgs::String data;
-    data.data = "car " + std::to_string(car_id) + " build up task Initialized";
-    info.info.push_back(data);
-    data.data.clear();
-    data.data = "car " + std::to_string(car_id) + " tf frame is " + tf_ns;
-    info.info.push_back(data);
-    debug_pub.publish(info);
+    logger.init_logger(car_id);
 }
 
 
@@ -50,7 +45,7 @@ void BuildUpTask::ResetTask(){
 
 void BuildUpTask::BuildUpPreemptCB(){
     if(build_up_action.isPreemptRequested()){
-        ROS_INFO("action_preempt");
+        logger.DEBUGINFO(car_id,"action_preempt");
         if(task_state == ActionState::ACTIVE){
             plan_action.cancelGoal();
         }
@@ -86,24 +81,24 @@ bool BuildUpTask::MakePlanWithoutExcute(geometry_msgs::Pose goal){
     get_plan.request.goal.pose = goal_point;
     get_plan.request.tolerance = 0.3;
     while(!ros::service::waitForService("move_base/make_plan",ros::Duration(2.0))){
-        ROS_INFO("waiting for service move_base/make_plan");
+        logger.DEBUGINFO(car_id,"waiting for service move_base/make_plan");
         ros::spinOnce();
     }
     if(make_plan_client.call(get_plan)){
-        ROS_INFO("call path");
+        logger.DEBUGINFO(car_id,"call path");
     }
     else{
-        ROS_INFO("fail to call path");
+        logger.WARNINFO(car_id,"fail to call path");
         return false;
     }
     //report path
     robot_msgs::ReportPath report_path;
     report_path.request.Path = get_plan.response.plan;
     if(report_path_client.call(report_path)){
-        ROS_INFO("report  path");
+        logger.DEBUGINFO(car_id,"report  path");
     }
     else{
-        ROS_INFO("fail to report path");
+       logger.WARNINFO(car_id,"fail to report path");
         return false;
     }
     return true;
@@ -111,23 +106,25 @@ bool BuildUpTask::MakePlanWithoutExcute(geometry_msgs::Pose goal){
 
 void BuildUpTask::BuildUpExcuteCB(const robot_msgs::BuildUpGoalConstPtr &goal){
     //set goal
-    ROS_INFO("get goal");
+    logger.DEBUGINFO(car_id,"get goal");
     goal_point = goal.get()->goal;
     //separate_goal
     robot_msgs::Separate separate_goal;
     separate_goal_client.waitForExistence(ros::Duration(1));
     separate_goal.request.goal = goal_point;
+    // std::copy(goal->idList.begin(),goal->idList.end(),separate_goal.request.idList.begin();)
+    separate_goal.request.idList = goal->idList;
     if(separate_goal_client.call(separate_goal)){
-        ROS_INFO("separate goal success!");
+        logger.DEBUGINFO(car_id,"separate goal success!");
         goal_point = separate_goal.response.goal;
     }
     else{
-        ROS_INFO("separate goal failed!");
+        logger.WARNINFO(car_id,"separate goal failed!");
         ResetTask();
         return ;
     }
     ros::spinOnce();
-    ROS_INFO(" car number is %d, build up target position is [%f,%f]",car_id,goal_point.position.x,goal_point.position.y);
+    logger.DEBUGINFO(car_id,"build up target position is [%f,%f]",car_id,goal_point.position.x,goal_point.position.y);
     move_base_msgs::MoveBaseGoal planning_goal;
     planning_goal.target_pose.header.frame_id = "map";
     planning_goal.target_pose.header.stamp = ros::Time().now();
@@ -140,13 +137,13 @@ void BuildUpTask::BuildUpExcuteCB(const robot_msgs::BuildUpGoalConstPtr &goal){
         ros::spinOnce();
         if(task_state == ActionState::SUCCEEDED){
             result.succeed = true;
-            ROS_INFO("build up task finished");
+            logger.DEBUGINFO(car_id,"build up task finished");
             build_up_action.setSucceeded(result,"goal_reached");
             break;
         }
         else if(task_state == ActionState::ABORTED){
             result.succeed = false;
-            ROS_INFO("build up task error");
+            logger.WARNINFO(car_id,"build up task error");
             build_up_action.setAborted(result,"task failed");
             break;
         }

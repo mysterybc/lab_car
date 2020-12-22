@@ -270,7 +270,7 @@ namespace behaviac
 			// BlackBoard
 			meta = BEHAVIAC_NEW AgentMeta(544643081u);
 			AgentMeta::GetAgentMetas()[554893437u] = meta;
-			meta->RegisterMemberProperty(4061333314u, BEHAVIAC_NEW CMemberProperty< int >("car_number", Set_BlackBoard_car_number, Get_BlackBoard_car_number));
+			meta->RegisterMemberProperty(4061333314u, BEHAVIAC_NEW CMemberProperty< int >("car_id", Set_BlackBoard_car_number, Get_BlackBoard_car_number));
 			meta->RegisterMethod(1045109914u, BEHAVIAC_NEW CAgentStaticMethodVoid_1<char*>(FunctionPointer_BlackBoard_LogMessage));
 			meta->RegisterMethod(2521019022u, BEHAVIAC_NEW CMethod_behaviac_Agent_VectorAdd());
 			meta->RegisterMethod(2306090221u, BEHAVIAC_NEW CMethod_behaviac_Agent_VectorClear());

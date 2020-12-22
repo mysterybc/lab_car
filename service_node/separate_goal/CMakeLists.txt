@@ -3,6 +3,7 @@ project(separate_goal)
 
 include_directories(include 
   ${catkin_INCLUDE_DIRS} 
+  ../../robot_msgs/include
 )
 
 #散点节点

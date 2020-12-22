@@ -11,8 +11,10 @@
 //my lib
 #include "zmq_lib.h"
 #include "msgs.h"
+#include "debug_info.h"
 
 
+Debug::DebugLogger logger;
 //将其他车的id和ip建立联系
 std::vector<std::string> fmtInputIp(std::vector<std::string> &ips, std::string my_ip){
     auto it = std::find(ips.begin(),ips.end(),my_ip);
@@ -79,21 +81,22 @@ int main(int argc, char** argv){
     std::string namespace_;
     namespace_ = nh.getNamespace();
     //获取group下的参数
-    if(!nh.getParam(namespace_+"/my_ip_address",my_ip)){
-        my_ip = "127.0.0.1:6661";
-        ROS_WARN("RECEIVER FAILED TO GET ip_address");
-        ROS_WARN("RECEIVER RESET CAR ID TO 127.0.0.1");
-    }
     if(!nh.getParam(namespace_+"/car_id",car_id)){
         car_id = 1;
-        ROS_WARN("RECEIVER FAILED TO GET CAR ID");
-        ROS_WARN("RECEIVER RESET CAR ID TO 1");
+        logger.WARNINFO("RECEIVER FAILED TO GET CAR ID");
+        logger.WARNINFO("RECEIVER RESET CAR ID TO 1");
+    }
+    logger.init_logger(car_id);
+    if(!nh.getParam(namespace_+"/my_ip_address",my_ip)){
+        my_ip = "127.0.0.1:6661";
+        logger.WARNINFO(car_id,"RECEIVER FAILED TO GET ip_address");
+        logger.WARNINFO(car_id,"RECEIVER RESET CAR ID TO 127.0.0.1");
     }
     if(!nh.getParam("/total_robot_ip",total_ip)){
-        ROS_WARN("RECEIVER FAILED TO GET TOTAL IP");
+        logger.WARNINFO(car_id,"RECEIVER FAILED TO GET TOTAL IP");
     }
     if(!nh.getParam("/host_ip_address",host_ip)){
-        ROS_WARN("RECEIVER FAILED TO GET HOST IP");
+        logger.WARNINFO(car_id,"RECEIVER FAILED TO GET HOST IP");
     }
 
     //zmq_init

@@ -20,6 +20,7 @@ include_directories(
     inc
     inc/exported 
     inc/exported/behaviac_generated/types/internal
+    ../robot_msgs/include
   ${catkin_INCLUDE_DIRS}
 )
 

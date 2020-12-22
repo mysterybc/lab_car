@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(robot_msgs)
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR})
+add_compile_options(-std=c++11)
 
 find_package(catkin REQUIRED COMPONENTS
   message_generation
@@ -53,5 +54,12 @@ generate_messages(
 )
 
 catkin_package(
+  INCLUDE_DIRS include
+  LIBRARIES debug_info
+  CATKIN_DEPENDS roscpp
 )
+
+
+include_directories(include ${catkin_INCLUDE_DIRS})
+add_library(debug_info src/debug_info.cpp)
 
