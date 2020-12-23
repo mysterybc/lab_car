@@ -4,6 +4,9 @@
     <rosparam>
         total_robot_ip: ["127.0.0.1:6661","127.0.0.1:6662","127.0.0.1:6663","127.0.0.1:6664"]
     </rosparam>
+    <rosparam>
+        debug_output_id: [1,2]
+    </rosparam>
     <arg name="simulator" value="stage"/>
     <arg name="total_car_number" value="4" />
     <arg name="host_ip_address" value="127.0.0.1:6666" />

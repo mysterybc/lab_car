@@ -1,6 +1,7 @@
 #pragma once
 //c++ standard
 #include "map"
+#include "string"
 #include "algorithm"
 //third party lib
 #include "jsoncpp/json/json.h"
@@ -8,9 +9,19 @@
 #include "nav_msgs/Path.h"
 #include "geometry_msgs/Pose.h"
 #include "robot_msgs/HostCmdArray.h"
+#include "std_msgs/UInt8MultiArray.h"
+#include "iostream"
 //my lib
 #include "zmq_lib.h"
 
+
+
+Json::Value string2json(std::string &msg){
+    Json::Value json;
+    Json::Reader reader;
+    reader.parse(msg.c_str(),json);
+    return json;
+}
 
 //发送的，给上位机发也给机器人发
 //机器人状态消息
@@ -58,6 +69,30 @@ struct PathMsg{
     std::string message_type;
     int id;
 };
+
+//商哥的控制消息
+std::string multiArray2json(const std_msgs::UInt8MultiArrayConstPtr &msg){
+    Json::Value json;
+    json["message_type"] = "control_msg";
+    for(int i = 0; i < msg->data.size() ; i++){
+        json["algomsg"].append(msg->data[i]);
+    }
+    return json.toStyledString();
+}
+
+void json2multiarray(std::string& msg, std_msgs::UInt8MultiArray& data){
+    Json::Value json = string2json(msg);
+    int data_size = json["algomsg"].size();
+    data.layout.dim.resize(1);
+	data.layout.data_offset = 0;
+	data.layout.dim[0].size = data_size;
+	data.layout.dim[0].stride = 1;
+    data.data.resize(data_size);
+    for(int i = 0 ; i < data_size; i++){
+        data.data[i] = json["algomsg"][i].asUInt();
+    }    
+}
+
 
 
 //接收的机器人消息
@@ -131,23 +166,25 @@ struct HostCmd{
         for(int i = 0; i < json.size(); i++){
             robot_msgs::HostCmd cmd;
             cmd.car_id.clear();
-            if(json["id"].isArray()){
-                Json::Value json_id = json["id"];
+            if(json[i]["id"].isArray()){
+                Json::Value json_id = json[i]["id"];
                 for(int i = 0; i < json_id.size(); i++){
                     cmd.car_id.push_back(json_id[i].asInt());
                 }
             }
-            cmd.mission.mission = json["type"].asUInt();
+            cmd.mission.mission = json[i]["type"].asUInt();
             cmd.goal.header.stamp = ros::Time().now();
             cmd.goal.header.frame_id = "map";
-            cmd.goal.pose.position.x = json["instruction"][0].asDouble();
-            cmd.goal.pose.position.y = json["instruction"][1].asDouble();
-            cmd.goal.pose.position.z = 0;
-            double yaw = json["instruction"][2].asDouble();
+            double yaw = 0;
+            if(json[i]["instruction"].size() != 0){
+                cmd.goal.pose.position.x = json[i]["instruction"][0].asDouble();
+                cmd.goal.pose.position.y = json[i]["instruction"][1].asDouble();
+                cmd.goal.pose.position.z = 0;
+                yaw = json[i]["instruction"][2].asDouble();
+            }
             //目前输入角度，手动坐标-1
             yaw = yaw / 180.0 * 3.1415926;
             cmd.goal.pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
-            host_cmd_array.host_cmd_array.clear();
             host_cmd_array.host_cmd_array.push_back(cmd);
         }
     }
@@ -164,6 +201,7 @@ struct HostCmd{
     }
 
     HostMessageType json2Msg(std::string msg){
+        std::cout << msg << std::endl;
         Json::Value json;
         Json::Reader reader;
         reader.parse(msg.c_str(),json);

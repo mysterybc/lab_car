@@ -15,9 +15,10 @@ find_package(catkin REQUIRED COMPONENTS
 set(bitctrl_DIR ../bitrobot/lib/repo-v0.0.4/cpp/install-all/lib/cmake/bitctrl)
 find_package(bitctrl REQUIRED)
 
-catkin_package()
+catkin_package(
+)
 
-include_directories(include ${catkin_INCLUDE_DIRS})
+include_directories(include ${catkin_INCLUDE_DIRS} ../robot_msgs/include)
 
 
 ####单车的####

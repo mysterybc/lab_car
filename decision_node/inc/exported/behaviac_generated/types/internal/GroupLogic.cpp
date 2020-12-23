@@ -13,7 +13,7 @@
 GroupLogic::GroupLogic()
 {
     GroupPermission=false;
-	GroupMember.push_back(g_BlackBoardAgent->car_number);
+	GroupMember.push_back(g_BlackBoardAgent->car_id);
 ///<<< BEGIN WRITING YOUR CODE CONSTRUCTOR
 
 ///<<< END WRITING YOUR CODE

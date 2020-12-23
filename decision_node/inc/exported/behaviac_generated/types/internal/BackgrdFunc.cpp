@@ -22,33 +22,30 @@ BackgrdFunc::~BackgrdFunc()
 }
 void BackgrdFunc::Pause()
 {
-///<<< BEGIN WRITING YOUR CODE Pause
-switch (g_BasicLogicAgent->CurrentTask)
-{
-case Assemble:
-g_ForegrdFuncAgent->build_up_action->cancelGoal();
-    break;
-case March_gps:
-{
-        ROS_INFO("cancel_gps_action");
-                ROS_INFO("cancel_gps_action");
-                        ROS_INFO("cancel_gps_action");
-g_ForegrdFuncAgent->gps_march_action->cancelGoal();
-break;
-}
-case March_laser:
-{
-        ROS_INFO("cancel_laser_action");
-                ROS_INFO("cancel_laser_action");
-                        ROS_INFO("cancel_laser_action");
-    g_ForegrdFuncAgent->laser_march_action->cancelGoal();
-    break;
-}
-default:
-    break;
-}
-
-
+    switch (g_BasicLogicAgent->CurrentTask)
+    {
+        case Assemble:
+        g_ForegrdFuncAgent->build_up_action->cancelGoal();
+            break;
+        case March_gps:
+        {
+            logger.DEBUGINFO(g_BlackBoardAgent->car_id,"cancel_gps_action");
+            logger.DEBUGINFO(g_BlackBoardAgent->car_id,"cancel_gps_action");
+            logger.DEBUGINFO(g_BlackBoardAgent->car_id,"cancel_gps_action");
+        g_ForegrdFuncAgent->gps_march_action->cancelGoal();
+        break;
+        }
+        case March_laser:
+        {
+            logger.DEBUGINFO(g_BlackBoardAgent->car_id,"cancel_laser_action");
+            logger.DEBUGINFO(g_BlackBoardAgent->car_id,"cancel_laser_action");
+            logger.DEBUGINFO(g_BlackBoardAgent->car_id,"cancel_laser_action");
+            g_ForegrdFuncAgent->laser_march_action->cancelGoal();
+            break;
+        }
+        default:
+            break;
+    }
 }
 
 void BackgrdFunc::Resume()
@@ -59,33 +56,33 @@ g_BasicLogicAgent->CurrentTask=TaskIndividual::NonTask;
 
 void BackgrdFunc::STOP()
 {
-switch (g_BasicLogicAgent->CurrentTask)
-{
-case Assemble:
-g_ForegrdFuncAgent->build_up_action->cancelGoal();
-    break;
-case March_gps:
-{
-g_ForegrdFuncAgent->gps_march_action->cancelGoal();
-ROS_INFO("cancel_gps_action");
-ROS_INFO("cancel_gps_action");
-ROS_INFO("cancel_gps_action");
-    break; 
-}
-case March_laser:
-{
-    ROS_INFO("cancel_laser_action");
-            ROS_INFO("cancel_laser_action");
-                    ROS_INFO("cancel_laser_action");
-    g_ForegrdFuncAgent->laser_march_action->cancelGoal();
-    break;
-}
-default:
-    break;
-}
-g_BasicLogicAgent->CurrentTask=TaskIndividual::NonTask;
-behaviac::vector<int>().swap(g_GroupLogicAgent->GroupMember);
-g_ForegrdFuncAgent->fore_func_state=ForeFuncState::IDLE;
-g_BlackBoardAgent->PubDecisionState(g_ForegrdFuncAgent->fore_func_state);
+    switch (g_BasicLogicAgent->CurrentTask)
+    {
+        case Assemble:
+            g_ForegrdFuncAgent->build_up_action->cancelGoal();
+            break;
+        case March_gps:
+        {
+            g_ForegrdFuncAgent->gps_march_action->cancelGoal();
+            logger.DEBUGINFO(g_BlackBoardAgent->car_id,"cancel_gps_action");
+            logger.DEBUGINFO(g_BlackBoardAgent->car_id,"cancel_gps_action");
+            logger.DEBUGINFO(g_BlackBoardAgent->car_id,"cancel_gps_action");
+            break; 
+        }
+        case March_laser:
+        {
+            logger.DEBUGINFO(g_BlackBoardAgent->car_id,"cancel_laser_action");
+            logger.DEBUGINFO(g_BlackBoardAgent->car_id,"cancel_laser_action");
+            logger.DEBUGINFO(g_BlackBoardAgent->car_id,"cancel_laser_action");
+            g_ForegrdFuncAgent->laser_march_action->cancelGoal();
+            break;
+        }
+        default:
+            break;
+    }
+    g_BasicLogicAgent->CurrentTask=TaskIndividual::NonTask;
+    behaviac::vector<int>().swap(g_GroupLogicAgent->GroupMember);
+    g_ForegrdFuncAgent->fore_func_state=ForeFuncState::IDLE;
+    g_BlackBoardAgent->PubDecisionState(g_ForegrdFuncAgent->fore_func_state);
 }
 

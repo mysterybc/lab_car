@@ -29,7 +29,7 @@ if(g_GroupLogicAgent->GroupPermission==true && InputTask==NonTask&&CurrentTask==
 			while(g_GroupLogicAgent->GroupPermission==false)
 			{
 				g_GroupLogicAgent->GroupLogicProcessing();
-				ROS_INFO("wait for others");
+				logger.DEBUGINFO(g_BlackBoardAgent->car_id,"wait for others");
 			}//新任务组员都空闲
 			InputTask=(TaskIndividual)g_BlackBoardAgent->TaskList.back().mission.mission;
 

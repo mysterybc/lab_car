@@ -6,9 +6,6 @@
 
 #include "ForegrdFunc.h"
 #define _cancel  2
-///<<< BEGIN WRITING YOUR CODE FILE_INIT
-
-///<<< END WRITING YOUR CODE
 
 ForegrdFunc::ForegrdFunc():
 fore_func_state (IDLE)
@@ -20,23 +17,28 @@ fore_func_state (IDLE)
 
 ForegrdFunc::~ForegrdFunc()
 {
-///<<< BEGIN WRITING YOUR CODE DESTRUCTOR
     delete build_up_action;
     delete gps_march_action;
     delete laser_march_action;
-///<<< END WRITING YOUR CODE
 }
 
+
+/**
+ * assemble action
+ */
 void ForegrdFunc::Assemble()
 {
-        ROS_INFO("Assemble");
-///<<< BEGIN WRITING YOUR CODE Assemble
+    logger.DEBUGINFO(g_BlackBoardAgent->car_id,"Assemble");
     build_up_action->waitForServer();
     assemble_goal.goal =g_BlackBoardAgent->GetGoal();
-    if(g_BlackBoardAgent->car_number == 1){
-        ROS_INFO("goal x is : %f",assemble_goal.goal.position.x);
-        ROS_INFO("goal y is : %f",assemble_goal.goal.position.y);
-        ROS_INFO("goal z is : %f",assemble_goal.goal.position.z);
+    assemble_goal.idList.clear();
+    for(int i = 0 ; i < g_GroupLogicAgent->GroupMember.size(); i++){
+        assemble_goal.idList.push_back(g_GroupLogicAgent->GroupMember[i]);
+    }
+    if(g_BlackBoardAgent->car_id == 1){
+        logger.DEBUGINFO(g_BlackBoardAgent->car_id,"goal x is : %f",assemble_goal.goal.position.x);
+        logger.DEBUGINFO(g_BlackBoardAgent->car_id,"goal y is : %f",assemble_goal.goal.position.y);
+        logger.DEBUGINFO(g_BlackBoardAgent->car_id,"goal z is : %f",assemble_goal.goal.position.z);
     }
     build_up_action->sendGoal(   assemble_goal,
                                 boost::bind(&ForegrdFunc::Assemble_DoneCallback,this,_1,_2),
@@ -73,50 +75,56 @@ void ForegrdFunc::Assemble_DoneCallback(const actionlib::SimpleClientGoalState &
     return ;
 }
 
+
+/**
+ * march actiob based on gps location 
+ */ 
 void ForegrdFunc::March_gps()
 {
-///<<< BEGIN WRITING YOUR CODE March_gps
-    ROS_INFO("March_gps");
+    logger.DEBUGINFO(g_BlackBoardAgent->car_id,"March_gps");
     gps_march_action->waitForServer();
     march_goal.goal =g_BlackBoardAgent->GetGoal();
+    march_goal.idList.clear();
     for(int i = 0 ; i < g_GroupLogicAgent->GroupMember.size(); i++){
         march_goal.idList.push_back(g_GroupLogicAgent->GroupMember[i]);
     }
-    if(g_BlackBoardAgent->car_number == 1){
-        ROS_INFO("goal x is : %f",march_goal.goal.position.x);
-        ROS_INFO("goal y is : %f",march_goal.goal.position.y);
-        ROS_INFO("goal z is : %f",march_goal.goal.position.z);
+    if(g_BlackBoardAgent->car_id == 1){
+        logger.DEBUGINFO(g_BlackBoardAgent->car_id,"goal x is : %f",march_goal.goal.position.x);
+        logger.DEBUGINFO(g_BlackBoardAgent->car_id,"goal y is : %f",march_goal.goal.position.y);
+        logger.DEBUGINFO(g_BlackBoardAgent->car_id,"goal z is : %f",march_goal.goal.position.z);
     }
     gps_march_action->sendGoal(   march_goal,
                                 boost::bind(&ForegrdFunc::March_DoneCallback,this,_1,_2),
                                 boost::bind(&ForegrdFunc::March_ActiveCallback,this),
                                 boost::bind(&ForegrdFunc::March_FeedbackCallback,this,_1));
-///<<< END WRITING YOUR CODE
 }
 
+
+/**
+ * march action based on laser localization
+ */ 
 void ForegrdFunc::March_laser()
 {
-///<<< BEGIN WRITING YOUR CODE March_laser
-    ROS_INFO("March_laser");
+    logger.DEBUGINFO(g_BlackBoardAgent->car_id,"March_laser");
     laser_march_action->waitForServer();
     march_goal.goal =g_BlackBoardAgent->GetGoal();
+    march_goal.idList.clear();
     for(int i = 0 ; i < g_GroupLogicAgent->GroupMember.size(); i++){
         march_goal.idList.push_back(g_GroupLogicAgent->GroupMember[i]);
     }
-    if(g_BlackBoardAgent->car_number == 1){
-        ROS_INFO("goal x is : %f",march_goal.goal.position.x);
-        ROS_INFO("goal y is : %f",march_goal.goal.position.y);
-        ROS_INFO("goal z is : %f",march_goal.goal.position.z);
+    if(g_BlackBoardAgent->car_id == 1){
+        logger.DEBUGINFO(g_BlackBoardAgent->car_id,"goal x is : %f",march_goal.goal.position.x);
+        logger.DEBUGINFO(g_BlackBoardAgent->car_id,"goal y is : %f",march_goal.goal.position.y);
+        logger.DEBUGINFO(g_BlackBoardAgent->car_id,"goal z is : %f",march_goal.goal.position.z);
     }
     laser_march_action->sendGoal(   march_goal,
                                 boost::bind(&ForegrdFunc::March_DoneCallback,this,_1,_2),
                                 boost::bind(&ForegrdFunc::March_ActiveCallback,this),
                                 boost::bind(&ForegrdFunc::March_FeedbackCallback,this,_1));
-///<<< END WRITING YOUR CODE
 }
 
 
- void ForegrdFunc::March_FeedbackCallback(const robot_msgs::MarchFeedbackConstPtr &feedback){
+void ForegrdFunc::March_FeedbackCallback(const robot_msgs::MarchFeedbackConstPtr &feedback){
     if(feedback->error_occured){
         fore_func_state= ForeFuncState::Failure;
     }

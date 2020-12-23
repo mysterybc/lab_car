@@ -1,19 +1,42 @@
 #include "navigation_source.h"
 #include "robot_msgs/SourceNodeMsg.h"
 
+Debug::DebugLogger logger;
 NavigationSource::NavigationSource(){
     ros::NodeHandle nh;
     std::string path = "config file path";
+    //获取group空间名
+    std::string namespace_;
+    namespace_ = nh.getNamespace();
+    //获取group下的参数
+    if(!nh.getParam(namespace_+"/car_id",car_id)){
+        car_id = 1;
+        logger.WARNINFO("NAVIGATION NODE FAILED TO GET CAR ID");
+        logger.WARNINFO("NAVIGATION NODE RESET CAR ID TO 1");
+    }
+    logger.init_logger(car_id);
     if(LoadConfig(path)){
         node_state = State::HAVE_CONFIG;
     }else{
         node_error = Error::NO_ERROR;
-        ROS_WARN("navigation_node: Config failed");
+        logger.WARNINFO(car_id,"navigation_node: Config failed");
     }
     state_pub = nh.advertise<robot_msgs::SourceNodeMsg>("navigation_state",10);
     cmd_sub = nh.subscribe<robot_msgs::Cmd>("navigation_cmd",10,&NavigationSource::CmdCallback,this);
-    // imu_.Start();
+    odometry_sub = nh.subscribe<nav_msgs::Odometry>("odometry",10,&NavigationSource::OdmCallback,this);
+    imu_.car_id = car_id;
+    gps_.car_id = car_id;
+    ros::Rate loop(10);
+    while(ros::ok()){
+        if(imu_.imu_init == true){
+            logger.DEBUGINFO(car_id,"imu init finish ! start yaw angle is %f",imu_.start_angle);
+            break;
+        }
+        loop.sleep();
+        ros::spinOnce();
+    }
     gps_.Start();
+    imu_.Start();
 }
 
 
@@ -21,7 +44,7 @@ void NavigationSource::UpdateState(){
     ros::NodeHandle nh;
     ros::Rate loop(update_frequence);
     double start_time = ros::Time().now().toSec();
-    ROS_INFO("navigation_node: state thread start");
+    logger.DEBUGINFO(car_id,"navigation_node: state thread start");
     while(nh.ok() && node_state!=State::EXIT){
         robot_msgs::SourceNodeMsg msg;
         //TODO 目前获取的是ros秒可能需要进一步处理
@@ -38,28 +61,28 @@ void NavigationSource::UpdateState(){
 
 
 bool NavigationSource::LoadConfig(std::string file){
-    ROS_INFO("navigation_node: load config");
+    // logger.DEBUGINFO(car_id,"navigation_node: load config");
     //TODO 应该在这里读取配置文件，目前只初始化更新频率和节点名称；
     update_frequence = 10;
     node_name = "navigation_node";
 }
 
 State NavigationSource::Start(){
-    ROS_INFO("navigation source running");
+    logger.DEBUGINFO(car_id,"navigation source running");
     //gps_.Start();
     imu_.Start();
     return State::RUNNING;
 }
 //Stop需要reset参数
 State NavigationSource::Stop(){
-    ROS_INFO("navigation source stop");
+    logger.DEBUGINFO(car_id,"navigation source stop");
     gps_.Stop();
     imu_.Stop();
     return State::STOP;
 }
 //退出需要清理线程
 State NavigationSource::Exit(){
-    ROS_INFO("navigation source exit");
+    logger.DEBUGINFO(car_id,"navigation source exit");
     gps_.Exit();
     imu_.Exit();
     state_pub.shutdown();
@@ -70,7 +93,7 @@ State NavigationSource::Exit(){
 State NavigationSource::Pause(){
     if(node_state!=State::RUNNING)
         return node_state;
-    ROS_INFO("navigation source pause");
+    logger.DEBUGINFO(car_id,"navigation source pause");
     gps_.Pause();
     imu_.Pause();
     return State::PAUSED;
@@ -78,14 +101,14 @@ State NavigationSource::Pause(){
 State NavigationSource::Resume(){
     if(node_state!=State::PAUSED)
         return node_state;
-    ROS_INFO("navigation source resume");
+    logger.DEBUGINFO(car_id,"navigation source resume");
     gps_.Resume();
     imu_.Resume();
     return State::RUNNING;
 }
 
 void NavigationSource::CmdCallback(const robot_msgs::CmdConstPtr &msg){
-    ROS_INFO("navigation source get command");
+    logger.DEBUGINFO(car_id,"navigation source get command");
     switch(msg->cmd){
         case (int)Cmd::START : node_state = Start(); break;
         case (int)Cmd::PAUSE : node_state = Pause(); break;
@@ -93,6 +116,15 @@ void NavigationSource::CmdCallback(const robot_msgs::CmdConstPtr &msg){
         case (int)Cmd::RESUME: node_state = Resume();break;
         case (int)Cmd::EXIT  : node_state = Exit();  break;
     }
+}
+
+void NavigationSource::OdmCallback(const nav_msgs::OdometryConstPtr &msg){
+    double yaw,roll,pitch;
+    tf::Quaternion quat;
+    tf::quaternionMsgToTF(msg->pose.pose.orientation,quat);
+    tf::Matrix3x3(quat).getEulerYPR(yaw,pitch,roll);
+    imu_.start_angle = yaw;
+    imu_.imu_init = true;
 }
 
 int main(int argc, char **argv)

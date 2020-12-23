@@ -13,13 +13,14 @@
 #include <sstream> 
 #include <std_msgs/Empty.h> 
 #include <thread>
+#include "debug_info.h"
 
 
 
 class GPS{
 public:
-    double GPS_OFFSET_X = 440636.88;
-    double GPS_OFFSET_Y = 4423196.51;
+    double GPS_OFFSET_X = 440600.68;
+    double GPS_OFFSET_Y = 4423318.00;
     GPS() = default;
     ~GPS() = default;
     //显示收到的数据 debug用
@@ -37,6 +38,7 @@ public:
         start_flag = false;
         delete gps_thread_;
     }
+    int car_id;
 
 
 private:

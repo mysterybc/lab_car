@@ -28,13 +28,13 @@ int IMU::UpDateIMU(){
     } 
     catch (serial::IOException& e) 
     { 
-        ROS_ERROR_STREAM("Unable to open port "); 
+        logger.WARNINFO(car_id,"Unable to open port "); 
         return -1; 
     } 
     //检测串口是否已经打开，并给出提示信息 
     if(ser.isOpen()) 
     { 
-        ROS_INFO_STREAM("Serial Port initialized"); 
+        logger.DEBUGINFO(car_id,"Serial Port initialized"); 
     } 
     else 
     { 
@@ -43,7 +43,16 @@ int IMU::UpDateIMU(){
     //指定循环的频率 
     ros::Rate loop_rate(200); 
     sensor_msgs::Imu imu_data;
-    double robot_angle = 0.0;
+    //设置初始角度
+    yaw = start_angle;
+    //tf
+    tf::TransformBroadcaster tf_broadcast;
+    geometry_msgs::TransformStamped trans;
+    trans.child_frame_id = "imu_link";
+    trans.header.frame_id = "map";
+    trans.transform.translation.x = 112;
+    trans.transform.translation.y = 92;
+    trans.transform.translation.z = 0;
     while(ros::ok())
     {
         while(ser.available() >= 57)
@@ -86,6 +95,7 @@ int IMU::UpDateIMU(){
                     //roll += imu_data.angular_velocity.x * 0.01;
                     //pitch += imu_data.angular_velocity.y * 0.01;
                     yaw += imu_data.angular_velocity.z * 0.01;
+                    logger.DEBUGINFO(car_id,"yaw angle is %f",yaw);
 
                     //std::cout<<"roll:  "<<roll<<" pitch: "<<pitch<<"yaw: "<<yaw<<std::endl;
 
@@ -98,6 +108,9 @@ int IMU::UpDateIMU(){
                     imu_data.orientation.z = q.z;
                     imu_data.orientation.w = q.w;
 
+                    trans.transform.rotation = imu_data.orientation;
+
+                    tf_broadcast.sendTransform(trans);
                     IMU_pub.publish(imu_data);                   
                 }                
             }
@@ -111,7 +124,7 @@ int IMU::UpDateIMU(){
 
 void IMU::write_callback(const std_msgs::String::ConstPtr& msg) 
 { 
-    ROS_INFO_STREAM("Writing to serial port" <<msg->data); 
+    logger.DEBUGINFO(car_id,"Writing to serial port %s", msg->data); 
     ser.write(msg->data);   //发送串口数据 
 } 
 int16_t IMU::comb16(uint8_t first ,uint8_t second)  //数据解析8->16

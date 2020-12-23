@@ -22,7 +22,7 @@ link_directories(${ZMQ_LIBRARY_DIRS})
 
 
 set(libs ${catkin_LIBRARIES} ${ZMQ_LIBRARIES} ${JSONCPP_LIBRARIES} )
-set(incs include ${catkin_INCLUDE_DIRS} ${ZMQ_INCLUDE_DIRS} ${JSONCPP_INCLUDE_DIRS})
+set(incs include ${catkin_INCLUDE_DIRS} ${ZMQ_INCLUDE_DIRS} ${JSONCPP_INCLUDE_DIRS} ../robot_msgs/include)
 
 #include
 include_directories(${incs})

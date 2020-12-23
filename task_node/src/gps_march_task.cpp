@@ -22,6 +22,10 @@
 #include "robot_msgs/RobotStates.h"
 #include "tf/transform_listener.h"
 #include "robot_msgs/BuildUpAction.h"
+#include "debug_info.h"
+#include "time.h"
+#include "sensor_msgs/Imu.h"
+
 
 
 inline double m2cm(double x) { return x * 100; }
@@ -36,6 +40,7 @@ ros::Subscriber goal_sub;
 ros::Subscriber scan_sub;
 ros::Publisher cmd_pub;
 ros::Publisher  msg_pub;
+Debug::DebugLogger logger;
 
 std::string robot_frame;
 
@@ -266,7 +271,8 @@ void on_new_goal(const geometry_msgs::Pose& goal) {
 	mydata.new_path = true;
 	
 	
-	ROS_INFO("Get new goal (x, y, z): %.2f, %.2f, %.2f\n", pos.x, pos.y, pos.z);
+	logger.DEBUGINFO(myconfig.robotID,"Get new goal  (x, y, z): %.2f, %.2f, %.2f\n", pos.x, pos.y, pos.z);
+	logger.DEBUGINFO(myconfig.robotID,"start pose is (x, y): %.2f, %.2f\n", start.x, start.y);
 }
 
 void on_new_scan(const sensor_msgs::LaserScan& scan) {
@@ -292,27 +298,16 @@ void on_new_scan(const sensor_msgs::LaserScan& scan) {
 	}
 }
 
-void get_new_pose(){
-	tf::TransformListener listener;
-    tf::StampedTransform trans;
-    while(ros::ok){
-        try{
-            listener.lookupTransform("map",robot_frame,ros::Time(0),trans);
-        }
-        catch(tf::TransformException){
-            ros::Duration(0.1).sleep();
-            continue;
-        }
-        break;
-    }
-	double yaw,roll,pitch;
-	tf::Quaternion quat = trans.getRotation();
-    tf::Matrix3x3(quat).getEulerYPR(yaw,pitch,roll);
 
-	StateInfo one;
+void on_new_gps_pos(const nav_msgs::Odometry& msg){
+	double yaw,roll,pitch;
+	tf::Quaternion quat;
+	tf::quaternionMsgToTF(msg.pose.pose.orientation,quat);
+    tf::Matrix3x3(quat).getEulerYPR(yaw,pitch,roll);
+    StateInfo one;
 	one.ID = myconfig.robotID;
-	one.x = (float)m2cm(trans.getOrigin().getX());
-	one.y = (float)m2cm(trans.getOrigin().getY());
+	one.x = (float)m2cm(msg.pose.pose.position.x);
+	one.y = (float)m2cm(msg.pose.pose.position.y);
 	one.heading = (float)rad2deg(yaw);
 	one.v = 0;  // TBD
 	one.w = 0;  // TBD
@@ -341,7 +336,7 @@ int ActionConfig::run_march_action(){
 	
 		// Check for new tasks
 		if (mydata.new_path) {
-			ROS_INFO("Starting a new path following task\n");
+			logger.DEBUGINFO(myconfig.robotID,"Starting a new path following task\n");
 			
 
 			ControllerSetFormationGroup(0);
@@ -411,7 +406,7 @@ int ActionConfig::run_march_action(){
 		
 		//判断任务是否结束
 		if(ControllerTaskProgress() == 1){
-			ROS_INFO("march task finish!");
+			logger.DEBUGINFO(myconfig.robotID,"march task finish!");
 			break;
 		}
 		//printf("Loop %d ends.\n", tm.loopCounter - 1);
@@ -425,9 +420,9 @@ int ActionConfig::run_march_action(){
 
 //action CB
 void ActionConfig::on_new_action(const robot_msgs::MarchGoalConstPtr &goal){
-    ROS_INFO("get new march goal!");
-	on_new_goal(goal->goal);
+    logger.DEBUGINFO(myconfig.robotID,"get new march goal!");
 	config_controller(goal);
+	on_new_goal(goal->goal);
     robot_msgs::MarchResult result;
     if(this->run_march_action()){
 		if(!march_action.isActive()){
@@ -444,13 +439,13 @@ void ActionConfig::on_new_action(const robot_msgs::MarchGoalConstPtr &goal){
 }
 
 void ActionConfig::cancel_action_request(){
-	ROS_INFO("get cancel request!");
+	logger.DEBUGINFO(myconfig.robotID,"get cancel request!");
     if(march_action.isPreemptRequested()){
         robot_msgs::MarchResult result;
         result.succeed = 2;
         march_action.setPreempted(result,"goal cancel");
 		buildup_action.cancelAllGoals();
-		ROS_INFO("cancel cation!");
+		logger.DEBUGINFO(myconfig.robotID,"cancel cation!");
     }
 }
 
@@ -462,9 +457,6 @@ void ActionConfig::config_controller(const robot_msgs::MarchGoalConstPtr &goal){
 	for(auto number:goal->idList){
 		myconfig.idlist.push_back(number);
 		myconfig.idform.push_back(number);
-	}
-	for(auto number:myconfig.idlist){
-		std::cout << " id is " << number << std::endl;
 	}
 }
 
@@ -506,25 +498,24 @@ int main(int argc, char* argv[]) {
 	std::string namespace_;
     namespace_ = node.getNamespace();
 	if (!node.getParam(namespace_ + "/car_id", myID)) {
-		ROS_WARN("Failed to get myid. quit");
+		logger.WARNINFO(myconfig.robotID,"Failed to get myid. quit");
 		return -1;
 	}
+	myconfig.robotID = myID;
+	logger.init_logger(myID);
 	std::string tf_frame;
 	if(!node.getParam(namespace_+"/tf_ns",tf_frame)){
-        ROS_WARN("march task FAILED TO GET TF FRAME");
+        logger.WARNINFO(myconfig.robotID,"march task FAILED TO GET TF FRAME");
     }
 	printf("This is Robot %d\n", myID);
-	robot_frame = tf_frame + "gps_odom";
-	ROS_INFO("ROBOT FRAME IS %s",robot_frame.c_str());
-	std::cout << robot_frame << std::endl;
-	myconfig.robotID = myID;
+	robot_frame = tf_frame + "base_link";
 	
 	
 	// ----------------------- 
 	// Initializing PUB/SUB
 	// ----------------------- 
 	goal_sub = node.subscribe("formation_goal", 2, &on_new_goal);
-	//ros::Subscriber pos_sub  = node.subscribe("base_pose_ground_truth", 100, &on_new_pos);
+	ros::Subscriber gps_pos_sub  = node.subscribe("gps_odom", 100, &on_new_gps_pos);
 	scan_sub = node.subscribe("base_scan", 2, &on_new_scan);
 	cmd_pub  = node.advertise<geometry_msgs::Twist>("cmd_vel", 1);
 	msg_pub  = node.advertise<std_msgs::UInt8MultiArray>("algomsg_my", 10);
@@ -544,7 +535,6 @@ int main(int argc, char* argv[]) {
 	init_controller(myconfig, mydata);
 	ros::Rate loop(50);
 	while(ros::ok()){
-		get_new_pose();
 		loop.sleep();
 		ros::spinOnce();
 	}
