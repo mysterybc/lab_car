@@ -327,7 +327,8 @@ void on_new_lidar_pos(const nav_msgs::Odometry& msg){
 	one.ID = myconfig.robotID;
 	one.x = (float)m2cm(msg.pose.pose.position.x);
 	one.y = (float)m2cm(msg.pose.pose.position.y);
-	one.heading = mydata.me.heading;
+	//one.heading = mydata.me.heading;
+	one.heading = (float)rad2deg(yaw);
 	one.v = 0;  // TBD
 	one.w = 0;  // TBD
 	mydata.me = one;
@@ -540,7 +541,7 @@ int main(int argc, char* argv[]) {
 	goal_sub = node.subscribe("formation_goal", 2, &on_new_goal);
 	//ros::Subscriber pos_sub  = node.subscribe("base_pose_ground_truth", 100, &on_new_pos);
 	// ros::Subscriber gps_pos_sub  = node.subscribe("gps_odom", 100, &on_new_gps_pos);
-	ros::Subscriber lidar_pos_sub  = node.subscribe("odometry", 100, &on_new_lidar_pos);
+	ros::Subscriber lidar_pos_sub  = node.subscribe("odom", 100, &on_new_lidar_pos);
 	ros::Subscriber imu_pos_sub  = node.subscribe("IMU_data", 100, &on_new_imu_pos);
 	scan_sub = node.subscribe("base_scan", 2, &on_new_scan);
 	cmd_pub  = node.advertise<geometry_msgs::Twist>("cmd_vel", 1);

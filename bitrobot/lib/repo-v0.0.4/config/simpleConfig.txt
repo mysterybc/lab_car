@@ -56,7 +56,7 @@ gen_tsingle_strict    false  # if strict, path_t will not advance if err >= ethr
 gen_use_autoselect  true    # whether perform auto-shape selection on Formation Experiments
 gen_align_tar       0       # float, kht, in TGroup, align thMe with targetV
 gen_align_loc       0       # float, khl, in TGroup, align thMe with centerTh
-gen_consn_trk       0.8       # float, kc2, in TGroup, K*(info.center-me)
+gen_consn_trk       0.5       # float, kc2, in TGroup, K*(info.center-me)
 
 # Formation Test8 Config
 gen_test8_enable false
