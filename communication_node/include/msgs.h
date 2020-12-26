@@ -42,11 +42,15 @@ struct StateMsg{
         msg["pose"].append(x);
         msg["pose"].append(y);
         msg["pose"].append(yaw);
+        for(auto number:group){
+            msg["group"].append(number);
+        }
         return msg.toStyledString();
     }
     std::string message_type;
     int id;
     uint8_t state;
+    std::vector<int> group;
     double x,y,yaw; //in m m deg
 };
 
@@ -114,6 +118,9 @@ struct RobotState{
         robot_pose.position.x = json["pose"][0].asDouble();
         robot_pose.position.y = json["pose"][1].asDouble();
         robot_pose.position.z = 0;
+        for(int i = 0 ; i < json["group"].size(); i++){
+            group.push_back(json["group"][i].asInt());
+        }
         double yaw = json["pose"][2].asDouble();
         yaw = yaw / 180.0 * 3.1415926;
         robot_pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
@@ -121,6 +128,7 @@ struct RobotState{
     }
     int id;
     bool have_config;
+    std::vector<int> group;
     geometry_msgs::Pose robot_pose;
     uint8_t robot_state;
 };

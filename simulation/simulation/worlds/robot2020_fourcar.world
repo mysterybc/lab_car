@@ -15,7 +15,7 @@ define car position
   size [0.600 0.450 0.460]
   origin [0.000 0.000 0.000 0.000]
   localization "gps"
-  rplidar(pose [ 0 0 -0.1 0 ])
+  #rplidar(pose [ 0 0 -0.1 0 ])
   localization_origin [0 0 0 0 ]
   drive "diff"
   # [ xmin xmax ymin ymax zmin zmax amin amax ]				
@@ -57,7 +57,7 @@ window
 floorplan
 ( 
   name "robot somulation Map"
-  bitmap "/home/lovebc/workspace/ros/lab_car_ws/src/bring_up/map/play_field.pgm"
+  bitmap "/home/tiger/banchao_ws/src/bring_up/map/play_field.pgm"
   size [25.000    25.400   1.000 ]
   pose [12.500  12.700   0.000  0.000 ]
 )

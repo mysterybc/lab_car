@@ -28,6 +28,7 @@ add_message_files(
   robot_states_enum.msg
   RobotState.msg
   RobotStates.msg
+  Group_Members.msg
 )
 
 add_service_files(

@@ -8,10 +8,8 @@
 #include "behaviac_headers.h"
 
 // THE FOLLOWING AGENT HEADER FILES IS GENERATED AUTOMATICALLY:
-#include "BasicLogic.h"
+#include "GroupAsBasicLogic.h"
 #include "BlackBoard.h"
-#include "ForegrdFunc.h"
-#include "BackgrdFunc.h"
-#include "GroupLogic.h"
+#include "TaskRealize.h"
 
 #endif // _BEHAVIAC_AGENT_HEADERS_H_

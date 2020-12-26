@@ -17,50 +17,46 @@ namespace behaviac
 
 	inline void FunctionPointer_behaviac_Agent_LogMessage(char* param0) { behaviac::Agent::LogMessage(param0); }
 
-	inline void Set_BasicLogic_CurrentTask(Agent* self, TaskIndividual value) { ((BasicLogic*)self)->CurrentTask = value; };
-	inline const void* Get_BasicLogic_CurrentTask(Agent* self) { return &((BasicLogic*)self)->CurrentTask; };
+	inline void Set_GroupAsBasicLogic_CurrentTask(Agent* self, TaskIndividual value) { ((GroupAsBasicLogic*)self)->CurrentTask = value; };
+	inline const void* Get_GroupAsBasicLogic_CurrentTask(Agent* self) { return &((GroupAsBasicLogic*)self)->CurrentTask; };
 
-	inline void Set_BasicLogic_CurrentType(Agent* self, TaskType value) { ((BasicLogic*)self)->CurrentType = value; };
-	inline const void* Get_BasicLogic_CurrentType(Agent* self) { return &((BasicLogic*)self)->CurrentType; };
+	inline void Set_GroupAsBasicLogic_GroupMember(Agent* self, behaviac::vector<int> value) { ((GroupAsBasicLogic*)self)->GroupMember = value; };
+	inline const void* Get_GroupAsBasicLogic_GroupMember(Agent* self) { return &((GroupAsBasicLogic*)self)->GroupMember; };
 
-	inline void Set_BasicLogic_InputTask(Agent* self, TaskIndividual value) { ((BasicLogic*)self)->InputTask = value; };
-	inline const void* Get_BasicLogic_InputTask(Agent* self) { return &((BasicLogic*)self)->InputTask; };
+	inline void Set_GroupAsBasicLogic_GroupMember(Agent* self, int value, int index) { ((GroupAsBasicLogic*)self)->GroupMember[index] = value; };
+	inline const void* Get_GroupAsBasicLogic_GroupMember(Agent* self, int index) { return &((GroupAsBasicLogic*)self)->GroupMember[index]; };
 
-	inline void Set_BasicLogic_InputType(Agent* self, TaskType value) { ((BasicLogic*)self)->InputType = value; };
-	inline const void* Get_BasicLogic_InputType(Agent* self) { return &((BasicLogic*)self)->InputType; };
+	inline void Set_GroupAsBasicLogic_GroupState(Agent* self, behaviac::vector<ForeFuncState> value) { ((GroupAsBasicLogic*)self)->GroupState = value; };
+	inline const void* Get_GroupAsBasicLogic_GroupState(Agent* self) { return &((GroupAsBasicLogic*)self)->GroupState; };
 
-	inline void FunctionPointer_BasicLogic_LogMessage(char* param0) { BasicLogic::LogMessage(param0); }
-	inline void FunctionPointer_BasicLogic_Upper_Processing(Agent* self) { ((BasicLogic*)self)->_Execute_Method_<METHOD_TYPE_BasicLogic_Upper_Processing, void >(); }
+	inline void Set_GroupAsBasicLogic_GroupState(Agent* self, ForeFuncState value, int index) { ((GroupAsBasicLogic*)self)->GroupState[index] = value; };
+	inline const void* Get_GroupAsBasicLogic_GroupState(Agent* self, int index) { return &((GroupAsBasicLogic*)self)->GroupState[index]; };
 
-	inline void Set_BlackBoard_car_number(Agent* self, int value) { ((BlackBoard*)self)->car_id = value; };
-	inline const void* Get_BlackBoard_car_number(Agent* self) { return &((BlackBoard*)self)->car_id; };
+	inline void Set_GroupAsBasicLogic_wait_for_CB(Agent* self, bool value) { ((GroupAsBasicLogic*)self)->wait_for_CB = value; };
+	inline const void* Get_GroupAsBasicLogic_wait_for_CB(Agent* self) { return &((GroupAsBasicLogic*)self)->wait_for_CB; };
 
+	inline void FunctionPointer_GroupAsBasicLogic_ActionCancel(Agent* self) { ((GroupAsBasicLogic*)self)->ActionCancel(); }
+	inline bool FunctionPointer_GroupAsBasicLogic_GroupIdle(Agent* self) { return ((GroupAsBasicLogic*)self)->GroupIdle(); }
+	inline void FunctionPointer_GroupAsBasicLogic_LogMessage(char* param0) { GroupAsBasicLogic::LogMessage(param0); }
+	inline bool FunctionPointer_GroupAsBasicLogic_MemberConsistent(Agent* self) { return ((GroupAsBasicLogic*)self)->MemberConsistent(); }
+	inline void FunctionPointer_GroupAsBasicLogic_RealTimeProcessing(Agent* self) { ((GroupAsBasicLogic*)self)->RealTimeProcessing(); }
+	inline void FunctionPointer_GroupAsBasicLogic_SendGoal(Agent* self) { ((GroupAsBasicLogic*)self)->SendGoal(); }
+	inline void FunctionPointer_GroupAsBasicLogic_SetMemberAndGoal(Agent* self) { ((GroupAsBasicLogic*)self)->SetMemberAndGoal(); }
+	inline bool FunctionPointer_GroupAsBasicLogic_TaskListEmpty(Agent* self) { return ((GroupAsBasicLogic*)self)->TaskListEmpty(); }
+	inline TaskIndividual FunctionPointer_GroupAsBasicLogic_TaskListPop(Agent* self) { return ((GroupAsBasicLogic*)self)->TaskListPop(); }
+
+	inline void Set_BlackBoard_car_id(Agent* self, int value) { ((BlackBoard*)self)->car_id = value; };
+	inline const void* Get_BlackBoard_car_id(Agent* self) { return &((BlackBoard*)self)->car_id; };
+
+	inline void FunctionPointer_BlackBoard_BackgrdFuncProcessing(Agent* self, TaskIndividual BackFunc) { ((BlackBoard*)self)->BackgrdFuncProcessing(BackFunc); }
 	inline void FunctionPointer_BlackBoard_LogMessage(char* param0) { BlackBoard::LogMessage(param0); }
-	inline void FunctionPointer_ForegrdFunc_Assemble(Agent* self) { ((ForegrdFunc*)self)->_Execute_Method_<METHOD_TYPE_ForegrdFunc_Assemble, void >(); }
-	inline void FunctionPointer_ForegrdFunc_LogMessage(char* param0) { ForegrdFunc::LogMessage(param0); }
-	inline void FunctionPointer_ForegrdFunc_March_gps(Agent* self) { ((ForegrdFunc*)self)->_Execute_Method_<METHOD_TYPE_ForegrdFunc_March_gps, void >(); }
-	inline void FunctionPointer_ForegrdFunc_March_laser(Agent* self) { ((ForegrdFunc*)self)->_Execute_Method_<METHOD_TYPE_ForegrdFunc_March_laser, void >(); }
-	inline void FunctionPointer_BackgrdFunc_LogMessage(char* param0) { BackgrdFunc::LogMessage(param0); }
-	inline void FunctionPointer_BackgrdFunc_Pause(Agent* self) { ((BackgrdFunc*)self)->Pause(); }
-	inline void FunctionPointer_BackgrdFunc_Resume(Agent* self) { ((BackgrdFunc*)self)->Resume(); }
-	inline void FunctionPointer_BackgrdFunc_STOP(Agent* self) { ((BackgrdFunc*)self)->STOP(); }
 
-	inline void Set_GroupLogic_GroupMember(Agent* self, behaviac::vector<int> value) { ((GroupLogic*)self)->GroupMember = value; };
-	inline const void* Get_GroupLogic_GroupMember(Agent* self) { return &((GroupLogic*)self)->GroupMember; };
+	inline void Set_TaskRealize_fore_func_state(Agent* self, ForeFuncState value) { ((TaskRealize*)self)->fore_func_state = value; };
+	inline const void* Get_TaskRealize_fore_func_state(Agent* self) { return &((TaskRealize*)self)->fore_func_state; };
 
-	inline void Set_GroupLogic_GroupMember(Agent* self, int value, int index) { ((GroupLogic*)self)->GroupMember[index] = value; };
-	inline const void* Get_GroupLogic_GroupMember(Agent* self, int index) { return &((GroupLogic*)self)->GroupMember[index]; };
-
-	inline void Set_GroupLogic_GroupPermission(Agent* self, bool value) { ((GroupLogic*)self)->GroupPermission = value; };
-	inline const void* Get_GroupLogic_GroupPermission(Agent* self) { return &((GroupLogic*)self)->GroupPermission; };
-
-	inline void Set_GroupLogic_GroupState(Agent* self, behaviac::vector<ForeFuncState> value) { ((GroupLogic*)self)->GroupState = value; };
-	inline const void* Get_GroupLogic_GroupState(Agent* self) { return &((GroupLogic*)self)->GroupState; };
-
-	inline void Set_GroupLogic_GroupState(Agent* self, ForeFuncState value, int index) { ((GroupLogic*)self)->GroupState[index] = value; };
-	inline const void* Get_GroupLogic_GroupState(Agent* self, int index) { return &((GroupLogic*)self)->GroupState[index]; };
-
-	inline void FunctionPointer_GroupLogic_GroupLogicProcessing(Agent* self) { ((GroupLogic*)self)->GroupLogicProcessing(); }
-	inline void FunctionPointer_GroupLogic_LogMessage(char* param0) { GroupLogic::LogMessage(param0); }
+	inline void FunctionPointer_TaskRealize_Assemble(Agent* self) { ((TaskRealize*)self)->Assemble(); }
+	inline void FunctionPointer_TaskRealize_LogMessage(char* param0) { TaskRealize::LogMessage(param0); }
+	inline void FunctionPointer_TaskRealize_March_gps(Agent* self) { ((TaskRealize*)self)->March_gps(); }
+	inline void FunctionPointer_TaskRealize_March_laser(Agent* self) { ((TaskRealize*)self)->March_laser(); }
 }
 #endif // _BEHAVIAC_AGENT_PROPERTIES_H_

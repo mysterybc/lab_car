@@ -49,6 +49,9 @@ void pubStatus(std::map<int,RobotState> id2states,ros::Publisher &pub){
         state_msg.car_id = state.second.id;
         state_msg.robot_pose = state.second.robot_pose;
         state_msg.robot_state.robot_states_enum = state.second.robot_state;
+        for(auto number:state.second.group){
+            state_msg.my_group_member.push_back(number);
+        }
         robot_states_msg.robot_states.push_back(state_msg);     
     }
     pub.publish(robot_states_msg);

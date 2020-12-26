@@ -7,6 +7,7 @@
 #include "nav_msgs/Path.h"
 #include "std_msgs/String.h"
 #include "robot_msgs/ReportPath.h"
+#include "std_msgs/Int8MultiArray.h"
 #include "iostream"
 #include "robot_msgs/robot_states_enum.h"
 #include "tf/transform_listener.h"
@@ -50,6 +51,13 @@ bool ReportPath(robot_msgs::ReportPath::Request  &req,
     return true;
 }
 
+//接收组员消息
+void GroupSubCB(const std_msgs::Int8MultiArrayConstPtr &msg, StateMsg &state_msg){
+    state_msg.group.clear();
+    for(auto data:msg->data){
+        state_msg.group.push_back(data);
+    }
+}
 
 //接收状态信息
 void DecisionSubCB(const robot_msgs::robot_states_enumConstPtr &msg, StateMsg &state_msg){
@@ -108,11 +116,13 @@ int main(int argc,char **argv)
 
     //sub 
     ros::Subscriber state_subs;
+     ros::Subscriber group_subs;
     ros::Subscriber algomsg_subs;
     ros::ServiceServer report_path_server;
     report_path_server = nh.advertiseService<robot_msgs::ReportPath::Request,robot_msgs::ReportPath::Response>\
                             ("report_path",boost::bind(&ReportPath,_1,_2,std::ref(path_msg),std::ref(sender)));
     state_subs = nh.subscribe<robot_msgs::robot_states_enum>("decision_state",10,boost::bind(&DecisionSubCB,_1,std::ref(state_msg)));
+    group_subs = nh.subscribe<std_msgs::Int8MultiArray>("my_group_member",10,boost::bind(&GroupSubCB,_1,std::ref(state_msg)));
     algomsg_subs = nh.subscribe<std_msgs::UInt8MultiArray>("algomsg_my",10,boost::bind(&OnNewAlgomsg,_1,std::ref(sender)));
 
     //loop

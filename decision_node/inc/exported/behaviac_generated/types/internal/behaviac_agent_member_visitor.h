@@ -10,32 +10,6 @@
 // Agent property and method handlers
 
 
-struct METHOD_TYPE_BasicLogic_Upper_Processing { };
-template<> inline void BasicLogic::_Execute_Method_<METHOD_TYPE_BasicLogic_Upper_Processing>()
-{
-	this->BasicLogic::Upper_Processing();
-}
-
-
-
-struct METHOD_TYPE_ForegrdFunc_Assemble { };
-template<> inline void ForegrdFunc::_Execute_Method_<METHOD_TYPE_ForegrdFunc_Assemble>()
-{
-	this->ForegrdFunc::Assemble();
-}
-
-struct METHOD_TYPE_ForegrdFunc_March_gps { };
-template<> inline void ForegrdFunc::_Execute_Method_<METHOD_TYPE_ForegrdFunc_March_gps>()
-{
-	this->ForegrdFunc::March_gps();
-}
-
-struct METHOD_TYPE_ForegrdFunc_March_laser { };
-template<> inline void ForegrdFunc::_Execute_Method_<METHOD_TYPE_ForegrdFunc_March_laser>()
-{
-	this->ForegrdFunc::March_laser();
-}
-
 
 
 
