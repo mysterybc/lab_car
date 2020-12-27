@@ -319,16 +319,16 @@ void on_new_gps_pos(const nav_msgs::Odometry& msg){
 }
 
 void on_new_lidar_pos(const nav_msgs::Odometry& msg){
-	double yaw,roll,pitch;
-	tf::Quaternion quat;
-	tf::quaternionMsgToTF(msg.pose.pose.orientation,quat);
-    tf::Matrix3x3(quat).getEulerYPR(yaw,pitch,roll);
+	// double yaw,roll,pitch;
+	// tf::Quaternion quat;
+	// tf::quaternionMsgToTF(msg.pose.pose.orientation,quat);
+    // tf::Matrix3x3(quat).getEulerYPR(yaw,pitch,roll);
     StateInfo one;
 	one.ID = myconfig.robotID;
 	one.x = (float)m2cm(msg.pose.pose.position.x);
 	one.y = (float)m2cm(msg.pose.pose.position.y);
-	//one.heading = mydata.me.heading;
-	one.heading = (float)rad2deg(yaw);
+	one.heading = mydata.me.heading;
+	// one.heading = (float)rad2deg(yaw);
 	one.v = 0;  // TBD
 	one.w = 0;  // TBD
 	mydata.me = one;

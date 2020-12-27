@@ -28,10 +28,10 @@
     <arg name="car_id" value="2"/>
     <param name="total_car_number" type="int" value="1" />
     <param name="car_id" type="int" value="$(arg car_id)" />
-    <param name="host_ip_address" type="string" value="127.0.0.1:6666" />
+    <param name="host_ip_address" type="string" value="192.168.0.30:6666" />
     <param name="my_ip_address" type="string" value="192.168.0.14:6666" />
     <rosparam>
-        total_robot_ip: ["192.168.0.14:6666"]
+        total_robot_ip: ["192.168.0.14:6666","192.168.0.20:6666"]
     </rosparam>
     <rosparam>
         debug_output_id: [1,2]
