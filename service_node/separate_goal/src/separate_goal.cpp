@@ -52,7 +52,6 @@ bool SeparateGoal::CalGoal(robot_msgs::Separate::Request &req,
             y_flag++;
         }
     }
-    logger.WARNINFO(car_id,"online car number is %d",online_car);
     if(online_car == 1){
         res.goal = goal_point;
         return true;

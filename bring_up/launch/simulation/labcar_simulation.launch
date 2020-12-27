@@ -19,7 +19,7 @@
         <!-- tf用到的frame前缀 -->
         <param name="tf_ns" value="$(arg robot_name)/"/>
         <!--  ************** Navigation ***************  -->
-        <node pkg="move_base" type="move_base" respawn="false" name="move_base" >
+        <node pkg="move_base" type="move_base" respawn="false" name="move_base">
             <rosparam file="$(find bring_up)/cfg/$(arg simulator)/$(arg robot_name)/costmap_common_params.yaml" command="load" ns="global_costmap" />
             <rosparam file="$(find bring_up)/cfg/$(arg simulator)/$(arg robot_name)/costmap_common_params.yaml" command="load" ns="local_costmap" />
             <rosparam file="$(find bring_up)/cfg/$(arg simulator)/$(arg robot_name)/local_costmap_params.yaml" command="load" />
@@ -32,7 +32,9 @@
 
             <param name="base_local_planner" value="teb_local_planner/TebLocalPlannerROS" />
             <param name="controller_frequency" value="5.0" />
-            <param name="controller_patience" value="15.0" /> 
+            <param name="controller_patience" value="15.0" />
+
+            <param name="clearing_rotation_allowed" value="false" /> 
         </node>
         <!-- task node -->
         <node pkg="task_node"           type="build_up_task_nohost" name="build_up_task_nohost"     output="screen"  />
