@@ -23,7 +23,7 @@ NavigationSource::NavigationSource(){
     }
     state_pub = nh.advertise<robot_msgs::SourceNodeMsg>("navigation_state",10);
     cmd_sub = nh.subscribe<robot_msgs::Cmd>("navigation_cmd",10,&NavigationSource::CmdCallback,this);
-    odometry_sub = nh.subscribe<nav_msgs::Odometry>("odometry",10,&NavigationSource::OdmCallback,this);
+    odometry_sub = nh.subscribe<nav_msgs::Odometry>("odom",10,&NavigationSource::OdmCallback,this);
     imu_.car_id = car_id;
     gps_.car_id = car_id;
     ros::Rate loop(10);

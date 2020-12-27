@@ -473,7 +473,7 @@ int main(int argc, char* argv[]) {
 	std::string package_path = ros::package::getPath("bitrobot");
 	myconfig.config_dir = package_path + "/lib/repo-v0.0.4/config";
 	myconfig.debug_info = DEBUG_INFO_STATES | DEBUG_INFO_FUNCTION | DEBUG_INFO_COMPUTE;
-	myconfig.target_velocity = 0.5; // m/s
+	myconfig.target_velocity = 0.8; // m/s
 	//最初多车仿真用
 	// myconfig.id2ns.clear();
 	// myconfig.id2ns[1] = "robot_0/";
