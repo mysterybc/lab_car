@@ -136,11 +136,16 @@ struct RobotState{
 
 //接收的host指令
 struct HostCmd{
+    HostCmd(zmq_lib::Receiver* receiver_,std::string ip){
+        receiver = receiver_;
+        host_ip = ip;
+    }
     //message类型
     enum HostMessageType{
         SingleMission = 0,
         MultiMission = 1,
-        Cmd = 2
+        Cmd = 2,
+        Service = 3
     };
 
     //cmd
@@ -159,6 +164,11 @@ struct HostCmd{
         STOP = 4,
         Pause = 5,
         Resume = 6
+    };
+
+    //任务类型 
+    enum ServiceType{
+        ChangeHost = 1
     };
 
     //具体任务消息
@@ -203,6 +213,16 @@ struct HostCmd{
         }
     }
 
+    void getService(Json::Value json){
+        for(int i = 0 ; i <  json.size(); i++){
+            if((ServiceType)json[i]["type"].asUInt() == ServiceType::ChangeHost){
+                receiver->removeIp(host_ip);
+                host_ip = json[i]["instruction"].asString();
+                receiver->addIp(host_ip);
+            }
+        }
+    }
+
     //TODO 如果尚未及发送过来的消息不是按顺序的，则需要排序
     void sortMission(){
 
@@ -218,10 +238,15 @@ struct HostCmd{
             case HostMessageType::SingleMission : json2Mission(json["mission_array"]);break;
             case HostMessageType::MultiMission : json2Mission(json["mission_array"]);break;
             case HostMessageType::Cmd : getCmd(json["mission_array"]); break;
+            case HostMessageType::Service : getService(json["mission_array"]);break;
         }
     }
 
     HostMessageType message_type;
     robot_msgs::HostCmdArray host_cmd_array;
     MissionCmd mission_cmd;
+    std::string host_ip;
+
+    private:
+    zmq_lib::Receiver* receiver;
 };

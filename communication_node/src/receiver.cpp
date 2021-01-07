@@ -112,7 +112,7 @@ int main(int argc, char** argv){
     std::map<int,RobotState> id2states;
     std::vector<std::string> robot_msgs;
     std::string host_msg;
-    HostCmd host_cmd;
+    HostCmd host_cmd(&host_receive,host_ip); //可能需要修改ip，因此将指针传入
 
     //ros pub
     ros::Publisher robot_state_pub = nh.advertise<robot_msgs::RobotStates>("robot_states",10);

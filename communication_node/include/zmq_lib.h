@@ -86,12 +86,13 @@ namespace zmq_lib{
         }
         //动态添加
         void addIp(const std::string ip){
-            sub.connect(ip);
+            sub.connect(fmtaddr(ip));
         }
         //动态移除
         void removeIp(const std::string ip){
-            sub.disconnect(ip);
+            sub.disconnect(fmtaddr(ip));
         }
+
 
     private:
         zmq::socket_t sub;
