@@ -130,7 +130,8 @@ int main(int argc, char** argv){
         host_receive.receiveMsg(host_msg);
         if(!host_msg.empty()){
             decodeHostMsg(host_msg,host_cmd);
-            if(host_cmd.message_type != HostCmd::HostMessageType::Cmd){
+            if(host_cmd.message_type == HostCmd::HostMessageType::SingleMission
+               || host_cmd.message_type == HostCmd::HostMessageType::MultiMission){
                 pubHostCmd(host_cmd,cmd_pub);
             }
         }

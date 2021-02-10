@@ -32,3 +32,6 @@ target_link_libraries(host_cmd_pub ${catkin_LIBRARIES})
 
 add_executable(send_march_mission src/send_march_mission.cpp)
 target_link_libraries(send_march_mission ${catkin_LIBRARIES})
+
+add_executable(test_pathCoverage src/test_pathCoverage.cpp)
+target_link_libraries(test_pathCoverage ${catkin_LIBRARIES})

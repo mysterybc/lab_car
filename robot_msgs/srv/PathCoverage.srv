@@ -1,0 +1,5 @@
+nav_msgs/Path select_point
+
+---
+
+nav_msgs/Path path

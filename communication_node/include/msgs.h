@@ -5,12 +5,13 @@
 #include "algorithm"
 //third party lib
 #include "jsoncpp/json/json.h"
+#include "iostream"
 //ros
 #include "nav_msgs/Path.h"
 #include "geometry_msgs/Pose.h"
 #include "robot_msgs/HostCmdArray.h"
 #include "std_msgs/UInt8MultiArray.h"
-#include "iostream"
+#include "sensor_msgs/Joy.h"
 //my lib
 #include "zmq_lib.h"
 
@@ -137,6 +138,8 @@ struct RobotState{
 //接收的host指令
 struct HostCmd{
     HostCmd(zmq_lib::Receiver* receiver_,std::string ip){
+        ros::NodeHandle nh;
+        joy_pub = nh.advertise<sensor_msgs::Joy>("joy",10);
         receiver = receiver_;
         host_ip = ip;
     }
@@ -145,7 +148,8 @@ struct HostCmd{
         SingleMission = 0,
         MultiMission = 1,
         Cmd = 2,
-        Service = 3
+        Service = 3,
+        RemoteCtrl = 4
     };
 
     //cmd
@@ -223,6 +227,15 @@ struct HostCmd{
         }
     }
 
+    void getRemoteCtrl(Json::Value json){
+        for(int i = 0 ; i <  json.size(); i++){
+            //首先判断id有没有我
+            // for(int j = 0 ; j > json[i]["id"].size(); j++){
+            //     if(json[i]["id"])
+            // }
+        }
+    }
+
     //TODO 如果尚未及发送过来的消息不是按顺序的，则需要排序
     void sortMission(){
 
@@ -239,6 +252,7 @@ struct HostCmd{
             case HostMessageType::MultiMission : json2Mission(json["mission_array"]);break;
             case HostMessageType::Cmd : getCmd(json["mission_array"]); break;
             case HostMessageType::Service : getService(json["mission_array"]);break;
+            case HostMessageType::RemoteCtrl : getRemoteCtrl(json["mission_array"]);break;
         }
     }
 
@@ -249,4 +263,5 @@ struct HostCmd{
 
     private:
     zmq_lib::Receiver* receiver;
+    ros::Publisher joy_pub;
 };

@@ -37,6 +37,7 @@ add_service_files(
   Separate.srv
   ReportPath.srv
   GetConfigCmd.srv
+  PathCoverage.srv
 )
 
 add_action_files(
