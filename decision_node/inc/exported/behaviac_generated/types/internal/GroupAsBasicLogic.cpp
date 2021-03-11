@@ -1,4 +1,5 @@
 ﻿#include "GroupAsBasicLogic.h"
+extern Debug::DebugLogger logger;
 
 GroupAsBasicLogic::GroupAsBasicLogic()
 {

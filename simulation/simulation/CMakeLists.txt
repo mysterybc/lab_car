@@ -22,6 +22,7 @@ catkin_package(
 
 include_directories(
 # include
+../../robot_library/my_lib/include
   ${catkin_INCLUDE_DIRS}
 )
 
@@ -35,3 +36,7 @@ target_link_libraries(send_march_mission ${catkin_LIBRARIES})
 
 add_executable(test_pathCoverage src/test_pathCoverage.cpp)
 target_link_libraries(test_pathCoverage ${catkin_LIBRARIES})
+
+
+add_executable(test_search src/test_search.cpp)
+target_link_libraries(test_search ${catkin_LIBRARIES})

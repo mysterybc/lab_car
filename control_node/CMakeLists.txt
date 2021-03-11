@@ -7,13 +7,14 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
   robot_msgs
+  robot_library
 )
 
 
 catkin_package()
 
 
-include_directories(include  ${catkin_INCLUDE_DIRS} ../robot_msgs/include)
+include_directories(include  ${catkin_INCLUDE_DIRS} ../robot_library/my_lib/include)
 
 #遥控节点
 add_executable(remote_control_node src/remote_control_node.cpp)

@@ -1,16 +1,8 @@
 #include "driver_source.h"
-
+extern Debug::DebugLogger logger;
 Encoder::Encoder(){
     ros::NodeHandle nh;
-    //获取group空间名
-    std::string namespace_;
-    namespace_ = nh.getNamespace();
-    //获取group下的参数
-    if(!nh.getParam(namespace_+"/car_id",car_id)){
-        car_id = 1;
-        ROS_WARN("RESET CAR ID TO 1");
-        ROS_WARN("FAILED TO GET CAR ID");
-    }
+    my_lib::GetParam("encoder",&car_id);
     if(car_id == 1){
         turn_radius = 0.26;
         twist_flag = -1;

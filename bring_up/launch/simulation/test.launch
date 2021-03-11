@@ -1,5 +1,73 @@
 <launch>
-        <rosparam>
-            debug_output_id: [1,2]
-        </rosparam>
+    <!-- 全局参数 -->
+    <param name="use_sim_time" value="true"/>
+    <rosparam>
+        total_robot_ip: ["tcp://127.0.0.1:6661"]
+    </rosparam>
+    <rosparam>
+        debug_output_id: [1]
+    </rosparam>
+    <arg name="total_car_number" value="1" />
+    <arg name="host_ip_address" value="127.0.0.1:6666" />
+    <arg name="simulator" value="stage"/>
+    <!-- 第一辆车的参数 -->
+    <arg name="car_id" value="1"/>
+    <arg name="robot_name" value="robot$(arg car_id)"/>
+    <arg name="my_ip_address" value="127.0.0.1:6661" />
+
+    <!-- stage环境 -->
+    <node pkg="stage_ros" type="stageros" name="stageros" args="$(find simulation)/worlds/robot2020.world" />
+    <!-- 定位用tf -->
+    <node pkg="tf" type="static_transform_publisher" name="map_to_base_link" args="0 0 0 0 0 0 map odom 100" />
+    <!-- mapserver -->
+    <node name="map_server" pkg="map_server" type="map_server" args="$(find bring_up)/map/stage_map.yaml" respawn="false" />
+    <!-- rviz -->
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find bring_up)/rviz/stage_singlecar.rviz" />
+
+    <!-- 我们的程序部分 -->
+    <param name="my_ip_address" value="$(arg my_ip_address)"/>
+    <!-- tf用到的frame前缀 -->
+    <param name="tf_ns" value=""/>
+    <!--  ************** Navigation ***************  -->
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base" >
+    <rosparam file="$(find bring_up)/cfg/$(arg simulator)/single_car/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find bring_up)/cfg/$(arg simulator)/single_car/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find bring_up)/cfg/$(arg simulator)/single_car/local_costmap_params.yaml" command="load" />
+    <rosparam file="$(find bring_up)/cfg/$(arg simulator)/single_car/global_costmap_params.yaml" command="load" />
+    <rosparam file="$(find bring_up)/cfg/$(arg simulator)/single_car/teb_local_planner_params.yaml" command="load" />
+
+    <param name="base_global_planner" value="global_planner/GlobalPlanner" />
+    <param name="planner_frequency" value="1.0" />
+    <param name="planner_patience" value="5.0" />
+
+    <param name="base_local_planner" value="teb_local_planner/TebLocalPlannerROS" />
+    <param name="controller_frequency" value="5.0" />
+    <param name="controller_patience" value="15.0" /> 
+
+    <param name="clearing_rotation_allowed" value="false" />
+    </node> -->
+    <!-- tasks  1、build up nohost 2、-->
+    <node pkg="task_node"     type="build_up_task_nohost"       name="build_up_task_nohost"/>
+    <!-- <node pkg="task_node"     type="gps_march_task"             name="gps_march_task" /> -->
+    <!-- <node pkg="task_node"     type="laser_march_task"           name="laser_march_task" /> -->
+    <node pkg="task_node"     type="search_task"                name="search_task"  output="screen"/>
+
+    <!-- behavior tree -->
+    <!-- <node pkg="decision_node" type="decision_node"      name="decision_node"  output="screen"   /> -->
+
+    <!-- services 1、separate 2、path coverage -->
+    <node pkg="service_node" type="separate_goal"      name="separate_goal"  />
+    <node pkg="service_node" type="path_coverage"      name="path_coverage" output="screen" clear_params="true">
+        <rosparam file="$(find service_node)/path_coverage/gazebo_config/global_costmap_params.yaml" command="load" />
+    </node>
+    <node pkg="service_node" type="path_follow"        name="path_follow" />
+
+
+    <!-- communication 1、send robot state  2、receive other robot state -->
+    <!-- TODO 有bug 猜测是参数有问题，需要进一步修改 -->
+    <!-- <node pkg="communication_node" name="publisher" type="publisher" output="screen"/>
+    <node pkg="communication_node" name="receiver" type="receiver" output="screen" /> -->
+    
+    
+
 </launch>

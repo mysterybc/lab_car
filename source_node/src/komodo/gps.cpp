@@ -1,6 +1,7 @@
 #include "gps.h"
 #include "iostream"
 int count = 0;
+extern Debug::DebugLogger logger;
 int GPS::UpDateGPS()
 {
     //声明节点句柄

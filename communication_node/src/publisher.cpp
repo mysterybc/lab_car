@@ -14,7 +14,8 @@
 //my lib
 #include "zmq_lib.h"
 #include "msgs.h"
-#include "debug_info.h"
+#include "my_debug_info.h"
+#include "my_param_server.h"
 
 Debug::DebugLogger logger;
 //通过tf寻找机器人位置
@@ -80,29 +81,8 @@ int main(int argc,char **argv)
 
     //config id & ip
     int car_id;
-    //获取group空间名
-    std::string namespace_;
     std::string tf_frame;
-    namespace_ = nh.getNamespace();
-    //获取group下的参数
-    nh.getParam(namespace_+"/car_id",car_id);
-    nh.getParam(namespace_+"/my_ip_address",ip_address);
-    nh.getParam(namespace_+"/tf_ns",tf_frame);
-    //获取group下的参数
-    if(!nh.getParam(namespace_+"/car_id",car_id)){
-        car_id = 1;
-        logger.WARNINFO("PUBLISHER FAILED TO GET CAR ID");
-        logger.WARNINFO("PUBLISHER RESET CAR ID TO 1");
-    }
-    logger.init_logger(car_id);
-    if(!nh.getParam(namespace_+"/my_ip_address",ip_address)){
-        ip_address = "127.0.0.1:6661";
-        logger.WARNINFO(car_id,"PUBLISHER FAILED TO GET ip_address");
-        logger.WARNINFO(car_id,"PUBLISHER RESET CAR ID TO 127.0.0.1");
-    }
-    if(!nh.getParam(namespace_+"/tf_ns",tf_frame)){
-        logger.WARNINFO(car_id,"PUBLISHER FAILED TO GET TF FRAME");
-    }
+    my_lib::GetParam("publish_robot_state",&car_id,NULL,&tf_frame,&ip_address,NULL,NULL,NULL);
 
     //zmq_init
     zmq::context_t ctx(1);

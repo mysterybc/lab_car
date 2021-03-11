@@ -13,6 +13,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   std_msgs
   tf
+  robot_library
 )
 
 catkin_package()
@@ -22,7 +23,7 @@ link_directories(${ZMQ_LIBRARY_DIRS})
 
 
 set(libs ${catkin_LIBRARIES} ${ZMQ_LIBRARIES} ${JSONCPP_LIBRARIES} )
-set(incs include ${catkin_INCLUDE_DIRS} ${ZMQ_INCLUDE_DIRS} ${JSONCPP_INCLUDE_DIRS} ../robot_msgs/include)
+set(incs include ${catkin_INCLUDE_DIRS} ${ZMQ_INCLUDE_DIRS} ${JSONCPP_INCLUDE_DIRS} ../robot_library/my_lib/include)
 
 #include
 include_directories(${incs})

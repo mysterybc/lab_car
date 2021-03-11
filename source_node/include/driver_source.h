@@ -14,7 +14,8 @@
 #include "std_msgs/Int32.h"
 #include "thread"
 #include "string"
-#include "debug_info.h"
+#include "my_param_server.h"
+
 
 
 

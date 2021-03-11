@@ -6,8 +6,10 @@
 #include "ros/ros.h"
 #include "robot_msgs/Cmd.h"
 #include "nav_msgs/Odometry.h"
-#include "debug_info.h"
+#include "my_debug_info.h"
 #include "tf/transform_datatypes.h"
+#include "my_param_server.h"
+
 
 class NavigationSource{
 public:

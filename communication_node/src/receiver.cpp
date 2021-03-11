@@ -11,7 +11,8 @@
 //my lib
 #include "zmq_lib.h"
 #include "msgs.h"
-#include "debug_info.h"
+#include "my_debug_info.h"
+#include "my_param_server.h"
 
 
 Debug::DebugLogger logger;
@@ -80,27 +81,8 @@ int main(int argc, char** argv){
     std::string host_ip;
     std::string my_ip;
     std::vector<std::string> total_ip;
-    //获取group空间名
-    std::string namespace_;
-    namespace_ = nh.getNamespace();
-    //获取group下的参数
-    if(!nh.getParam(namespace_+"/car_id",car_id)){
-        car_id = 1;
-        logger.WARNINFO("RECEIVER FAILED TO GET CAR ID");
-        logger.WARNINFO("RECEIVER RESET CAR ID TO 1");
-    }
-    logger.init_logger(car_id);
-    if(!nh.getParam(namespace_+"/my_ip_address",my_ip)){
-        my_ip = "127.0.0.1:6661";
-        logger.WARNINFO(car_id,"RECEIVER FAILED TO GET ip_address");
-        logger.WARNINFO(car_id,"RECEIVER RESET CAR ID TO 127.0.0.1");
-    }
-    if(!nh.getParam("/total_robot_ip",total_ip)){
-        logger.WARNINFO(car_id,"RECEIVER FAILED TO GET TOTAL IP");
-    }
-    if(!nh.getParam("/host_ip_address",host_ip)){
-        logger.WARNINFO(car_id,"RECEIVER FAILED TO GET HOST IP");
-    }
+    my_lib::GetParam("publish_robot_state",&car_id,NULL,NULL,&my_ip,&host_ip,NULL,&total_ip);
+
 
     //zmq_init
     zmq::context_t ctx(1);

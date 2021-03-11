@@ -45,6 +45,8 @@ add_action_files(
   FILES
   BuildUp.action
   March.action
+  Search.action
+  PathFollow.action
 )
 
 generate_messages(
@@ -56,12 +58,7 @@ generate_messages(
 )
 
 catkin_package(
-  INCLUDE_DIRS include
-  LIBRARIES debug_info
-  CATKIN_DEPENDS roscpp
 )
 
 
-include_directories(include ${catkin_INCLUDE_DIRS})
-add_library(debug_info src/debug_info.cpp)
 

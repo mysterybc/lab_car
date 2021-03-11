@@ -1,29 +1,20 @@
 #include "build_up_task.h"
-#include "debug_info.h"
+#include "my_debug_info.h"
+#include "my_param_server.h"
 
 Debug::DebugLogger logger;
 BuildUpTask::BuildUpTask()
     :build_up_action(nh,"build_up_action",boost::bind(&BuildUpTask::BuildUpExcuteCB,this,_1),false),
-    task_state(ActionState::PENDING),plan_action(nh,"move_base",true)
+    plan_action(nh,"move_base",true)
 {
-    //获取group空间名
-    std::string namespace_;
-    namespace_ = nh.getNamespace();
-    //获取group下的参数
-    if(!nh.getParam(namespace_+"/car_id",car_id)){
-        car_id = 1;
-        logger.WARNINFO(car_id,"BUILD UP TASK FAILED TO GET CAR ID");
-        logger.WARNINFO(car_id,"BUILD UP TASK RESET CAR ID TO 1");
-    }
-    if(!nh.getParam(namespace_+"/tf_ns",tf_ns)){
-        logger.WARNINFO(car_id,"BUILD UP TASK FAILED TO GET TF FRAME");
-    }
+    my_lib::GetParam("path_follow",&car_id,NULL,&tf_ns);
     build_up_action.registerPreemptCallback(std::bind(&BuildUpTask::BuildUpPreemptCB,this));
     statue_sub_ = nh.subscribe("move_base/status",10,&BuildUpTask::MoveBaseStatusCB,this);
     report_path_client = nh.serviceClient<robot_msgs::ReportPath>("report_path");
     get_host_config_client = nh.serviceClient<robot_msgs::GetConfigCmd>("get_config_cmd");
     make_plan_client = nh.serviceClient<nav_msgs::GetPlan>("move_base/make_plan");
     separate_goal_client = nh.serviceClient<robot_msgs::Separate>("separate_goal");
+    task_state.status = actionlib_msgs::GoalStatus::PENDING;
     build_up_action.start();
 
     //Debug info
@@ -34,7 +25,7 @@ BuildUpTask::BuildUpTask()
 
 void BuildUpTask::ResetTask(){
     if(build_up_action.isActive()){
-        if(task_state == ActionState::ACTIVE){
+        if(task_state.status == actionlib_msgs::GoalStatus::ACTIVE){
             plan_action.cancelGoal();
         }
         result.succeed = false;
@@ -46,7 +37,7 @@ void BuildUpTask::BuildUpPreemptCB(){
     
     if(build_up_action.isPreemptRequested()){
         logger.DEBUGINFO(car_id,"action_preempt");
-        if(task_state == ActionState::ACTIVE)
+        if(task_state.status == actionlib_msgs::GoalStatus::ACTIVE)
             plan_action.cancelGoal();
         result.succeed = CANCEL;
         build_up_action.setPreempted(result,"goal cancel");
@@ -162,13 +153,13 @@ void BuildUpTask::BuildUpExcuteCB(const robot_msgs::BuildUpGoalConstPtr &goal){
     loop.sleep();
     while(ros::ok() && build_up_action.isActive()){
         ros::spinOnce();
-        if(task_state == ActionState::SUCCEEDED){
+        if(task_state.status == actionlib_msgs::GoalStatus::SUCCEEDED){
             result.succeed = true;
             logger.DEBUGINFO(car_id,"build up task finished");
             build_up_action.setSucceeded(result,"goal_reached");
             break;
         }
-        else if(task_state == ActionState::ABORTED){
+        else if(task_state.status == actionlib_msgs::GoalStatus::ABORTED){
             result.succeed = false;
             logger.DEBUGINFO(car_id,"build up task error");
             build_up_action.setAborted(result,"task failed");
@@ -181,19 +172,17 @@ void BuildUpTask::BuildUpExcuteCB(const robot_msgs::BuildUpGoalConstPtr &goal){
         }
         loop.sleep();
     }
-    task_state = ActionState::PENDING;
+    task_state.status = actionlib_msgs::GoalStatus::PENDING;
     
 }
 
 /* 以下是planning move_base的callback */
 void BuildUpTask::MoveBaseStatusCB(const actionlib_msgs::GoalStatusArrayConstPtr &msg){
     if(msg->status_list.empty()){
-        task_state = ActionState::PENDING;
+        task_state.status = actionlib_msgs::GoalStatus::PENDING;
         return ;
     }
-    int state = (--msg->status_list.end())->status;
-    task_state = (ActionState)state;
-    
+    task_state.status = (--msg->status_list.end())->status;    
 }
 
 

@@ -43,16 +43,27 @@
 
     <param name="clearing_rotation_allowed" value="false" />
     </node> -->
-    <!-- task node -->
-    <node pkg="task_node"     type="build_up_task_nohost"      name="build_up_task_nohost"    output="screen"  />
-    <!-- behavior tree -->
-    <node pkg="decision_node" type="decision_node"      name="decision_node"  output="screen"   />
-    <!-- separate goal -->
-    <node pkg="service_node" type="separate_goal"      name="separate_goal"  />
-    <!-- send robot state -->
-    <node pkg="communication_node" name="publisher" type="publisher" output="screen"/>
-    <!-- receive other robot state -->
-    <node pkg="communication_node" name="receiver" type="receiver" output="screen" />
+    <!-- tasks  1、build up nohost 2、-->
+    <node pkg="task_node"     type="build_up_task_nohost"       name="build_up_task_nohost"/>
+    <!-- <node pkg="task_node"     type="gps_march_task"             name="gps_march_task" /> -->
+    <!-- <node pkg="task_node"     type="laser_march_task"           name="laser_march_task" /> -->
+    <node pkg="task_node"     type="search_task"                name="search_task" />
 
+    <!-- behavior tree -->
+    <!-- <node pkg="decision_node" type="decision_node"      name="decision_node"  output="screen"   /> -->
+
+    <!-- services 1、separate 2、path coverage -->
+    <node pkg="service_node" type="separate_goal"      name="separate_goal"  />
+    <node pkg="service_node" type="path_coverage" respawn="false" name="path_coverage" output="screen" clear_params="true">
+        <rosparam file="$(find service_node)/path_coverage/gazebo_config/global_costmap_params.yaml" command="load" />
+    </node>
+
+
+    <!-- communication 1、send robot state  2、receive other robot state -->
+    <!-- TODO 有bug 猜测是参数有问题，需要进一步修改 -->
+    <!-- <node pkg="communication_node" name="publisher" type="publisher" output="screen"/>
+    <node pkg="communication_node" name="receiver" type="receiver" output="screen" /> -->
+    
+    
 
 </launch>

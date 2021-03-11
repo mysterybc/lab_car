@@ -9,6 +9,7 @@
 #define LOGI printf
 
 bool set_behavior_tree;
+extern Debug::DebugLogger logger;
 
 behaviac::Agent* g_MakeTreeAgent=NULL;
 BlackBoard* g_BlackBoardAgent=NULL;

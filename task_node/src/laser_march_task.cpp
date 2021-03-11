@@ -22,8 +22,9 @@
 #include "robot_msgs/RobotStates.h"
 #include "tf/transform_listener.h"
 #include "robot_msgs/BuildUpAction.h"
-#include "debug_info.h"
+#include "my_debug_info.h"
 #include "sensor_msgs/Imu.h"
+#include "my_param_server.h"
 
 
 
@@ -319,16 +320,16 @@ void on_new_gps_pos(const nav_msgs::Odometry& msg){
 }
 
 void on_new_lidar_pos(const nav_msgs::Odometry& msg){
-	// double yaw,roll,pitch;
-	// tf::Quaternion quat;
-	// tf::quaternionMsgToTF(msg.pose.pose.orientation,quat);
-    // tf::Matrix3x3(quat).getEulerYPR(yaw,pitch,roll);
+	double yaw,roll,pitch;
+	tf::Quaternion quat;
+	tf::quaternionMsgToTF(msg.pose.pose.orientation,quat);
+    tf::Matrix3x3(quat).getEulerYPR(yaw,pitch,roll);
     StateInfo one;
 	one.ID = myconfig.robotID;
 	one.x = (float)m2cm(msg.pose.pose.position.x);
 	one.y = (float)m2cm(msg.pose.pose.position.y);
 	one.heading = mydata.me.heading;
-	// one.heading = (float)rad2deg(yaw);
+	one.heading = (float)rad2deg(yaw);
 	one.v = 0;  // TBD
 	one.w = 0;  // TBD
 	mydata.me = one;
@@ -494,8 +495,8 @@ int main(int argc, char* argv[]) {
 	// -----------------------
 	// Hard coded Parameters
 	// ----------------------- 
-	std::string package_path = ros::package::getPath("bitrobot");
-	myconfig.config_dir = package_path + "/lib/repo-v0.0.4/config";
+	std::string package_path = ros::package::getPath("robot_library");
+	myconfig.config_dir = package_path + "/bitrobot/config";
 	myconfig.debug_info = DEBUG_INFO_STATES | DEBUG_INFO_FUNCTION | DEBUG_INFO_COMPUTE;
 	myconfig.target_velocity = 0.8; // m/s
 	//最初多车仿真用
@@ -519,20 +520,9 @@ int main(int argc, char* argv[]) {
 	// ----------------------- 
 	ros::init(argc, argv, "bitform");
 	ros::NodeHandle node;
-	std::string namespace_;
-    namespace_ = node.getNamespace();
-	if (!node.getParam(namespace_ + "/car_id", myID)) {
-		logger.WARNINFO(myconfig.robotID,"Failed to get myid. quit");
-		return -1;
-	}
+	my_lib::GetParam("laser march task",&myID,NULL);
 	myconfig.robotID = myID;
-	logger.init_logger(myID);
-	std::string tf_frame;
-	if(!node.getParam(namespace_+"/tf_ns",tf_frame)){
-        logger.WARNINFO(myconfig.robotID,"march task FAILED TO GET TF FRAME");
-    }
 	printf("This is Robot %d\n", myID);
-	robot_frame = tf_frame + "base_link";
 	
 	
 	// ----------------------- 

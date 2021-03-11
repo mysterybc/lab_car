@@ -1,24 +1,14 @@
 #include "separate_goal.h"
 #include "tf/transform_listener.h"
 #include "algorithm"
-#include "debug_info.h"
+#include "my_param_server.h"
 
 Debug::DebugLogger logger;
 
 SeparateGoal::SeparateGoal(){
     ros::NodeHandle nh;
-   //获取group空间名
-    std::string namespace_;
-    namespace_ = nh.getNamespace();
-    //获取group下的参数
-    if(!nh.getParam(namespace_+"/car_id",car_id)){
-        car_id = 1;
-        logger.WARNINFO(car_id,"SEPARATE SERVICE FAILED TO GET CAR ID");
-        logger.WARNINFO(car_id,"SEPARATE SERVICE RESET CAR ID TO 1");
-    }
-    if(!nh.getParam(namespace_+"/tf_ns",tf_ns)){
-        logger.WARNINFO(car_id,"SEPARATE SERVICE FAILED TO GET TF FRAME");
-    }
+    //获取group空间名
+    my_lib::GetParam("path_follow",&car_id,NULL,&tf_ns);
     robots_state_sub = nh.subscribe("robot_states",10,&SeparateGoal::RobotStateCallback,this);
     map_sub = nh.subscribe("/map",10,&SeparateGoal::MapCallback,this);
     separate_service = nh.advertiseService("separate_goal",&SeparateGoal::CalGoal,this);

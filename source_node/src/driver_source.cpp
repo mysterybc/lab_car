@@ -1,19 +1,14 @@
 #include "driver_source.h"
 #include "robot_msgs/SourceNodeMsg.h"
+#include "my_param_server.h"
+#include "my_debug_info.h"
+
 
 Debug::DebugLogger logger;
 EncoderSource::EncoderSource(){
     ros::NodeHandle nh;
     std::string path = "config file path";
-    //获取group空间名
-    std::string namespace_;
-    namespace_ = nh.getNamespace();
-    //获取group下的参数
-    if(!nh.getParam(namespace_+"/car_id",car_id)){
-        car_id = 1;
-        logger.WARNINFO("RECEIVER FAILED TO GET CAR ID");
-        logger.WARNINFO("RECEIVER RESET CAR ID TO 1");
-    }
+    my_lib::GetParam("path_follow",&car_id);
     logger.init_logger(car_id);
     if(LoadConfig(path)){
         node_state = State::HAVE_CONFIG;

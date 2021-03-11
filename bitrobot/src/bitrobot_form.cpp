@@ -261,8 +261,8 @@ int main(int argc, char* argv[]) {
 	// -----------------------
 	// Hard coded Parameters
 	// ----------------------- 
-	std::string package_path = ros::package::getPath("bitrobot");
-	myconfig.config_dir = package_path + "lib/repo-v0.0.4/config";
+	std::string package_path = ros::package::getPath("robot_library");
+	myconfig.config_dir = package_path + "/bitrobot/config";
 	myconfig.debug_info = DEBUG_INFO_STATES | DEBUG_INFO_FUNCTION | DEBUG_INFO_COMPUTE;
 	myconfig.target_velocity = 0.5; // m/s
 	//最初多车仿真用

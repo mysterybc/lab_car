@@ -12,11 +12,16 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   actionlib
   robot_msgs
+  roslib
   )
 
+include_directories(include ${catkin_INCLUDE_DIRS} ../../robot_library/my_lib/include)
 
 catkin_package()
 
+
 add_subdirectory(separate_goal)
+add_subdirectory(path_coverage)
+add_subdirectory(path_follow)
 
 

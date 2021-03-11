@@ -1,4 +1,6 @@
 ﻿#include "TaskRealize.h"
+extern Debug::DebugLogger logger;
+
 #define _cancel  2
 
 TaskRealize::TaskRealize():
@@ -76,7 +78,7 @@ void TaskRealize::Assemble_DoneCallback(const actionlib::SimpleClientGoalState &
     if(result->succeed!=_cancel)
         g_GroupAsBasicLogicAgent->CurrentTask=TaskIndividual::NonTask;
     if(g_BlackBoardAgent->car_id==2)
-    logger.DEBUGINFO(g_BlackBoardAgent->car_id,"Assemble Done");
+        logger.DEBUGINFO(g_BlackBoardAgent->car_id,"Assemble Done");
     if(g_BlackBoardAgent->car_id==2&&g_GroupAsBasicLogicAgent->CurrentTask==TaskIndividual::NonTask)
         logger.DEBUGINFO(g_BlackBoardAgent->car_id,"Assemble really really really Done");
     return ;

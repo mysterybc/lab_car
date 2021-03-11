@@ -16,8 +16,9 @@
 #include "std_msgs/Int8MultiArray.h"
 #include "algorithm"
 #include "vector"
-#include "debug_info.h"
+#include "my_debug_info.h"
 #include<utility>
+
 
 class GroupAsBasicLogic;
 class TaskRealize;

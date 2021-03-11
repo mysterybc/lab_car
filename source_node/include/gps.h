@@ -13,7 +13,7 @@
 #include <sstream> 
 #include <std_msgs/Empty.h> 
 #include <thread>
-#include "debug_info.h"
+#include "my_debug_info.h"
 
 
 

@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   robot_msgs
   roscpp
   roslib
+  robot_library
 )
 
 catkin_package(
@@ -20,7 +21,7 @@ include_directories(
     inc
     inc/exported 
     inc/exported/behaviac_generated/types/internal
-    ../robot_msgs/include
+    ../robot_library/my_lib/include
   ${catkin_INCLUDE_DIRS}
 )
 

@@ -1,5 +1,5 @@
 #include "imu.h"
-
+extern Debug::DebugLogger logger;
 double roll = 0,pitch = 0,yaw = 0;
 const double GRAVITY = 9.80665;
 

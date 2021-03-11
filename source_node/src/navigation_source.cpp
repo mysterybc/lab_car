@@ -5,15 +5,7 @@ Debug::DebugLogger logger;
 NavigationSource::NavigationSource(){
     ros::NodeHandle nh;
     std::string path = "config file path";
-    //获取group空间名
-    std::string namespace_;
-    namespace_ = nh.getNamespace();
-    //获取group下的参数
-    if(!nh.getParam(namespace_+"/car_id",car_id)){
-        car_id = 1;
-        logger.WARNINFO("NAVIGATION NODE FAILED TO GET CAR ID");
-        logger.WARNINFO("NAVIGATION NODE RESET CAR ID TO 1");
-    }
+    my_lib::GetParam("path_follow",&car_id);
     logger.init_logger(car_id);
     if(LoadConfig(path)){
         node_state = State::HAVE_CONFIG;

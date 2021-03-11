@@ -1,19 +1,12 @@
 #include "control_node/remote_control_node.h"
-#include "debug_info.h"
+#include "my_debug_info.h"
+#include "my_param_server.h"
 Debug::DebugLogger logger;
 
 RemoteControlNode::RemoteControlNode(){
     ros::NodeHandle nh;
     std::string path = "config file path";
-    //获取group空间名
-    std::string namespace_;
-    namespace_ = nh.getNamespace();
-    //获取group下的参数
-    if(!nh.getParam(namespace_+"/car_id",car_id)){
-        car_id = 1;
-        logger.WARNINFO("RECEIVER FAILED TO GET CAR ID");
-        logger.WARNINFO("RECEIVER RESET CAR ID TO 1");
-    }
+    my_lib::GetParam("publish_robot_state",&car_id);
     logger.init_logger(car_id);
     if(LoadConfig(path)){
         node_state = State::HAVE_CONFIG;

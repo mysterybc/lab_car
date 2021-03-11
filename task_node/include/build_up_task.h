@@ -19,20 +19,6 @@
 #include <thread>
 #include <string>
 
-enum ActionState{
-    PENDING = 0,
-    ACTIVE = 1,
-    PREEMPTED = 2,
-    SUCCEEDED = 3,
-    ABORTED = 4,
-    REJECTED = 5,
-    PREEMPTING = 6,
-    RECALLING  = 7,
-    RECALLED  = 8,
-    LOST = 9
-
-};
-
 class BuildUpTask{
 public:
     #define CANCEL 2
@@ -60,7 +46,7 @@ public:
     std::string tf_ns;
     geometry_msgs::Pose goal_point;
     robot_msgs::BuildUpResult result;
-    ActionState task_state;
+    actionlib_msgs::GoalStatus task_state;
 
 
 };

@@ -33,7 +33,6 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 
 endif()
 #需要添加的pcl代码
-find_package(PCL REQUIRED)
 find_package(OpenCV REQUIRED)
 
 #需要添加的GTSAM代码
@@ -104,37 +103,29 @@ add_executable(point_cloud_to_octomap_and_OGM_node src/point_cloud_to_octomap_an
 
 target_link_libraries(scan_to_submap_node
 ${catkin_LIBRARIES} 
-${PCL_LIBRARY_DIRS}
 )
 
 target_link_libraries(pcl_fliter_node
  ${catkin_LIBRARIES} 
- ${PCL_LIBRARY_DIRS}
 )
 
 target_link_libraries(Eliminating_point_cloud_distortion_node
 ${catkin_LIBRARIES} 
-${PCL_LIBRARY_DIRS}
 )
 target_link_libraries(map_segmentation_node
 ${catkin_LIBRARIES} 
-${PCL_LIBRARY_DIRS}
 )
 target_link_libraries(scan_to_submap_imu_node
 ${catkin_LIBRARIES} 
-${PCL_LIBRARY_DIRS}
 )
 target_link_libraries(imu_transform_node
 ${catkin_LIBRARIES} 
-${PCL_LIBRARY_DIRS}
 )
 target_link_libraries(scan_to_submap_lego_node
 ${catkin_LIBRARIES} 
-${PCL_LIBRARY_DIRS}
 )
 target_link_libraries(point_cloud_to_octomap_and_OGM_node
         ${catkin_LIBRARIES}
-        ${PCL_LIBRARY_DIRS}
         )
 # target_link_libraries(gtsam_test_node
 # ${catkin_LIBRARIES} 
