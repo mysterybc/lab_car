@@ -141,7 +141,10 @@ bool PathCoverageNode::on_service(  robot_msgs::PathCoverage::Request & req,
 int main(int argc, char** argv){
     ros::init(argc, argv, "path_planning_node");
     ros::NodeHandle nh;
-    tf::TransformListener tf(ros::Duration(10));
+    //melodic devel
+    tf2_ros::Buffer tf(ros::Duration(10));
+    //kinetic devel
+    //tf::TransformListener tf(ros::Duration(10));
 
     //创建costmap cleaning path需要
     costmap_2d::Costmap2DROS lcr("cleaning_costmap", tf);

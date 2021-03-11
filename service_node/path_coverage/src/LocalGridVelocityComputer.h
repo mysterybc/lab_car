@@ -5,6 +5,7 @@
 #include <costmap_2d/costmap_2d_ros.h>
 #include <geometry_msgs/PoseStamped.h>
 #include <move_base_msgs/MoveBaseAction.h>
+#include <tf/transform_datatypes.h>
 
 class LocalGridVelocityComputer
 {
