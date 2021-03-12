@@ -2,10 +2,10 @@
 
 #请在工程文件中搜索"melodic devel"并注释掉下面的代码，取消注释"kinetic devel"下面的代码
 # kinetic版本编译
-cd ..
-catkin_make -DCATKIN_WHITELIST_PACKAGES="robot_msgs" -DCATKIN_BLACKLIST_PACKAGES=""
-catkin_make -DCATKIN_WHITELIST_PACKAGES="robot_library" -DCATKIN_BLACKLIST_PACKAGES=""
-catkin_make -DCATKIN_WHITELIST_PACKAGES="" -DCATKIN_BLACKLIST_PACKAGES=""
+#cd ..
+#catkin_make -DCATKIN_WHITELIST_PACKAGES="robot_msgs" -DCATKIN_BLACKLIST_PACKAGES=""
+#catkin_make -DCATKIN_WHITELIST_PACKAGES="robot_library" -DCATKIN_BLACKLIST_PACKAGES=""
+#catkin_make -DCATKIN_WHITELIST_PACKAGES="" -DCATKIN_BLACKLIST_PACKAGES=""
 
 
 
