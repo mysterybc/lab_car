@@ -1,0 +1,10 @@
+#goal
+nav_msgs/Path path
+uint8[] idList
+---
+#result
+bool succeed
+---
+#feedback
+bool error_occured
+

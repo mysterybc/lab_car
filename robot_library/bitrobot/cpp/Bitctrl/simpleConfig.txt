@@ -1,0 +1,194 @@
+﻿########################
+# Global Config
+ref_lat 39.96300
+ref_lon 116.30440
+IDBad 	# List of ID to be ignored 
+
+#ref_lat 39.9580912
+#ref_lon 116.3049045
+ref_th 0
+
+# Base Config    
+vmax    80           # cm/s 
+wmax    60           # deg/s
+lin_dis 20           # linear distance in cm
+#avoid_min  60       # minimum distance to avoid a point obstacle, i.e. robot_radius
+#avoid_safe 100      # safe distance to avoid a point obstacle
+#avoid_K    10
+gen_vpath 50         # cm/s tracking velocity
+
+# Filter Options
+filter_enable true
+filter_onlyme false
+filter_proj   false
+filter_w      10    # w=0 means no filtering is used, data is used as it is.
+                   # update law: x1_new = xp*r + x1*(1-r), where r = filter_w^dt, i.e. dt=0 --> x1_new = xp
+
+# Formation Configurations, in meters
+gen_dxy_id   1  2  3   4
+#gen_dxy_name triangle   # triangle, square
+gen_dxy_s    2          # edge length
+gen_shift_human  -2.5    0    # in meters
+gen_human_virtual false     # if it's virtual, shit would be set to 0, 
+                            # and no ob_avoid is enabled for human agent.
+
+# Threshholds
+gen_thresh_consensus    25  # float, cm
+gen_thresh_tracking     30  # float, cm
+gen_thresh_theta        15  # float, deg
+
+# Tracking Config
+gen_track_kn        0.2       # float
+gen_track_kt        1       # float
+gen_track_ndzone    10      # float
+gen_track_ethresh   400     # in cm, 
+gen_track_strict    false   # if strict, path_t will not advance if err >= ethresh
+gen_track_endreach_pos  60  # Endreach counter limit for position
+gen_track_endreach_th   30  # Endreach counter limit for theta
+
+gen_tsingle_kn      1       # float
+gen_tsingle_kt      1       # float
+gen_tsingle_ndzone    0     # float
+gen_tsingle_ethresh   200   # in cm 
+gen_tsingle_strict    true  # if strict, path_t will not advance if err >= ethresh
+
+
+# Formation Config
+gen_use_autoselect  true    # whether perform auto-shape selection on Formation Experiments
+gen_align_tar       2     # float, kht
+gen_align_loc       0     # float, khl
+gen_consn_trk       0     # float, former kc2
+
+# Formation Test8 Config
+gen_test8_enable true
+gen_test8_r      2      # m,   radius
+gen_test8_v      0.4    # m/s, vel, <=0, use default
+gen_test8_th     0      # degree, path rotation
+gen_test8_t      2      # s,   time shift after formation ends
+gen_test8_n      2      # how many rounds
+gen_test8_np     20     # how many points in one circle
+
+# Rendezvous Config
+gen_consn_rnd   1   # float, k for Rendezvous
+gen_align_rnd   2   # float, kth for general heading alignments
+
+# Shared Control Config
+gen_hscale  50              # float, in cm
+gen_hfkc    0.2             # float
+gen_hfkt    0.8             # float
+gen_hf_dec_ratio    0.8     # float
+gen_hf_dec_scale    0.9     # float
+gen_hf_tmax 3               # float, in sec, max prolong of human inputs
+gen_hf_normalize    true    # bool, if true, hfMe and uLocal would be first saturated by vmax before blending
+gen_hf_vmax 100             # float
+
+# Fault Detect Config
+gen_actfault_w      20
+gen_dont_detect          # These agents will not detect whether they're faulty
+gen_use_autofault   true # By default, if autofault is enabled
+gen_auto_faulty          # Just a temp arg, this agent will act faulty upon fault detection
+gen_ftd_th_bound    1    # double
+gen_ftd_th_decay    0.8  # float
+gen_ftd_th_mtime    2.5  # float
+gen_ftd_th_type     2    # int,  1 use acc, 2 use average
+
+gen_ftd_xy_bound    25  # double
+gen_ftd_xy_decay    0.8 # float
+gen_ftd_xy_mtime    2.5 # float
+gen_ftd_xy_type     2   # int,  1 use acc, 2 use average
+
+# To be completed
+gen_ftd_ft_type     1   # 1 in place rotation, 2:
+
+# Trace Human Config
+#gen_wchu_Khmn  2    # float
+#gen_wchu_Kneb  1    # float
+#gen_wchu_Kobs  1    # float, 
+#gen_wchu_accmax    1.5  # float, max acc allowed, in m/s^2
+#gen_wchu_vdzone    0.02 # float, in m/s
+
+# Update of the virtual leader
+#gen_wchu_leader_K      1   # float
+#gen_wchu_leader_vmax   0.6 # float, cm/s
+
+# Tracking virtual leader
+#gen_wchu_pfhmn_c   1   # float
+#gen_wchu_pfhmn_k   1   # float
+
+# Effective Range for pfagent and pfob
+#gen_wchu_pf_range  2   # float
+
+# Inter-agent avoid + attrack
+#gen_wchu_pfagent_d 2.2 # float, desired distance
+#gen_wchu_pfagent_k 4   # float
+#gen_wchu_pfagent_kv    4   # float
+#gen_wchu_pfagent_c 1   # float
+#gen_wchu_pfagent_e 0.1 # float
+
+# Ob Avoid
+#gen_wchu_pfob_k        4   # float
+#gen_wchu_pfob_kv   5   # float
+#gen_wchu_pfob_c        1   # float
+#gen_wchu_pfob_e        0.1 # float
+
+# General Ob Avoid
+gen_avoid_range     1  # float, m
+gen_avoid_vmax      3  # float, m/s
+gen_avoid_power     2  # float, power of avoid f
+
+gen_use_pfavoid     false
+gen_use_nsavoid     true
+gen_use_fakevel     true
+#gen_nsavoid_dump    false
+#gen_nsavoid_npt     1       # Points generated on the disk of the agent
+
+#gen_nsavoid_dagent  1.2     # nsavoid.min_agent, Minimum distance to avoid another agent
+#gen_nsavoid_dob     0.5     # nsavoid.min_ob,    Minimum distance to avoid an obstacle
+#gen_nsavoid_lamV    10      # Weight, vLine over vRotate
+#gen_nsavoid_Kob     2       # Max approaching Velocity to Obstacle K from Point P is
+#gen_nsavoid_Kinter  0.5     #   max(K*(dis(K, P) - minDis), -10*K*(dis(K, P)-minDis))
+                             # Currently, only Kinter is useful
+
+gen_use_slowdown   false
+gen_slow_down    0.8    2
+#gen_slow_lamT    0.8  0.8
+#gen_slow_lamN    0.75   1
+gen_slow_lamT    1   1
+gen_slow_lamN    1   1
+                            
+gen_nsavoid_len     0.2     # disk radius
+gen_nsavoid_lamV    50      # Weight, vLine over vRotate
+gen_nsavoid_2D      true    # If projection on (vx, vy)
+gen_nsavoid_vw      true    # If projection is also on (v, w)
+
+ob_static_dmin  0.6  # m, at this distance, the vmax is 0 m/s
+ob_static_vmax  0.8  # m/s, max approach (linear) at (1+dmin) meters
+ob_static_safe  3  # m, won't consider if at (safe+dmin) meters
+
+ob_agent_dmin 0.8  # The inter-agent distance is (ob_agent_dmin + ob_size_robot) +- gen_nsavoid_len
+ob_agent_vmax 0.8
+ob_agent_safe 3
+
+ob_dynamic_dmin  0.8
+ob_dynamic_vmax  0.8
+ob_dynamic_safe  3
+
+ob_size_robot 0.4
+ob_size_human 0.6
+ob_size_envob -1   # if >= 0, this will overwrite obR info from setObstacles
+
+# Configurations for Latency Test
+latTestID   1  2  3  4 # the first is the master 
+latTestMax  30000      # max ticks
+latTestDump 0          # dump every 100 ticks
+latTestStatWindow 100  # i.e lat(k+1) = p*lat(k) + lat_now. win_size=1/(1-p)
+                       # 0 if not used
+
+# Options of debug info output
+IDshowAll 0     # which one would print every one's state on DEBUG_INFO_STATE
+DebugMode 0     # 0: normal, 1: no neighbour info
+
+# TCPCOM Configurations
+tcpcom_id    1          2          3          4
+tcpcom_ip    127.0.0.1  127.0.0.1  127.0.0.1  127.0.0.1
+tcpcom_port  18321      18322      18323      18324

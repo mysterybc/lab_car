@@ -8,13 +8,14 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   serial
   robot_msgs
+  robot_library
   tf
 )
 
 catkin_package()
 
 
-include_directories(include ${catkin_INCLUDE_DIRS})
+include_directories(include ${catkin_INCLUDE_DIRS} ../robot_library/my_lib/include)
 
 #组合导航节点
 add_executable(navigation_source_node 
@@ -31,5 +32,10 @@ add_executable(driver_source_node
 )
 target_link_libraries(driver_source_node ${catkin_LIBRARIES})
 #摄像头节点待添加
+
+
+#传感器融合节点
+add_executable(sensor_fusion_node  src/sensor_fusion.cpp)
+target_link_libraries(sensor_fusion_node ${catkin_LIBRARIES})
 
 

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--EXPORTED BY TOOL, DON'T MODIFY IT!-->
+<!--Source File: TaskJudgeSubTree.xml-->
+<behavior name="TaskJudgeSubTree" agenttype="behaviac::Agent" version="5">
+  <node class="Selector" id="0">
+    <node class="Sequence" id="1">
+      <node class="Condition" id="2">
+        <property Operator="Equal" />
+        <property Opl="TaskIndividual GroupAsBasicLogic.GroupAsBasicLogic::CurrentTask" />
+        <property Opr="const TaskIndividual Assemble" />
+      </node>
+      <node class="Action" id="3">
+        <property Method="TaskRealize.TaskRealize::Assemble()" />
+        <property ResultOption="BT_SUCCESS" />
+      </node>
+    </node>
+    <node class="Sequence" id="4">
+      <node class="Condition" id="5">
+        <property Operator="Equal" />
+        <property Opl="TaskIndividual GroupAsBasicLogic.GroupAsBasicLogic::CurrentTask" />
+        <property Opr="const TaskIndividual March_gps" />
+      </node>
+      <node class="Action" id="6">
+        <property Method="TaskRealize.TaskRealize::March_gps()" />
+        <property ResultOption="BT_SUCCESS" />
+      </node>
+    </node>
+    <node class="Sequence" id="7">
+      <node class="Condition" id="8">
+        <property Operator="Equal" />
+        <property Opl="TaskIndividual GroupAsBasicLogic.GroupAsBasicLogic::CurrentTask" />
+        <property Opr="const TaskIndividual March_laser" />
+      </node>
+      <node class="Action" id="9">
+        <property Method="TaskRealize.TaskRealize::March_laser()" />
+        <property ResultOption="BT_SUCCESS" />
+      </node>
+    </node>
+  </node>
+</behavior>

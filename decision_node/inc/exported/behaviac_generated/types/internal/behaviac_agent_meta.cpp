@@ -223,6 +223,48 @@ namespace behaviac
 		}
 	};
 
+	class CMethod_GroupAsBasicLogic_IsForegrdFunc : public CAgentMethodBase<bool>
+	{
+		IInstanceMember* _Task;
+
+	public: 
+		CMethod_GroupAsBasicLogic_IsForegrdFunc() : _Task(0) 
+		{
+		}
+
+		CMethod_GroupAsBasicLogic_IsForegrdFunc(CMethod_GroupAsBasicLogic_IsForegrdFunc &rhs) : CAgentMethodBase<bool>(rhs) , _Task(0) 
+		{
+		}
+
+		~CMethod_GroupAsBasicLogic_IsForegrdFunc()
+		{
+			BEHAVIAC_DELETE _Task;
+		}
+
+		virtual IInstanceMember* clone()
+		{
+			return BEHAVIAC_NEW CMethod_GroupAsBasicLogic_IsForegrdFunc(*this);
+		}
+
+		virtual void load(const char* instance, behaviac::vector<behaviac::string>& paramStrs)
+		{
+			BEHAVIAC_ASSERT(paramStrs.size() == 1);
+
+			behaviac::StringUtils::StringCopySafe(kInstanceNameMax, _instance, instance);
+			_Task = AgentMeta::TParseProperty<TaskIndividual >(paramStrs[0].c_str());
+		}
+
+		virtual void run(Agent* self)
+		{
+			BEHAVIAC_ASSERT(_Task != NULL);
+
+			const TaskIndividual& pValue_Task = *(const TaskIndividual*)_Task->GetValue(self, behaviac::Meta::IsVector<const TaskIndividual >::Result, behaviac::GetClassTypeNumberId<const TaskIndividual >());
+			self = Agent::GetParentAgent(self, _instance);
+
+			_returnValue->value = ((GroupAsBasicLogic*)self)->IsForegrdFunc(pValue_Task);
+		}
+	};
+
 	class BehaviorLoaderImplement : BehaviorLoader
 	{
 	public:
@@ -237,7 +279,7 @@ namespace behaviac
 
 		virtual bool load()
 		{
-			AgentMeta::SetTotalSignature(2198742996u);
+			AgentMeta::SetTotalSignature(869142046u);
 
 			AgentMeta* meta = NULL;
 			BEHAVIAC_UNUSED_VAR(meta);
@@ -252,15 +294,25 @@ namespace behaviac
 			meta->RegisterMethod(505785840u, BEHAVIAC_NEW CMethod_behaviac_Agent_VectorLength());
 			meta->RegisterMethod(502968959u, BEHAVIAC_NEW CMethod_behaviac_Agent_VectorRemove());
 
-			// BasicLogic
-			meta = BEHAVIAC_NEW AgentMeta(2308046977u);
-			AgentMeta::GetAgentMetas()[3030865775u] = meta;
-			meta->RegisterMemberProperty(3122630375u, BEHAVIAC_NEW CMemberProperty< TaskIndividual >("CurrentTask", Set_BasicLogic_CurrentTask, Get_BasicLogic_CurrentTask));
-			meta->RegisterMemberProperty(3010945600u, BEHAVIAC_NEW CMemberProperty< TaskType >("CurrentType", Set_BasicLogic_CurrentType, Get_BasicLogic_CurrentType));
-			meta->RegisterMemberProperty(2409883058u, BEHAVIAC_NEW CMemberProperty< TaskIndividual >("InputTask", Set_BasicLogic_InputTask, Get_BasicLogic_InputTask));
-			meta->RegisterMemberProperty(2261453077u, BEHAVIAC_NEW CMemberProperty< TaskType >("InputType", Set_BasicLogic_InputType, Get_BasicLogic_InputType));
-			meta->RegisterMethod(1045109914u, BEHAVIAC_NEW CAgentStaticMethodVoid_1<char*>(FunctionPointer_BasicLogic_LogMessage));
-			meta->RegisterMethod(1127271997u, BEHAVIAC_NEW CAgentMethodVoid(FunctionPointer_BasicLogic_Upper_Processing));
+			// GroupAsBasicLogic
+			meta = BEHAVIAC_NEW AgentMeta(2785138483u);
+			AgentMeta::GetAgentMetas()[2191909479u] = meta;
+			meta->RegisterMemberProperty(3122630375u, BEHAVIAC_NEW CMemberProperty< TaskIndividual >("CurrentTask", Set_GroupAsBasicLogic_CurrentTask, Get_GroupAsBasicLogic_CurrentTask));
+			meta->RegisterMemberProperty(431491385u, BEHAVIAC_NEW CMemberProperty< behaviac::vector<int> >("GroupMember", Set_GroupAsBasicLogic_GroupMember, Get_GroupAsBasicLogic_GroupMember));
+			meta->RegisterMemberProperty(1782603186u, BEHAVIAC_NEW CMemberArrayItemProperty< int >("GroupMember[]", Set_GroupAsBasicLogic_GroupMember, Get_GroupAsBasicLogic_GroupMember));
+			meta->RegisterMemberProperty(3166702640u, BEHAVIAC_NEW CMemberProperty< behaviac::vector<ForeFuncState> >("GroupState", Set_GroupAsBasicLogic_GroupState, Get_GroupAsBasicLogic_GroupState));
+			meta->RegisterMemberProperty(3173903789u, BEHAVIAC_NEW CMemberArrayItemProperty< ForeFuncState >("GroupState[]", Set_GroupAsBasicLogic_GroupState, Get_GroupAsBasicLogic_GroupState));
+			meta->RegisterMemberProperty(1877011335u, BEHAVIAC_NEW CMemberProperty< bool >("wait_for_CB", Set_GroupAsBasicLogic_wait_for_CB, Get_GroupAsBasicLogic_wait_for_CB));
+			meta->RegisterMethod(3721854477u, BEHAVIAC_NEW CAgentMethodVoid(FunctionPointer_GroupAsBasicLogic_ActionCancel));
+			meta->RegisterMethod(3284365111u, BEHAVIAC_NEW CAgentMethod< bool >(FunctionPointer_GroupAsBasicLogic_GroupIdle));
+			meta->RegisterMethod(4117300539u, BEHAVIAC_NEW CMethod_GroupAsBasicLogic_IsForegrdFunc());
+			meta->RegisterMethod(1045109914u, BEHAVIAC_NEW CAgentStaticMethodVoid_1<char*>(FunctionPointer_GroupAsBasicLogic_LogMessage));
+			meta->RegisterMethod(1819870197u, BEHAVIAC_NEW CAgentMethod< bool >(FunctionPointer_GroupAsBasicLogic_MemberConsistent));
+			meta->RegisterMethod(3654085091u, BEHAVIAC_NEW CAgentMethodVoid(FunctionPointer_GroupAsBasicLogic_RealTimeProcessing));
+			meta->RegisterMethod(2245930059u, BEHAVIAC_NEW CAgentMethodVoid(FunctionPointer_GroupAsBasicLogic_SendGoal));
+			meta->RegisterMethod(3947069661u, BEHAVIAC_NEW CAgentMethodVoid(FunctionPointer_GroupAsBasicLogic_SetMemberAndGoal));
+			meta->RegisterMethod(732284854u, BEHAVIAC_NEW CAgentMethod< bool >(FunctionPointer_GroupAsBasicLogic_TaskListEmpty));
+			meta->RegisterMethod(953611468u, BEHAVIAC_NEW CAgentMethod< TaskIndividual >(FunctionPointer_GroupAsBasicLogic_TaskListPop));
 			meta->RegisterMethod(2521019022u, BEHAVIAC_NEW CMethod_behaviac_Agent_VectorAdd());
 			meta->RegisterMethod(2306090221u, BEHAVIAC_NEW CMethod_behaviac_Agent_VectorClear());
 			meta->RegisterMethod(3483755530u, BEHAVIAC_NEW CMethod_behaviac_Agent_VectorContains());
@@ -268,9 +320,10 @@ namespace behaviac
 			meta->RegisterMethod(502968959u, BEHAVIAC_NEW CMethod_behaviac_Agent_VectorRemove());
 
 			// BlackBoard
-			meta = BEHAVIAC_NEW AgentMeta(544643081u);
+			meta = BEHAVIAC_NEW AgentMeta(2010603197u);
 			AgentMeta::GetAgentMetas()[554893437u] = meta;
-			meta->RegisterMemberProperty(4061333314u, BEHAVIAC_NEW CMemberProperty< int >("car_number", Set_BlackBoard_car_number, Get_BlackBoard_car_number));
+			meta->RegisterMemberProperty(2767060324u, BEHAVIAC_NEW CMemberProperty< int >("car_id", Set_BlackBoard_car_id, Get_BlackBoard_car_id));
+			meta->RegisterMethod(2249462959u, BEHAVIAC_NEW CAgentMethodVoid_1<TaskIndividual>(FunctionPointer_BlackBoard_BackgrdFuncProcessing));
 			meta->RegisterMethod(1045109914u, BEHAVIAC_NEW CAgentStaticMethodVoid_1<char*>(FunctionPointer_BlackBoard_LogMessage));
 			meta->RegisterMethod(2521019022u, BEHAVIAC_NEW CMethod_behaviac_Agent_VectorAdd());
 			meta->RegisterMethod(2306090221u, BEHAVIAC_NEW CMethod_behaviac_Agent_VectorClear());
@@ -278,25 +331,14 @@ namespace behaviac
 			meta->RegisterMethod(505785840u, BEHAVIAC_NEW CMethod_behaviac_Agent_VectorLength());
 			meta->RegisterMethod(502968959u, BEHAVIAC_NEW CMethod_behaviac_Agent_VectorRemove());
 
-			// ForegrdFunc
-			meta = BEHAVIAC_NEW AgentMeta(3411094798u);
-			AgentMeta::GetAgentMetas()[1588922205u] = meta;
-			meta->RegisterMemberProperty(1476038657u, BEHAVIAC_NEW CMemberProperty< ForeFuncState >("fore_func_state", Set_ForegrdFunc_fore_func_state, Get_ForegrdFunc_fore_func_state));
-			meta->RegisterMethod(3496515545u, BEHAVIAC_NEW CAgentMethodVoid(FunctionPointer_ForegrdFunc_Assemble));
-			meta->RegisterMethod(1045109914u, BEHAVIAC_NEW CAgentStaticMethodVoid_1<char*>(FunctionPointer_ForegrdFunc_LogMessage));
-			meta->RegisterMethod(2521019022u, BEHAVIAC_NEW CMethod_behaviac_Agent_VectorAdd());
-			meta->RegisterMethod(2306090221u, BEHAVIAC_NEW CMethod_behaviac_Agent_VectorClear());
-			meta->RegisterMethod(3483755530u, BEHAVIAC_NEW CMethod_behaviac_Agent_VectorContains());
-			meta->RegisterMethod(505785840u, BEHAVIAC_NEW CMethod_behaviac_Agent_VectorLength());
-			meta->RegisterMethod(502968959u, BEHAVIAC_NEW CMethod_behaviac_Agent_VectorRemove());
-
-			// BackgrdFunc
-			meta = BEHAVIAC_NEW AgentMeta(3687076435u);
-			AgentMeta::GetAgentMetas()[258680416u] = meta;
-			meta->RegisterMethod(1045109914u, BEHAVIAC_NEW CAgentStaticMethodVoid_1<char*>(FunctionPointer_BackgrdFunc_LogMessage));
-			meta->RegisterMethod(2220352924u, BEHAVIAC_NEW CAgentMethodVoid(FunctionPointer_BackgrdFunc_Pause));
-			meta->RegisterMethod(3717590755u, BEHAVIAC_NEW CAgentMethodVoid(FunctionPointer_BackgrdFunc_Resume));
-			meta->RegisterMethod(3289478844u, BEHAVIAC_NEW CAgentMethodVoid(FunctionPointer_BackgrdFunc_STOP));
+			// TaskRealize
+			meta = BEHAVIAC_NEW AgentMeta(3047321813u);
+			AgentMeta::GetAgentMetas()[682816214u] = meta;
+			meta->RegisterMemberProperty(1476038657u, BEHAVIAC_NEW CMemberProperty< ForeFuncState >("fore_func_state", Set_TaskRealize_fore_func_state, Get_TaskRealize_fore_func_state));
+			meta->RegisterMethod(3496515545u, BEHAVIAC_NEW CAgentMethodVoid(FunctionPointer_TaskRealize_Assemble));
+			meta->RegisterMethod(1045109914u, BEHAVIAC_NEW CAgentStaticMethodVoid_1<char*>(FunctionPointer_TaskRealize_LogMessage));
+			meta->RegisterMethod(3106451133u, BEHAVIAC_NEW CAgentMethodVoid(FunctionPointer_TaskRealize_March_gps));
+			meta->RegisterMethod(2622773627u, BEHAVIAC_NEW CAgentMethodVoid(FunctionPointer_TaskRealize_March_laser));
 			meta->RegisterMethod(2521019022u, BEHAVIAC_NEW CMethod_behaviac_Agent_VectorAdd());
 			meta->RegisterMethod(2306090221u, BEHAVIAC_NEW CMethod_behaviac_Agent_VectorClear());
 			meta->RegisterMethod(3483755530u, BEHAVIAC_NEW CMethod_behaviac_Agent_VectorContains());
@@ -304,18 +346,15 @@ namespace behaviac
 			meta->RegisterMethod(502968959u, BEHAVIAC_NEW CMethod_behaviac_Agent_VectorRemove());
 
 			AgentMeta::Register<behaviac::Agent>("behaviac::Agent");
-			AgentMeta::Register<BasicLogic>("BasicLogic");
+			AgentMeta::Register<GroupAsBasicLogic>("GroupAsBasicLogic");
 			AgentMeta::Register<BlackBoard>("BlackBoard");
-			AgentMeta::Register<ForegrdFunc>("ForegrdFunc");
-			AgentMeta::Register<BackgrdFunc>("BackgrdFunc");
+			AgentMeta::Register<TaskRealize>("TaskRealize");
 			AgentMeta::Register<TaskIndividual>("TaskIndividual");
-			AgentMeta::Register<TaskType>("TaskType");
 			AgentMeta::Register<ForeFuncState>("ForeFuncState");
 
-			Agent::RegisterInstanceName<BasicLogic>("BasicLogic");
+			Agent::RegisterInstanceName<GroupAsBasicLogic>("GroupAsBasicLogic");
 			Agent::RegisterInstanceName<BlackBoard>("BlackBoard");
-			Agent::RegisterInstanceName<ForegrdFunc>("ForegrdFunc");
-			Agent::RegisterInstanceName<BackgrdFunc>("BackgrdFunc");
+			Agent::RegisterInstanceName<TaskRealize>("TaskRealize");
 
 			return true;
 		}
@@ -323,18 +362,15 @@ namespace behaviac
 		virtual bool unLoad()
 		{
 			AgentMeta::UnRegister<behaviac::Agent>("behaviac::Agent");
-			AgentMeta::UnRegister<BasicLogic>("BasicLogic");
+			AgentMeta::UnRegister<GroupAsBasicLogic>("GroupAsBasicLogic");
 			AgentMeta::UnRegister<BlackBoard>("BlackBoard");
-			AgentMeta::UnRegister<ForegrdFunc>("ForegrdFunc");
-			AgentMeta::UnRegister<BackgrdFunc>("BackgrdFunc");
+			AgentMeta::UnRegister<TaskRealize>("TaskRealize");
 			AgentMeta::UnRegister<TaskIndividual>("TaskIndividual");
-			AgentMeta::UnRegister<TaskType>("TaskType");
 			AgentMeta::UnRegister<ForeFuncState>("ForeFuncState");
 
-			Agent::UnRegisterInstanceName<BasicLogic>("BasicLogic");
+			Agent::UnRegisterInstanceName<GroupAsBasicLogic>("GroupAsBasicLogic");
 			Agent::UnRegisterInstanceName<BlackBoard>("BlackBoard");
-			Agent::UnRegisterInstanceName<ForegrdFunc>("ForegrdFunc");
-			Agent::UnRegisterInstanceName<BackgrdFunc>("BackgrdFunc");
+			Agent::UnRegisterInstanceName<TaskRealize>("TaskRealize");
 
 			return true;
 		}

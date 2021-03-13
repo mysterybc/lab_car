@@ -1,0 +1,6 @@
+/home/lovezy/catkin_car/src/bitrobot/lib/repo-v0.0.4/cpp/install-all/lib/cmake/bitctrl/bitctrl-config.cmake
+/home/lovezy/catkin_car/src/bitrobot/lib/repo-v0.0.4/cpp/install-all/lib/cmake/bitctrl/bitctrl-config-version.cmake
+/home/lovezy/catkin_car/src/bitrobot/lib/repo-v0.0.4/cpp/install-all/lib/cmake/bitctrl/bitctrl-targets.cmake
+/home/lovezy/catkin_car/src/bitrobot/lib/repo-v0.0.4/cpp/install-all/lib/cmake/bitctrl/bitctrl-targets-noconfig.cmake
+/home/lovezy/catkin_car/src/bitrobot/lib/repo-v0.0.4/cpp/install-all/lib/libbitctrl.so
+/home/lovezy/catkin_car/src/bitrobot/lib/repo-v0.0.4/cpp/install-all/include/BIT.h

@@ -1,0 +1,1 @@
+/usr/bin/cc -g  -rdynamic CMakeFiles/BIT_CTest.dir/test/TestC.c.o  -o BIT_CTest  -Wl,-rpath,/home/lovebc/Desktop/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/build-Debug/bitctrl libbitctrl_d.so -lm 

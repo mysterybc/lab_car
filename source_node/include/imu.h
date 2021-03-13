@@ -8,6 +8,7 @@
 #include <sensor_msgs/Imu.h>
 #include <std_msgs/Empty.h> 
 #include <thread>
+#include "my_debug_info.h"
 
 
 class IMU{
@@ -30,6 +31,9 @@ public:
         start_flag = false;
         delete imu_thread_;
     }
+    int car_id;
+    double start_angle;
+    bool imu_init{false};
 
 
 private:

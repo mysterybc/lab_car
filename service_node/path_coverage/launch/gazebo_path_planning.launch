@@ -1,0 +1,9 @@
+<launch>
+
+  <!-- <include file="$(find gazebo_pioneer3at)/map.1.launch" /> -->
+  <node pkg="tf" type="static_transform_publisher" name="world_map_broadcaster" args="5 5 -0.4 0 0 0 /map /base_link 100" />
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find cleaning_robot)/cleaning.rviz"/>
+  <node pkg="cleaning_robot" type="path_planning_node" respawn="false" name="path_planning_node" output="screen" clear_params="true">
+    <rosparam file="$(find cleaning_robot)/gazebo_config/global_costmap_params.yaml" command="load" />
+  </node>
+</launch> 

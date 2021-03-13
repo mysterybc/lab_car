@@ -1,0 +1,8 @@
+/home/lovezy/catkin_car/src/bitrobot/lib/repo-v0.0.4/cpp/build-/bitctrl/CMakeFiles/install/strip.dir
+/home/lovezy/catkin_car/src/bitrobot/lib/repo-v0.0.4/cpp/build-/bitctrl/CMakeFiles/install/local.dir
+/home/lovezy/catkin_car/src/bitrobot/lib/repo-v0.0.4/cpp/build-/bitctrl/CMakeFiles/install.dir
+/home/lovezy/catkin_car/src/bitrobot/lib/repo-v0.0.4/cpp/build-/bitctrl/CMakeFiles/list_install_components.dir
+/home/lovezy/catkin_car/src/bitrobot/lib/repo-v0.0.4/cpp/build-/bitctrl/CMakeFiles/rebuild_cache.dir
+/home/lovezy/catkin_car/src/bitrobot/lib/repo-v0.0.4/cpp/build-/bitctrl/CMakeFiles/bitctrl.dir
+/home/lovezy/catkin_car/src/bitrobot/lib/repo-v0.0.4/cpp/build-/bitctrl/CMakeFiles/BIT_CTest.dir
+/home/lovezy/catkin_car/src/bitrobot/lib/repo-v0.0.4/cpp/build-/bitctrl/CMakeFiles/edit_cache.dir

@@ -14,12 +14,20 @@
 #include <std_msgs/String.h>
 #include <std_msgs/UInt8MultiArray.h>
 #include <algorithm>
+#include "ros/package.h"
+#include "robot_msgs/RobotStates.h"
 
 
 inline double m2cm(double x) { return x * 100; }
 inline double cm2m(double x) { return x / 100; }
 inline double deg2rad(double x) { return x / 180 * 3.141592654; }
 inline double rad2deg(double x) { return x * 180 / 3.141592654; }
+
+
+
+
+
+
 
 // Should use std::optional, but....
 template<class T>
@@ -37,20 +45,20 @@ struct IsNew {
 	T data;
 };
 
-
+//读取其他车的状态
 struct RobotHandler {
-	void subscribe(ros::NodeHandle& nh, const std::string& base) {
-		sub_state = nh.subscribe(base + "base_pose_ground_truth",    10,  &RobotHandler::on_new_pos, this);
-		sub_msg   = nh.subscribe(base + "algomsg", 10,  &RobotHandler::on_new_msg, this);
+	void subscribe(ros::NodeHandle& nh) {
+		sub_state = nh.subscribe("robot_states",    10,  &RobotHandler::on_new_pos, this);
+		sub_msg   = nh.subscribe("algomsg_others", 10,  &RobotHandler::on_new_msg, this);
 	}
 
-	void on_new_pos(const nav_msgs::Odometry& state);
+	void on_new_pos(const robot_msgs::RobotStatesConstPtr& states);
 	void on_new_msg(const std_msgs::UInt8MultiArray& str);
 	
 	
 	int robotID;
-	IsNew<StateInfo> state;
-	IsNew<std::string> msg;
+	std::map<int,IsNew<StateInfo> > id2state;
+	std::map<int,IsNew<std::string> > id2msg;
 	
 	ros::Subscriber sub_state;
 	ros::Subscriber sub_msg;
@@ -65,7 +73,6 @@ struct ConfigBIT {
 	
 	float target_velocity = 0.3f;
 	
-	std::map<int, std::string> id2ns;
 	std::vector<int> idlist, idform;
 	std::vector<float> dx, dy;
 	float edge_scaling = 1.6f;
@@ -76,7 +83,7 @@ struct StateBIT {
 	StateInfo me;
 	std::string my_message;
 	
-	std::map<int, RobotHandler> others;
+	RobotHandler others;
 	
 	bool new_path = false;
 	std::vector<PathPoint> path;
@@ -104,39 +111,44 @@ void init_controller(const ConfigBIT& config, StateBIT& state) {
 }
 
 
-
-StateInfo odm2stateinfo(int robotID, const nav_msgs::Odometry& state) {
-	auto pos = state.pose.pose.position;	
+//read pos from msg
+StateInfo pose2stateinfo(const robot_msgs::RobotState &state) {
+	auto pos = state.robot_pose;	
 	tf::Quaternion q(
-		state.pose.pose.orientation.x,
-		state.pose.pose.orientation.y,
-		state.pose.pose.orientation.z,
-		state.pose.pose.orientation.w);
+		pos.orientation.x,
+		pos.orientation.y,
+		pos.orientation.z,
+		pos.orientation.w);
 	tf::Matrix3x3 m(q);
 	double roll, pitch, yaw;
 	m.getRPY(roll, pitch, yaw);
 
 
 	StateInfo one;
-	one.ID = robotID;
-	one.x = (float)m2cm(pos.x);
-	one.y = (float)m2cm(pos.y);
+	one.ID = state.car_id;
+	one.x = (float)m2cm(pos.position.x);
+	one.y = (float)m2cm(pos.position.y);
 	one.heading = (float)rad2deg(yaw);
 	one.v = 0;  // TBD
 	one.w = 0;  // TBD
 	return one;
 }
+
+//transform array 2 algomsg
 std::string multiarr2algomsg(const std_msgs::UInt8MultiArray& msg) {
 	std::string data(80, '\0');
 	if (msg.layout.dim.size() == 1) {
 		unsigned len = msg.layout.dim[0].size;
 		unsigned offset = msg.layout.data_offset;
+		//total 81 byte = id + 80 byte msg 
 		for (unsigned i =0;i<len && i< 80;++i) {
-			data[i] = (char)msg.data[offset + i];
+			data[i] = (char)msg.data[offset + i + 1];
 		}
 	}
 	return data;
 }
+
+//transform algomsg 2 array
 void algomsg2multiarr(const std::string& msg, std_msgs::UInt8MultiArray& data) {
 	data.layout.dim.resize(1);
 	data.layout.data_offset = 0;
@@ -149,15 +161,26 @@ void algomsg2multiarr(const std::string& msg, std_msgs::UInt8MultiArray& data) {
 	}
 }
 
-void on_new_pos(const nav_msgs::Odometry& state) {
-	mydata.me = odm2stateinfo(myconfig.robotID, state);
-	ROS_DEBUG("Get new state (x, y, z): %.2f, %.2f, %.2f\n", mydata.me.x, mydata.me.y, mydata.me.heading);
+//use tf instead
+// void on_new_pos(const nav_msgs::Odometry& state) {
+// 	mydata.me = odm2stateinfo(myconfig.robotID, state);
+// 	ROS_DEBUG("Get new state (x, y, z): %.2f, %.2f, %.2f\n", mydata.me.x, mydata.me.y, mydata.me.heading);
+// }
+
+//get other robot pos
+void RobotHandler::on_new_pos(const robot_msgs::RobotStatesConstPtr& states) {
+	for(auto robot_state : states->robot_states){
+		int id = robot_state.car_id;
+		this->id2state[robot_state.car_id].update(pose2stateinfo(robot_state));
+	}
+	//this->id2state.update(odm2stateinfo(robotID, state));
 }
-void RobotHandler::on_new_pos(const nav_msgs::Odometry& state) {
-	this->state.update(odm2stateinfo(robotID, state));
-}
+
+//get other robot algomsg
 void RobotHandler::on_new_msg(const std_msgs::UInt8MultiArray& data) {
-	this->msg.update(multiarr2algomsg(data));
+	int id = data.data[0];
+	this->id2msg[id].update(multiarr2algomsg(data));
+	//this->msg.update(multiarr2algomsg(data));
 }
 
 // Utility Function: Compute the average position of robots in id_list
@@ -173,9 +196,9 @@ StateInfo StateBIT::mean(const std::vector<int>& id_list) {
 			++nitem;
 		}
 		else {
-			auto it = others.find(id);
-			if (it != others.end()) {
-				StateInfo& q = it->second.state();
+			auto it = others.id2state.find(id);
+			if (it != others.id2state.end()) {
+				StateInfo& q = it->second();
 				info.x += q.x;
 				info.y += q.y;
 				++nitem;
@@ -238,14 +261,16 @@ int main(int argc, char* argv[]) {
 	// -----------------------
 	// Hard coded Parameters
 	// ----------------------- 
-	myconfig.config_dir = "/home/lovezy/packs/repo-v0.0.4/config";
+	std::string package_path = ros::package::getPath("robot_library");
+	myconfig.config_dir = package_path + "/bitrobot/config";
 	myconfig.debug_info = DEBUG_INFO_STATES | DEBUG_INFO_FUNCTION | DEBUG_INFO_COMPUTE;
-	myconfig.target_velocity = 0.3; // m/s
-	myconfig.id2ns.clear();
-	myconfig.id2ns[1] = "robot_0/";
-	myconfig.id2ns[2] = "robot_1/";
-	myconfig.id2ns[3] = "robot_2/";
-	myconfig.id2ns[4] = "robot_3/";
+	myconfig.target_velocity = 0.5; // m/s
+	//最初多车仿真用
+	// myconfig.id2ns.clear();
+	// myconfig.id2ns[1] = "robot_0/";
+	// myconfig.id2ns[2] = "robot_1/";
+	// myconfig.id2ns[3] = "robot_2/";
+	// myconfig.id2ns[4] = "robot_3/";
 	myconfig.idlist = {1, 2, 3, 4};  // These robots are all connected
 	myconfig.idform = {1, 2, 3, 4};  // These robots will be in a formation
 	myconfig.edge_scaling = 1.6;                // when not specifying dx, dy, default edge length = 1m (which is too small)
@@ -260,8 +285,10 @@ int main(int argc, char* argv[]) {
 	// Read Params
 	// ----------------------- 
 	ros::init(argc, argv, "bitform");
-	ros::NodeHandle node, nh("~");
-	if (!nh.getParam("myid", myID)) {
+	ros::NodeHandle node;
+	std::string namespace_;
+    namespace_ = node.getNamespace();
+	if (!node.getParam(namespace_ + "/car_id", myID)) {
 		ROS_WARN("Failed to get myid. quit");
 		return -1;
 	}
@@ -272,20 +299,12 @@ int main(int argc, char* argv[]) {
 	// Initializing PUB/SUB
 	// ----------------------- 
 	ros::Subscriber goal_sub = node.subscribe("formation_goal", 2, &on_new_goal);
-	ros::Subscriber pos_sub  = node.subscribe(myconfig.id2ns[myID] + "base_pose_ground_truth", 100, &on_new_pos);
-	ros::Subscriber scan_sub = node.subscribe(myconfig.id2ns[myID] + "base_scan", 2, &on_new_scan);
-	ros::Publisher  cmd_pub  = node.advertise<geometry_msgs::Twist>(myconfig.id2ns[myID] + "cmd_vel", 1);
-	ros::Publisher  msg_pub  = node.advertise<std_msgs::UInt8MultiArray>(myconfig.id2ns[myID] + "algomsg", 10);
-
+	//ros::Subscriber pos_sub  = node.subscribe("base_pose_ground_truth", 100, &on_new_pos);
+	ros::Subscriber scan_sub = node.subscribe("base_scan", 2, &on_new_scan);
+	ros::Publisher  cmd_pub  = node.advertise<geometry_msgs::Twist>("cmd_vel", 1);
+	ros::Publisher  msg_pub  = node.advertise<std_msgs::UInt8MultiArray>("algomsg_my", 10);
 	// Subscribe to data of the neighbours
-	for (int i=0; i < nrobot; ++i) {
-		int id = myconfig.idlist[i];
-		if (id == myID) continue;
-		
-		auto& one = mydata.others[i];
-		one.robotID = id;
-		one.subscribe(node, myconfig.id2ns[id]);
-	}
+	mydata.others.subscribe(node);
 	
 
 
@@ -331,23 +350,23 @@ int main(int argc, char* argv[]) {
 		}
 		
 		// Handle Information from other robots
-		for (auto& one: mydata.others) {
+		for (auto& one: mydata.others.id2msg) {
 			int srcID = one.first;
 			auto& rec = one.second;
-			if (rec.msg.is_new) {
-				ControllerHandleMsg(srcID, (void*)rec.msg().c_str(), rec.msg().size());
-				rec.msg.update();	// Flag is_new as false
+			if (rec.is_new) {
+				ControllerHandleMsg(srcID, (void*)rec.data.c_str(), rec.data.size());
+				rec.update();	// Flag is_new as false
 			}
 		}
 		
 		// Fill the information of other robots
 		// also compute the center of all robots
 		others.clear();
-		for (auto& one: mydata.others) {
+		for (auto& one: mydata.others.id2state) {
 			int srcID = one.first;
 			auto& rec = one.second;
-			if (rec.state.is_new) {
-				others.push_back(rec.state());
+			if (rec.is_new) {
+				others.push_back(rec.data);
 			}
 		}
 		
@@ -368,7 +387,10 @@ int main(int argc, char* argv[]) {
 		std::string msg_out(80, '\0');             // Always reserver 80bits for algo message
 		ControllerGetMsg((void*)msg_out.c_str());     // msg_out should be broadcast to other robots
 		std_msgs::UInt8MultiArray arr;
-		algomsg2multiarr(msg_out, arr);
+		//send msg with id(int not string)
+		std::string msg_withid = " " + msg_out;
+		msg_withid[0] = myID;
+		algomsg2multiarr(msg_withid, arr);
 		msg_pub.publish(arr);
 
 		// Update

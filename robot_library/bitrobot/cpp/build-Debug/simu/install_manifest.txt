@@ -1,0 +1,1 @@
+/home/lovebc/Desktop/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/install-all/bin/simurobot_d

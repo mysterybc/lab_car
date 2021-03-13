@@ -14,8 +14,10 @@
 enum TaskIndividual
 {
 	NonTask,
+	March_gps,
+	March_laser,
 	Assemble,
-	STOP,
+	Stop,
 	Pause,
 	Resume,
 };
@@ -24,23 +26,12 @@ DECLARE_BEHAVIAC_ENUM_EX(TaskIndividual, TaskIndividual);
 BEHAVIAC_DECLARE_TYPE_VECTOR_HANDLER(TaskIndividual);
 
 
-enum TaskType
-{
-	NonType,
-	ForgrdType,
-	BackgrdTask,
-};
-
-DECLARE_BEHAVIAC_ENUM_EX(TaskType, TaskType);
-BEHAVIAC_DECLARE_TYPE_VECTOR_HANDLER(TaskType);
-
-
 enum ForeFuncState
 {
 	Running,
 	Success,
 	Failure,
-	IDLE,
+	Idle,
 };
 
 DECLARE_BEHAVIAC_ENUM_EX(ForeFuncState, ForeFuncState);

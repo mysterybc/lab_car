@@ -37,5 +37,6 @@ public:
     void CmdCallback(const robot_msgs::CmdConstPtr &msg);
 
     RemoteControl remote_control;
+    int car_id;
 };
 

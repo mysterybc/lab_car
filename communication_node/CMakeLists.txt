@@ -1,30 +1,40 @@
 cmake_minimum_required(VERSION 3.0.2)
 project(communication_node)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread ") 
-set(Jsoncpp_LIBRARIES "/usr/lib/x86_64-linux-gnu/libjsoncpp.so" )
-set(ZeroMQ_LIBRARIES "/usr/local/lib/libzmq.a")
+
+#find libzmq and jsoncpp
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(ZMQ libzmq)
+pkg_check_modules(JSONCPP jsoncpp)
+message(${ZMQ_LIBRARIES})
+
 find_package(catkin REQUIRED COMPONENTS
   robot_msgs
   roscpp
   std_msgs
   tf
+  robot_library
 )
 
 catkin_package()
 
-include_directories(include ${catkin_INCLUDE_DIRS})
+#library path ??why need??
+link_directories(${ZMQ_LIBRARY_DIRS})
 
-add_library(zmq_test src/zmq_test.cpp)
 
+set(libs ${catkin_LIBRARIES} ${ZMQ_LIBRARIES} ${JSONCPP_LIBRARIES} )
+set(incs include ${catkin_INCLUDE_DIRS} ${ZMQ_INCLUDE_DIRS} ${JSONCPP_INCLUDE_DIRS} ../robot_library/my_lib/include)
 
-add_executable(receive_host_cmd src/receive_host_cmd.cpp  )
-target_link_libraries(receive_host_cmd zmq_test ${catkin_LIBRARIES} ${ZeroMQ_LIBRARIES} ${Jsoncpp_LIBRARIES})
+#include
+include_directories(${incs})
+add_executable(receiver src/receiver.cpp  )
+target_link_libraries(receiver  ${libs} )
 
-add_executable(publish_robot_state src/publish_robot_state.cpp )
-target_link_libraries(publish_robot_state zmq_test ${catkin_LIBRARIES} ${ZeroMQ_LIBRARIES} ${Jsoncpp_LIBRARIES})
+add_executable(publisher src/publisher.cpp )
+target_link_libraries(publisher  ${libs})
 
-add_executable(receive_robot_state src/receive_robot_state.cpp  )
-target_link_libraries(receive_robot_state zmq_test ${catkin_LIBRARIES} ${ZeroMQ_LIBRARIES} ${Jsoncpp_LIBRARIES})
+#add_executable(receive_robot_state src/receive_robot_state.cpp  )
+#target_link_libraries(receive_robot_state zmq_test ${catkin_LIBRARIES} zmq)
 
 
 

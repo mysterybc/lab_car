@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+
+<robot name="pioneer3at" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+	<xacro:property name="ns" value="" />
+	<xacro:arg name="gpu" default="false"/>
+	<xacro:property name="gpu" value="$(arg gpu)" />
+
+	<xacro:include filename="$(find velodyne_description)/urdf/VLP-16.urdf.xacro"/>
+	<xacro:include filename="$(find gazebo_pioneer3at)/urdf/my_robot.xacro" />
+
+	<VLP-16 parent="${ns}base_link" name="velodyne" topic="/velodyne_points" hz="10" samples="1800" gpu="${gpu}">
+        <origin xyz="0 0 0.3" rpy="0 0 0" />
+    </VLP-16>
+
+  <link name="dummy_link"/>
+  <joint name="base)link_joint" type="fixed">
+        <parent link="dummy_link"/>
+        <child link="${ns}base_link"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+
+	<link name="imu_link"/>
+
+    <joint name="imu_joint" type="fixed">
+        <parent link="${ns}base_link"/>
+        <child link="imu_link"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
+
+	  <gazebo reference="imu_link">
+    <sensor type="imu" name="imu">
+      <always_on>true</always_on>
+      <visualize>false</visualize>
+    </sensor>
+    <material>Gazebo/FlatBlack</material>
+  </gazebo>
+
+  <gazebo>
+    <plugin name="imu_plugin" filename="libgazebo_ros_imu.so">
+      <alwaysOn>true</alwaysOn>
+      <bodyName>imu_link</bodyName>
+      <frameName>imu_link</frameName>
+      <topicName>imu/data</topicName>
+      <serviceName>imu_service</serviceName>
+      <gaussianNoise>0.0</gaussianNoise>
+      <updateRate>200</updateRate>
+      <imu>
+        <noise>
+          <type>gaussian</type>
+          <rate>
+            <mean>0.0</mean>
+            <stddev>2e-4</stddev>
+            <bias_mean>0.0000075</bias_mean>
+            <bias_stddev>0.0000008</bias_stddev>
+          </rate>
+          <accel>
+            <mean>0.0</mean>
+            <stddev>1.7e-2</stddev>
+            <bias_mean>0.1</bias_mean>
+            <bias_stddev>0.001</bias_stddev>
+          </accel>
+        </noise>
+      </imu>
+    </plugin>
+  </gazebo>
+
+
+	<!--xacro:rplidar prefix="laser"/-->
+
+</robot>

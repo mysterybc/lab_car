@@ -1,0 +1,8 @@
+/home/lovebc/Desktop/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/build-Debug/bitctrl/CMakeFiles/install/strip.dir
+/home/lovebc/Desktop/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/build-Debug/bitctrl/CMakeFiles/install/local.dir
+/home/lovebc/Desktop/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/build-Debug/bitctrl/CMakeFiles/install.dir
+/home/lovebc/Desktop/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/build-Debug/bitctrl/CMakeFiles/list_install_components.dir
+/home/lovebc/Desktop/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/build-Debug/bitctrl/CMakeFiles/rebuild_cache.dir
+/home/lovebc/Desktop/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/build-Debug/bitctrl/CMakeFiles/bitctrl.dir
+/home/lovebc/Desktop/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/build-Debug/bitctrl/CMakeFiles/BIT_CTest.dir
+/home/lovebc/Desktop/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/build-Debug/bitctrl/CMakeFiles/edit_cache.dir

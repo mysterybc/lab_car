@@ -1,0 +1,40 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/lovebc/Desktop/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/ssnet/sstimer/sstimer.hpp
+vector
+-
+cstdio
+-
+
+/home/lovebc/Desktop/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/ssnet/sstimer/sstimer_linux.cpp
+sstimer.hpp
+/home/lovebc/Desktop/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/ssnet/sstimer/sstimer.hpp
+time.h
+-
+stdio.h
+-
+errno.h
+-
+unistd.h
+-
+
+/home/lovebc/Desktop/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/ssnet/sstimer/sstimer_test.cpp
+sstimer.hpp
+/home/lovebc/Desktop/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/ssnet/sstimer/sstimer.hpp
+
+/home/lovebc/Desktop/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/ssnet/sstimer/sstimer_test_main.cpp
+sstimer.hpp
+/home/lovebc/Desktop/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/ssnet/sstimer/sstimer.hpp
+
+/home/lovebc/Desktop/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/ssnet/sstimer/sstimer_win.cpp
+sstimer.hpp
+/home/lovebc/Desktop/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/ssnet/sstimer/sstimer.hpp
+Windows.h
+-
+

@@ -717,7 +717,7 @@ int main (int argc, char** argv)
     sub_map_pub = nh.advertise<sensor_msgs::PointCloud2>("sub_map_points", 1);
     transformed_points_pub = nh.advertise<sensor_msgs::PointCloud2>("transformed_points", 1);
     transform_before_points_pub = nh.advertise<sensor_msgs::PointCloud2>("transform_before_points", 1);
-    pubPoseForKITTI = nh.advertise<nav_msgs::Odometry>("/odometry", 1);
+    pubPoseForKITTI = nh.advertise<nav_msgs::Odometry>("/odom", 1);
 
 
     ros::Rate r(100.0);

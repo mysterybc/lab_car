@@ -13,20 +13,12 @@ BEHAVIAC_BEGIN_ENUM_EX(TaskIndividual, TaskIndividual)
 	BEHAVIAC_ENUMCLASS_DISPLAY_INFO_EX(L"TaskIndividual", L"");
 
 	BEHAVIAC_ENUM_ITEM_EX(NonTask, "NonTask");
+	BEHAVIAC_ENUM_ITEM_EX(March_gps, "March_gps");
+	BEHAVIAC_ENUM_ITEM_EX(March_laser, "March_laser");
 	BEHAVIAC_ENUM_ITEM_EX(Assemble, "Assemble");
-	BEHAVIAC_ENUM_ITEM_EX(STOP, "STOP");
+	BEHAVIAC_ENUM_ITEM_EX(Stop, "Stop");
 	BEHAVIAC_ENUM_ITEM_EX(Pause, "Pause");
 	BEHAVIAC_ENUM_ITEM_EX(Resume, "Resume");
-}
-BEHAVIAC_END_ENUM_EX()
-
-BEHAVIAC_BEGIN_ENUM_EX(TaskType, TaskType)
-{
-	BEHAVIAC_ENUMCLASS_DISPLAY_INFO_EX(L"TaskType", L"");
-
-	BEHAVIAC_ENUM_ITEM_EX(NonType, "NonType");
-	BEHAVIAC_ENUM_ITEM_EX(ForgrdType, "ForgrdType");
-	BEHAVIAC_ENUM_ITEM_EX(BackgrdTask, "BackgrdTask");
 }
 BEHAVIAC_END_ENUM_EX()
 
@@ -37,7 +29,7 @@ BEHAVIAC_BEGIN_ENUM_EX(ForeFuncState, ForeFuncState)
 	BEHAVIAC_ENUM_ITEM_EX(Running, "Running");
 	BEHAVIAC_ENUM_ITEM_EX(Success, "Success");
 	BEHAVIAC_ENUM_ITEM_EX(Failure, "Failure");
-	BEHAVIAC_ENUM_ITEM_EX(IDLE, "IDLE");
+	BEHAVIAC_ENUM_ITEM_EX(Idle, "Idle");
 }
 BEHAVIAC_END_ENUM_EX()
 

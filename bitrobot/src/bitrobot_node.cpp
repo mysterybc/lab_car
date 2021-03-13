@@ -11,6 +11,7 @@
 #include <geometry_msgs/PoseStamped.h>
 #include <sensor_msgs/LaserScan.h>
 #include <algorithm>
+#include "ros/package.h"
 
 
 inline double m2cm(double x) { return x * 100; }
@@ -133,7 +134,9 @@ int main(int argc, char* argv[]) {
 	ros::NodeHandle node;
 	
 	// Channge the config_dir to a path containing simpleConfig.txt
-	myconfig.config_dir = "/home/lovezy/packs/repo-v0.0.4/config";
+	
+	std::string package_path = ros::package::getPath("robot_library");
+	myconfig.config_dir = package_path + "/bitrobot/config";
 	init_controller(myconfig, mydata);  // If it fails, it will crash.
 										// So, don't worry.
 	

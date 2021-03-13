@@ -4,48 +4,110 @@
     <Comment Background="NoColor" Text="" />
     <DescriptorRefs value="0:" />
     <Connector Identifier="GenericChildren">
-      <Node Class="PluginBehaviac.Nodes.Sequence" Enable="true" HasOwnPrefabData="false" Id="0" PrefabName="" PrefabNodeId="-1">
+      <Node Class="PluginBehaviac.Nodes.Sequence" Enable="true" HasOwnPrefabData="false" Id="14" PrefabName="" PrefabNodeId="-1">
         <Comment Background="NoColor" Text="" />
         <Connector Identifier="GenericChildren">
-          <Node Class="PluginBehaviac.Nodes.Action" Enable="true" HasOwnPrefabData="true" Id="34" Method="BasicLogic.BasicLogic::Upper_Processing()" PrefabName="../Prefabs/exe_single_step" PrefabNodeId="34" ResultFunctor="&quot;&quot;" ResultOption="BT_SUCCESS">
-            <Comment Background="Orange" Text="上层（组合任务）与单任务行为树的接口" />
-          </Node>
-          <Node Class="PluginBehaviac.Nodes.Sequence" Enable="true" HasOwnPrefabData="false" Id="44" PrefabName="../Prefabs/exe_single_step" PrefabNodeId="44">
-            <Comment Background="Gray" Text="Prefab[exe_single_step]" />
+          <Node Class="PluginBehaviac.Nodes.Sequence" Enable="true" HasOwnPrefabData="false" Id="22" PrefabName="" PrefabNodeId="-1">
+            <Comment Background="Orange" Text="初始化进入的节点" />
             <Connector Identifier="GenericChildren">
-              <Node Class="PluginBehaviac.Nodes.DecoratorAlwaysSuccess" HasOwnPrefabData="false" Id="42" PrefabName="../Prefabs/exe_single_step" PrefabNodeId="42">
+              <Node Class="PluginBehaviac.Nodes.Action" Enable="true" HasOwnPrefabData="false" Id="30" Method="GroupAsBasicLogic.GroupAsBasicLogic::ActionCancel()" PrefabName="" PrefabNodeId="-1" ResultFunctor="&quot;&quot;" ResultOption="BT_SUCCESS">
                 <Comment Background="NoColor" Text="" />
               </Node>
-              <Node Class="PluginBehaviac.Nodes.DecoratorAlwaysSuccess" DecorateWhenChildEnds="false" Enable="true" HasOwnPrefabData="false" Id="35" PrefabName="../Prefabs/exe_single_step" PrefabNodeId="35">
+              <Node Class="PluginBehaviac.Nodes.Assignment" CastRight="false" Enable="true" HasOwnPrefabData="false" Id="32" Opl="TaskIndividual GroupAsBasicLogic.GroupAsBasicLogic::CurrentTask" Opr="const TaskIndividual NonTask" PrefabName="" PrefabNodeId="-1">
+                <Comment Background="NoColor" Text="" />
+              </Node>
+              <Node Class="PluginBehaviac.Nodes.Action" Enable="true" HasOwnPrefabData="false" Id="24" Method="GroupAsBasicLogic.GroupAsBasicLogic::SetMemberAndGoal()" PrefabName="" PrefabNodeId="-1" ResultFunctor="&quot;&quot;" ResultOption="BT_SUCCESS">
+                <Comment Background="NoColor" Text="" />
+              </Node>
+              <Node Class="PluginBehaviac.Nodes.Assignment" CastRight="false" Enable="true" HasOwnPrefabData="false" Id="15" Opl="bool GroupAsBasicLogic.GroupAsBasicLogic::wait_for_CB" Opr="const bool true" PrefabName="" PrefabNodeId="-1">
+                <Comment Background="Blue" Text="改变了member" />
+              </Node>
+            </Connector>
+          </Node>
+          <Node Class="PluginBehaviac.Nodes.DecoratorLoopUntil" Count="const int -1" DecorateWhenChildEnds="true" Enable="true" HasOwnPrefabData="false" Id="20" PrefabName="" PrefabNodeId="-1" Until="true">
+            <Comment Background="NoColor" Text="" />
+            <Connector Identifier="GenericChildren">
+              <Node Class="PluginBehaviac.Nodes.Sequence" Enable="true" HasOwnPrefabData="false" Id="5" PrefabName="" PrefabNodeId="-1">
                 <Comment Background="NoColor" Text="" />
                 <Connector Identifier="GenericChildren">
-                  <Node Class="PluginBehaviac.Nodes.Sequence" Enable="true" HasOwnPrefabData="false" Id="8" PrefabName="../Prefabs/sort" PrefabNodeId="0">
-                    <Comment Background="Gray" Text="Prefab[sort]" />
+                  <Node Class="PluginBehaviac.Nodes.DecoratorLoopUntil" Count="const int -1" DecorateWhenChildEnds="true" Enable="true" HasOwnPrefabData="false" Id="1" PrefabName="" PrefabNodeId="-1" Until="true">
+                    <Comment Background="Gray" Text="WaitForOthers" />
                     <Connector Identifier="GenericChildren">
-                      <Node Class="PluginBehaviac.Nodes.Assignment" CastRight="false" Enable="true" HasOwnPrefabData="true" Id="9" Opl="TaskType BasicLogic.BasicLogic::CurrentType" Opr="const TaskType NonType" PrefabName="../Prefabs/sort" PrefabNodeId="3">
+                      <Node Class="PluginBehaviac.Nodes.Sequence" Enable="true" HasOwnPrefabData="false" Id="4" PrefabName="" PrefabNodeId="-1">
                         <Comment Background="NoColor" Text="" />
-                      </Node>
-                      <Node Class="PluginBehaviac.Nodes.Condition" Enable="true" HasOwnPrefabData="true" Id="10" Operator="Greater" Opl="TaskIndividual BasicLogic.BasicLogic::CurrentTask" Opr="const TaskIndividual NonTask" PrefabName="../Prefabs/sort" PrefabNodeId="4">
-                        <Comment Background="NoColor" Text="" />
-                      </Node>
-                      <Node Class="PluginBehaviac.Nodes.Assignment" CastRight="false" Enable="true" HasOwnPrefabData="true" Id="11" Opl="TaskType BasicLogic.BasicLogic::CurrentType" Opr="const TaskType ForgrdType" PrefabName="../Prefabs/sort" PrefabNodeId="5">
-                        <Comment Background="NoColor" Text="" />
-                      </Node>
-                      <Node Class="PluginBehaviac.Nodes.Condition" Enable="true" HasOwnPrefabData="true" Id="12" Operator="Greater" Opl="TaskIndividual BasicLogic.BasicLogic::CurrentTask" Opr="const TaskIndividual Assemble" PrefabName="../Prefabs/sort" PrefabNodeId="6">
-                        <Comment Background="NoColor" Text="" />
-                      </Node>
-                      <Node Class="PluginBehaviac.Nodes.Assignment" CastRight="false" Enable="true" HasOwnPrefabData="true" Id="13" Opl="TaskType BasicLogic.BasicLogic::CurrentType" Opr="const TaskType BackgrdTask" PrefabName="../Prefabs/sort" PrefabNodeId="7">
-                        <Comment Background="NoColor" Text="" />
+                        <Connector Identifier="GenericChildren">
+                          <Node Class="PluginBehaviac.Nodes.Action" Enable="true" HasOwnPrefabData="false" Id="17" Method="GroupAsBasicLogic.GroupAsBasicLogic::RealTimeProcessing()" PrefabName="" PrefabNodeId="-1" ResultFunctor="&quot;&quot;" ResultOption="BT_SUCCESS">
+                            <Comment Background="NoColor" Text="" />
+                          </Node>
+                          <Node Class="PluginBehaviac.Nodes.Condition" Enable="true" HasOwnPrefabData="false" Id="21" Operator="Equal" Opl="bool GroupAsBasicLogic.GroupAsBasicLogic::wait_for_CB" Opr="const bool false" PrefabName="" PrefabNodeId="-1">
+                            <Comment Background="NoColor" Text="" />
+                          </Node>
+                          <Node Class="PluginBehaviac.Nodes.Condition" Enable="true" HasOwnPrefabData="false" Id="0" Operator="Equal" Opl="GroupAsBasicLogic.GroupAsBasicLogic::MemberConsistent()" Opr="const bool true" PrefabName="" PrefabNodeId="-1">
+                            <Comment Background="NoColor" Text="" />
+                          </Node>
+                          <Node Class="PluginBehaviac.Nodes.Assignment" CastRight="false" Enable="true" HasOwnPrefabData="false" Id="3" Opl="TaskIndividual GroupAsBasicLogic.GroupAsBasicLogic::CurrentTask" Opr="GroupAsBasicLogic.GroupAsBasicLogic::TaskListPop()" PrefabName="" PrefabNodeId="-1">
+                            <Comment Background="NoColor" Text="" />
+                          </Node>
+                          <Node Class="Behaviac.Design.Nodes.ReferencedBehavior" Enable="true" HasOwnPrefabData="false" Id="16" PrefabName="" PrefabNodeId="-1" ReferenceBehavior="const string &quot;TaskJudgeSubTree&quot;" Task="&quot;&quot;">
+                            <Comment Background="Orange" Text="任务真正执行" />
+                          </Node>
+                          <Node Class="PluginBehaviac.Nodes.Assignment" CastRight="false" Enable="true" HasOwnPrefabData="false" Id="23" Opl="bool GroupAsBasicLogic.GroupAsBasicLogic::wait_for_CB" Opr="const bool true" PrefabName="" PrefabNodeId="-1">
+                            <Comment Background="Blue" Text="改变了fore_func_state" />
+                          </Node>
+                        </Connector>
                       </Node>
                     </Connector>
                   </Node>
+                  <Node Class="PluginBehaviac.Nodes.DecoratorLoopUntil" Count="const int -1" DecorateWhenChildEnds="true" Enable="true" HasOwnPrefabData="false" Id="8" PrefabName="" PrefabNodeId="-1" Until="true">
+                    <Comment Background="Gray" Text="UntilTaskFinish" />
+                    <Connector Identifier="GenericChildren">
+                      <Node Class="PluginBehaviac.Nodes.Sequence" Enable="true" HasOwnPrefabData="false" Id="6" PrefabName="" PrefabNodeId="-1">
+                        <Comment Background="NoColor" Text="" />
+                        <Connector Identifier="GenericChildren">
+                          <Node Class="PluginBehaviac.Nodes.Action" Enable="true" HasOwnPrefabData="false" Id="18" Method="GroupAsBasicLogic.GroupAsBasicLogic::RealTimeProcessing()" PrefabName="" PrefabNodeId="-1" ResultFunctor="&quot;&quot;" ResultOption="BT_SUCCESS">
+                            <Comment Background="NoColor" Text="" />
+                          </Node>
+                          <Node Class="PluginBehaviac.Nodes.Condition" Enable="true" HasOwnPrefabData="false" Id="25" Operator="Equal" Opl="bool GroupAsBasicLogic.GroupAsBasicLogic::wait_for_CB" Opr="const bool false" PrefabName="" PrefabNodeId="-1">
+                            <Comment Background="NoColor" Text="" />
+                          </Node>
+                          <Node Class="PluginBehaviac.Nodes.Condition" Enable="true" HasOwnPrefabData="false" Id="7" Operator="Equal" Opl="GroupAsBasicLogic.GroupAsBasicLogic::GroupIdle()" Opr="const bool true" PrefabName="" PrefabNodeId="-1">
+                            <Comment Background="NoColor" Text="" />
+                          </Node>
+                          <Node Class="PluginBehaviac.Nodes.Selector" Enable="true" HasOwnPrefabData="false" Id="10" PrefabName="" PrefabNodeId="-1">
+                            <Comment Background="NoColor" Text="" />
+                            <Connector Identifier="GenericChildren">
+                              <Node Class="PluginBehaviac.Nodes.Sequence" Enable="true" HasOwnPrefabData="false" Id="12" PrefabName="" PrefabNodeId="-1">
+                                <Comment Background="NoColor" Text="" />
+                                <Connector Identifier="GenericChildren">
+                                  <Node Class="PluginBehaviac.Nodes.Condition" Enable="true" HasOwnPrefabData="false" Id="9" Operator="NotEqual" Opl="GroupAsBasicLogic.GroupAsBasicLogic::TaskListEmpty()" Opr="const bool true" PrefabName="" PrefabNodeId="-1">
+                                    <Comment Background="NoColor" Text="" />
+                                  </Node>
+                                  <Node Class="PluginBehaviac.Nodes.Action" Enable="true" HasOwnPrefabData="false" Id="2" Method="GroupAsBasicLogic.GroupAsBasicLogic::SetMemberAndGoal()" PrefabName="" PrefabNodeId="-1" ResultFunctor="&quot;&quot;" ResultOption="BT_SUCCESS">
+                                    <Comment Background="NoColor" Text="" />
+                                  </Node>
+                                </Connector>
+                              </Node>
+                              <Node Class="PluginBehaviac.Nodes.Sequence" Enable="true" HasOwnPrefabData="false" Id="13" PrefabName="" PrefabNodeId="-1">
+                                <Comment Background="NoColor" Text="" />
+                                <Connector Identifier="GenericChildren">
+                                  <Node Class="PluginBehaviac.Nodes.Condition" Enable="true" HasOwnPrefabData="false" Id="11" Operator="Equal" Opl="GroupAsBasicLogic.GroupAsBasicLogic::TaskListEmpty()" Opr="const bool true" PrefabName="" PrefabNodeId="-1">
+                                    <Comment Background="NoColor" Text="" />
+                                  </Node>
+                                  <Node Class="PluginBehaviac.Nodes.Action" Enable="true" HasOwnPrefabData="false" Id="26" Method="GroupAsBasicLogic.behaviac::Agent::VectorClear(vector&lt;int&gt; GroupAsBasicLogic.GroupAsBasicLogic::GroupMember)" PrefabName="" PrefabNodeId="-1" ResultFunctor="&quot;&quot;" ResultOption="BT_SUCCESS">
+                                    <Comment Background="NoColor" Text="" />
+                                  </Node>
+                                </Connector>
+                              </Node>
+                            </Connector>
+                          </Node>
+                        </Connector>
+                      </Node>
+                    </Connector>
+                  </Node>
+                  <Node Class="PluginBehaviac.Nodes.Condition" Enable="true" HasOwnPrefabData="false" Id="19" Operator="Equal" Opl="GroupAsBasicLogic.GroupAsBasicLogic::TaskListEmpty()" Opr="const bool true" PrefabName="" PrefabNodeId="-1">
+                    <Comment Background="Orange" Text="MainTree退出条件" />
+                  </Node>
                 </Connector>
-              </Node>
-              <Node Class="PluginBehaviac.Nodes.Selector" HasOwnPrefabData="false" Id="2" PrefabName="../Prefabs/exe_single_step" PrefabNodeId="2">
-                <Comment Background="NoColor" Text="" />
-              </Node>
-              <Node Class="PluginBehaviac.Nodes.Assignment" HasOwnPrefabData="false" Id="14" PrefabName="../Prefabs/exe_single_step" PrefabNodeId="14">
-                <Comment Background="NoColor" Text="" />
               </Node>
             </Connector>
           </Node>

@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/sstimer_test.dir/sstimer/sstimer_win.cpp.o CMakeFiles/sstimer_test.dir/sstimer/sstimer_linux.cpp.o CMakeFiles/sstimer_test.dir/sstimer/sstimer_test.cpp.o CMakeFiles/sstimer_test.dir/sstimer/sstimer_test_main.cpp.o  -o bin/sstimer_test 
