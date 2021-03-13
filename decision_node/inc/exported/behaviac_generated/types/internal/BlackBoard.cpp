@@ -2,6 +2,20 @@
 
 Debug::DebugLogger logger;
 
+// void PubCurrentTask(){
+//     ros::Rate loop(10);
+//     while(ros::ok()){
+//         //pub current task
+//         robot_msgs::CurrentTask current_task;
+//         current_task.current_task = g_GroupAsBasicLogicAgent->CurrentTask;
+//         g_BlackBoardAgent->current_task_pub.publish(current_task);
+//         ros::spinOnce();
+//         loop.sleep();
+//     }
+    
+// }
+
+
 BlackBoard::BlackBoard()
 {
     ros::NodeHandle nh;
@@ -10,7 +24,9 @@ BlackBoard::BlackBoard()
     decision_state_pub = nh.advertise<robot_msgs::robot_states_enum>("decision_state",10);
     members_pub = nh.advertise<std_msgs::Int8MultiArray>("my_group_member",10);
     group_state_sub=nh.subscribe("robot_states",10,&BlackBoard::GroupStateCallback,this);
+    current_task_pub = nh.advertise<robot_msgs::CurrentTask>("current_task",1);
     std::string namespace_=nh.getNamespace();
+    // std::thread pub_task(PubCurrentTask);
     nh.getParam(namespace_+"/car_id",car_id);
     logger.init_logger(car_id);
 

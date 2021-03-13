@@ -116,15 +116,15 @@ int main(int argc, char** argv)
 		// 		case 5:	logger.DEBUGINFO(g_BlackBoardAgent->car_id,"InputTask:Pause TASK!!!");break;
 		// 		case 6:	logger.DEBUGINFO(g_BlackBoardAgent->car_id,"InputTask:Resume TASK!!!");break;
 		// 	}
-		// 	switch(g_BasicLogicAgent->CurrentTask){
-		// 		case 0: logger.DEBUGINFO(g_BlackBoardAgent->car_id,"CurrentTask:NONE TASK!!!");break;
-		// 		case 1: logger.DEBUGINFO(g_BlackBoardAgent->car_id,"CurrentTask:gps march!!!");break;
-		// 		case 2: logger.DEBUGINFO(g_BlackBoardAgent->car_id,"CurrentTask:laser march!!!");break;
-		// 		case 3: logger.DEBUGINFO(g_BlackBoardAgent->car_id,"CurrentTask:ASSEMBLE TASK!!!");break;
-		// 		case 4:	logger.DEBUGINFO(g_BlackBoardAgent->car_id,"CurrentTask:STOP TASK!!!");break;
-		// 		case 5:	logger.DEBUGINFO(g_BlackBoardAgent->car_id,"CurrentTask:Pause TASK!!!");break;
-		// 		case 6:	logger.DEBUGINFO(g_BlackBoardAgent->car_id,"CurrentTask:Resume TASK!!!");break;
-		// 	}
+			// switch(g_GroupAsBasicLogicAgent->CurrentTask){
+			// 	case 0: logger.DEBUGINFO(g_BlackBoardAgent->car_id,"CurrentTask:NONE TASK!!!");break;
+			// 	case 1: logger.DEBUGINFO(g_BlackBoardAgent->car_id,"CurrentTask:gps march!!!");break;
+			// 	case 2: logger.DEBUGINFO(g_BlackBoardAgent->car_id,"CurrentTask:laser march!!!");break;
+			// 	case 3: logger.DEBUGINFO(g_BlackBoardAgent->car_id,"CurrentTask:ASSEMBLE TASK!!!");break;
+			// 	case 4:	logger.DEBUGINFO(g_BlackBoardAgent->car_id,"CurrentTask:STOP TASK!!!");break;
+			// 	case 5:	logger.DEBUGINFO(g_BlackBoardAgent->car_id,"CurrentTask:Pause TASK!!!");break;
+			// 	case 6:	logger.DEBUGINFO(g_BlackBoardAgent->car_id,"CurrentTask:Resume TASK!!!");break;
+			// }
 			    //test
 			// for(int i=0;i<g_GroupLogicAgent->GroupMember.size();i++)
 			// {
@@ -146,7 +146,6 @@ int main(int argc, char** argv)
 			logger.DEBUGINFO(g_BlackBoardAgent->car_id,"ForegrdFunc Tree End");
 			set_behavior_tree=false;
 		}
-		
         ros::spinOnce();
 		loop.sleep();
     }

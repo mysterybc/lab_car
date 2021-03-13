@@ -33,6 +33,9 @@ target_link_libraries(receiver  ${libs} )
 add_executable(publisher src/publisher.cpp )
 target_link_libraries(publisher  ${libs})
 
+add_executable(test_recv src/test_recv.cpp )
+target_link_libraries(test_recv  ${libs})
+
 #add_executable(receive_robot_state src/receive_robot_state.cpp  )
 #target_link_libraries(receive_robot_state zmq_test ${catkin_LIBRARIES} zmq)
 

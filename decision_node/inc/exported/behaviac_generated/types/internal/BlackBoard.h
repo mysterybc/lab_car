@@ -18,6 +18,8 @@
 #include "vector"
 #include "my_debug_info.h"
 #include<utility>
+#include "robot_msgs/CurrentTask.h"
+#include "thread"
 
 
 class GroupAsBasicLogic;
@@ -50,6 +52,7 @@ public:
 	private: ros::Subscriber cmd_sub;
 	private: ros::Publisher  decision_state_pub;
 	private: ros::Publisher members_pub;
+	public: ros::Publisher current_task_pub;
 };
 
 #endif

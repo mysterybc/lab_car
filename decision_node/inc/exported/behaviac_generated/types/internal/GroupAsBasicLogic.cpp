@@ -157,4 +157,7 @@ void GroupAsBasicLogic::RealTimeProcessing()
 {
 		g_BlackBoardAgent->PubDecisionState();
 		g_BlackBoardAgent->PubMembers();//定频率Pub
+		robot_msgs::CurrentTask current_task;
+        current_task.current_task = g_GroupAsBasicLogicAgent->CurrentTask;
+        g_BlackBoardAgent->current_task_pub.publish(current_task);
 }

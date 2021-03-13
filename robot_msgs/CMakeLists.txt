@@ -29,6 +29,7 @@ add_message_files(
   RobotState.msg
   RobotStates.msg
   Group_Members.msg
+  CurrentTask.msg
 )
 
 add_service_files(
