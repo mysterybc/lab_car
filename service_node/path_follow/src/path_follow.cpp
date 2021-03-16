@@ -470,10 +470,7 @@ void ActionConfig::config_controller(const robot_msgs::PathFollowGoalConstPtr &g
 		myconfig.idlist.push_back(number);
 		myconfig.idform.push_back(number);
 	}
-	std::cout << "car " << myconfig.robotID << "get once!" << std::endl;
-	for(auto number:goal->idList){
-		std::cout  << "car " << myconfig.robotID <<  "get cmd" << " id is " << number << std::endl;
-	}
+
 }
 
 

@@ -1,0 +1,6 @@
+geometry_msgs/PoseStamped[] area
+uint8[] idList
+
+---
+
+geometry_msgs/PoseStamped[] area

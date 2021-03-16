@@ -11,9 +11,109 @@ SeparateGoal::SeparateGoal(){
     my_lib::GetParam("path_follow",&car_id,NULL,&tf_ns);
     robots_state_sub = nh.subscribe("robot_states",10,&SeparateGoal::RobotStateCallback,this);
     map_sub = nh.subscribe("/map",10,&SeparateGoal::MapCallback,this);
-    separate_service = nh.advertiseService("separate_goal",&SeparateGoal::CalGoal,this);
+    separate_goal_server = nh.advertiseService("separate_goal",&SeparateGoal::CalGoal,this);
+    separate_area_server = nh.advertiseService("separate_area",&SeparateGoal::CalArea,this);
     //Debug info
     logger.init_logger(car_id);
+
+}
+
+bool SeparateGoal::CalArea( robot_msgs::SeparateArea::Request &req,
+                            robot_msgs::SeparateArea::Response & res){
+    logger.DEBUGINFO(car_id,"separate area start!!");
+    int x_flag{0}, y_flag{0};
+    my_pose = GetMyPose();
+    //确定需要进行散点的车辆数
+    int online_car{1};
+    for(auto it : robots_info){
+        if(it.car_id == 0){
+            continue;
+        }
+        if(std::find(req.idList.begin(),req.idList.end(),it.car_id) == req.idList.end() ){
+            continue ;
+        }
+        online_car++;
+        if(my_pose.position.x > it.robot_pose.position.x){
+            x_flag++;
+        }
+        if(my_pose.position.y > it.robot_pose.position.y){
+            y_flag++;
+        }
+    }
+    switch(online_car){
+        case 1: req.area = res.area; break;
+        case 2:
+        {
+            geometry_msgs::PoseStamped mid_pose1,mid_pose2;
+            mid_pose1.pose.position.x = (req.area[0].pose.position.x+req.area[1].pose.position.x)/2;
+            mid_pose1.pose.position.y = (req.area[0].pose.position.y+req.area[1].pose.position.y)/2;
+            mid_pose2.pose.position.x = (req.area[2].pose.position.x+req.area[3].pose.position.x)/2;
+            mid_pose2.pose.position.y = (req.area[2].pose.position.y+req.area[3].pose.position.y)/2;
+
+            if(x_flag < 1){
+                res.area.push_back(req.area[0]);
+                res.area.push_back(mid_pose1);
+                res.area.push_back(req.area[2]);
+                res.area.push_back(mid_pose2);
+            }else{
+                res.area.push_back(mid_pose1);
+                res.area.push_back(req.area[1]);
+                res.area.push_back(mid_pose2);
+                res.area.push_back(req.area[3]);
+            }
+            break;
+        }
+        case 3:
+        {
+            return false;
+            break;
+        }
+        case 4:
+        {
+            geometry_msgs::PoseStamped mid_pose1,mid_pose2,mid_pose3,mid_pose4,mid_pose;
+            mid_pose1.pose.position.x = (req.area[0].pose.position.x+req.area[1].pose.position.x)/2;
+            mid_pose1.pose.position.y = (req.area[0].pose.position.y+req.area[1].pose.position.y)/2;
+            mid_pose2.pose.position.x = (req.area[2].pose.position.x+req.area[3].pose.position.x)/2;
+            mid_pose2.pose.position.y = (req.area[2].pose.position.y+req.area[3].pose.position.y)/2;
+            mid_pose3.pose.position.x = (req.area[0].pose.position.x+req.area[2].pose.position.x)/2;
+            mid_pose3.pose.position.y = (req.area[0].pose.position.y+req.area[2].pose.position.y)/2;
+            mid_pose4.pose.position.x = (req.area[1].pose.position.x+req.area[3].pose.position.x)/2;
+            mid_pose4.pose.position.y = (req.area[1].pose.position.y+req.area[3].pose.position.y)/2;
+            mid_pose.pose.position.x = (req.area[0].pose.position.x+req.area[3].pose.position.x)/2;
+            mid_pose.pose.position.y = (req.area[0].pose.position.y+req.area[3].pose.position.y)/2;
+            if(x_flag < 2){
+                if(y_flag >= 2){
+                    res.area.push_back(req.area[0]);
+                    res.area.push_back(mid_pose1);
+                    res.area.push_back(mid_pose3);
+                    res.area.push_back(mid_pose);
+                }
+                else{
+                    res.area.push_back(mid_pose3);
+                    res.area.push_back(mid_pose);
+                    res.area.push_back(req.area[2]);
+                    res.area.push_back(mid_pose2);
+                }
+
+            }else{
+                if(y_flag >= 2){
+                    res.area.push_back(mid_pose1);
+                    res.area.push_back(req.area[1]);
+                    res.area.push_back(mid_pose);
+                    res.area.push_back(mid_pose4);
+                }
+                else{
+                    res.area.push_back(mid_pose);
+                    res.area.push_back(mid_pose4);
+                    res.area.push_back(mid_pose2);
+                    res.area.push_back(req.area[3]);
+                }   
+                
+            }
+            break;
+        }
+    }
+    return true;
 
 }
 
