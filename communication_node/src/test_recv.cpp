@@ -43,10 +43,11 @@ int main(int argc, char** argv){
             reader.parse(msg.c_str(),json);
             if(json["message_id"].type() != Json::nullValue){
                 switch(json["message_id"].asInt()){
-                    case ROBOT_STATE: robot_state.GetDataFromMsg(json);break;
-                    case RRBOT_TASK: robot_task.GetDataFromMsg(json);break;
-                    case ROBOT_PERCEPTION: robot_state.GetDataFromMsg(json);break;
+                    case ROBOT_STATE: robot_state.GetDataFromMsg(json);std::cout << "机器人状态信息为: " << json.toStyledString() << std::endl;break;
+                    case RRBOT_TASK: robot_task.GetDataFromMsg(json);std::cout << "机器人任务状态为: " << json.toStyledString() << std::endl;break;
+                    case ROBOT_PERCEPTION: robot_state.GetDataFromMsg(json);std::cout << "障碍物信息太长了不显示" << std::endl;break;
                 }
+                
             }
         }
         ros::spinOnce();
