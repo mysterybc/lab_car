@@ -9,6 +9,7 @@
 #include "tf/transform_listener.h"
 #include "my_param_server.h"
 #include "robot_msgs/SeparateArea.h"
+#include "nav_msgs/Odometry.h"
 
 
 Debug::DebugLogger logger;
@@ -77,19 +78,20 @@ public:
     void RobotStateCallback(const robot_msgs::RobotStatesConstPtr &msg);
     void SearchExcuteCB(const robot_msgs::SearchGoalConstPtr &goal);
     geometry_msgs::Pose GetStartPoint(const std::vector<geometry_msgs::PoseStamped> &area);
-    geometry_msgs::Pose GetMyPose();
+    void OnNewPose(const nav_msgs::OdometryConstPtr &odom);
 
     int car_id;
     std::vector<RobotInfo> robots_info;
     ros::NodeHandle nh;
     std::string tf_ns;
+    ros::Subscriber robot_pose_sub;
     ros::Subscriber robots_state_sub;
     ros::ServiceClient path_coverage_client;
     ros::ServiceClient separate_area_client;
     actionlib::SimpleActionServer<robot_msgs::SearchAction> search_server;
     TaskClientRealize<robot_msgs::PathFollowAction,robot_msgs::PathFollowGoal,
                       robot_msgs::PathFollowResultConstPtr,robot_msgs::PathFollowFeedbackConstPtr> path_follow_client;
-
+    geometry_msgs::Pose robot_pose;
 };
 
 /**
@@ -102,6 +104,7 @@ SearchAction::SearchAction():
     ros::NodeHandle nh;
     my_lib::GetParam("laser march task",&car_id,NULL,&tf_ns);
     robots_state_sub = nh.subscribe("robot_states",10,&SearchAction::RobotStateCallback,this);
+    robot_pose_sub = nh.subscribe("odom",1,&SearchAction::OnNewPose,this);
     separate_area_client = nh.serviceClient<robot_msgs::SeparateArea>("separate_area");
     path_coverage_client = nh.serviceClient<robot_msgs::PathCoverage>("path_coverage");
     //Debug info
@@ -131,11 +134,11 @@ void SearchAction::SearchExcuteCB(const robot_msgs::SearchGoalConstPtr &goal){
         logger.WARNINFO(car_id,"area edge point size wrong!!");
     }
     for(auto point:new_goal.response.area){
-        logger.DEBUGINFO(car_id,"point is : %f %f",point.pose.position.x,point.pose.position.y);
+        // logger.DEBUGINFO(car_id,"point is : %f %f",point.pose.position.x,point.pose.position.y);
         path_coverage.request.select_point.poses.push_back(point);
     }
     path_coverage.request.start_point = GetStartPoint(new_goal.response.area);
-    logger.DEBUGINFO(car_id,"end point is : %f %f",path_coverage.request.start_point.position.x,path_coverage.request.start_point.position.y);
+    logger.DEBUGINFO(car_id,"start point is : %f %f",path_coverage.request.start_point.position.x,path_coverage.request.start_point.position.y);
      while(!ros::service::waitForService("path_coverage",ros::Duration(1.0))){
         logger.DEBUGINFO(car_id,"waiting for service path coverage");
         ros::spinOnce();
@@ -182,7 +185,6 @@ geometry_msgs::Pose SearchAction::GetStartPoint(const std::vector<geometry_msgs:
         min_x = std::min(point.pose.position.x,min_x);
         min_y = std::min(point.pose.position.y,min_y);
     }
-    geometry_msgs::Pose robot_pose = GetMyPose();
     //如果机器人在区域内
     if(     robot_pose.position.x < max_x && robot_pose.position.x > max_x 
         &&  robot_pose.position.y < max_y && robot_pose.position.y > max_y ){
@@ -225,26 +227,8 @@ void SearchAction::RobotStateCallback(const robot_msgs::RobotStatesConstPtr &msg
     }
 }
 
-geometry_msgs::Pose SearchAction::GetMyPose(){
-    geometry_msgs::Pose pose;
-    tf::TransformListener listerner;
-    tf::StampedTransform trans;
-    while(ros::ok()){
-        try{
-            listerner.lookupTransform("map",tf_ns+"base_link",ros::Time(0),trans);
-        }
-        catch(tf::TransformException &exception) {
-            ros::Duration(0.5).sleep(); // sleep for half a second
-            ros::spinOnce();
-            continue;                
-        }
-        tf::quaternionTFToMsg(trans.getRotation(),pose.orientation);
-        pose.position.x = trans.getOrigin().x();
-        pose.position.y = trans.getOrigin().y();
-        pose.position.z = trans.getOrigin().z();
-        break;
-    }
-    return pose;
+void SearchAction::OnNewPose(const nav_msgs::OdometryConstPtr &odom){
+    robot_pose = odom->pose.pose;
 }
 
 

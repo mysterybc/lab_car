@@ -157,7 +157,7 @@ vector<geometry_msgs::PoseStamped> CleaningPathPlanning::trasnsformtorospath()
     pathVec_[0].theta = pathVec_[0].theta *PI/180;
     vector<cellIndex>::iterator iter;
     int sizey = srcMap_.rows;
-    for(iter=pathVec_.begin(); iter!=pathVec_.end();iter++)
+    for(iter=(++pathVec_.begin()); iter!=pathVec_.end();iter++)
     {
          costmap2d_->mapToWorld((*iter).col, (sizey-(*iter).row-1), pose.position.x, pose.position.y);
          pose.orientation.w = cos((*iter).theta/ 2);//; //(sizey-(*iter).row-1)

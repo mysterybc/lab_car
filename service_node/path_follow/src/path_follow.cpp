@@ -252,9 +252,9 @@ StateInfo StateBIT::mean(const std::vector<int>& id_list) {
 void on_new_goal(const robot_msgs::PathFollowGoalConstPtr &goal) {	
 	mydata.path.clear();  // currently, only one point
 	PathPoint start;
-	StateInfo center = mydata.mean(myconfig.idform);
-	start.x = center.x;
-	start.y = center.y;
+	// StateInfo center = mydata.mean(myconfig.idform);
+	start.x = mydata.me.x;
+	start.y = mydata.me.y;
 	start.v = m2cm(myconfig.target_velocity);
 	mydata.path.push_back(start);
 
@@ -364,7 +364,7 @@ int ActionConfig::run_PathFollow_action(){
 
 			ControllerSetPath(mydata.path.size(), mydata.path.data());
 
-			ControllerSetFunction(FUNC_TRACKING_GROUP, 1);
+			ControllerSetFunction(FUNC_TRACKING_SINGLE, 1);
 			mydata.new_path = false;
 		}
 		
@@ -464,12 +464,14 @@ void ActionConfig::cancel_action_request(){
 void ActionConfig::config_controller(const robot_msgs::PathFollowGoalConstPtr &goal){
 	myconfig.idlist.clear();
 	myconfig.idform.clear();
-	mydata.others.id2msg.clear();
-	mydata.others.id2state.clear();
-	for(auto number:goal->idList){
-		myconfig.idlist.push_back(number);
-		myconfig.idform.push_back(number);
-	}
+	// mydata.others.id2msg.clear();
+	// mydata.others.id2state.clear();
+	// for(auto number:goal->idList){
+	// 	myconfig.idlist.push_back(number);
+	// 	myconfig.idform.push_back(number);
+	// }
+	myconfig.idlist.push_back(myconfig.robotID);
+	myconfig.idform.push_back(myconfig.robotID);
 
 }
 
@@ -486,20 +488,13 @@ int main(int argc, char* argv[]) {
 	std::string package_path = ros::package::getPath("robot_library");
 	myconfig.config_dir = package_path + "/bitrobot/config";
 	myconfig.debug_info = DEBUG_INFO_STATES | DEBUG_INFO_FUNCTION | DEBUG_INFO_COMPUTE;
-	myconfig.target_velocity = 0.8; // m/s
-	//最初多车仿真用
-	// myconfig.id2ns.clear();
-	// myconfig.id2ns[1] = "robot_0/";
-	// myconfig.id2ns[2] = "robot_1/";
-	// myconfig.id2ns[3] = "robot_2/";
-	// myconfig.id2ns[4] = "robot_3/";
+	myconfig.target_velocity = 0.5; // m/s
 	myconfig.idlist = {1, 2, 3, 4};  // These robots are all connected
 	myconfig.idform = {1, 2, 3, 4};  // These robots will be in a formation
 	myconfig.edge_scaling = 1.6;                // when not specifying dx, dy, default edge length = 1m (which is too small)
 	myconfig.dx = {0.5, 0.5, -0.5, -0.5 };   // optional, meter
 	myconfig.dy = {0.5, -0.5, -0.5, 0.5 };   // optional, meter
 
-	int nrobot = (int)myconfig.idlist.size();
 	int myID = -1;
 	
 
@@ -510,6 +505,7 @@ int main(int argc, char* argv[]) {
 	ros::NodeHandle node;
 	my_lib::GetParam("path_follow",&myID);
 	myconfig.robotID = myID;
+	logger.init_logger(myID);
 	
 	
 	// ----------------------- 
