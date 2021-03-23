@@ -8,6 +8,8 @@
 #include "my_debug_info.h"
 #include "tf/transform_listener.h"
 #include "my_param_server.h"
+#include "robot_msgs/SeparateArea.h"
+#include "nav_msgs/Odometry.h"
 
 
 Debug::DebugLogger logger;
@@ -75,19 +77,21 @@ public:
     SearchAction();
     void RobotStateCallback(const robot_msgs::RobotStatesConstPtr &msg);
     void SearchExcuteCB(const robot_msgs::SearchGoalConstPtr &goal);
-    geometry_msgs::Pose GetStartPoint(const robot_msgs::SearchGoalConstPtr &goal);
-    geometry_msgs::Pose GetMyPose();
+    geometry_msgs::Pose GetStartPoint(const std::vector<geometry_msgs::PoseStamped> &area);
+    void OnNewPose(const nav_msgs::OdometryConstPtr &odom);
 
     int car_id;
     std::vector<RobotInfo> robots_info;
     ros::NodeHandle nh;
     std::string tf_ns;
+    ros::Subscriber robot_pose_sub;
     ros::Subscriber robots_state_sub;
     ros::ServiceClient path_coverage_client;
+    ros::ServiceClient separate_area_client;
     actionlib::SimpleActionServer<robot_msgs::SearchAction> search_server;
     TaskClientRealize<robot_msgs::PathFollowAction,robot_msgs::PathFollowGoal,
                       robot_msgs::PathFollowResultConstPtr,robot_msgs::PathFollowFeedbackConstPtr> path_follow_client;
-
+    geometry_msgs::Pose robot_pose;
 };
 
 /**
@@ -100,6 +104,8 @@ SearchAction::SearchAction():
     ros::NodeHandle nh;
     my_lib::GetParam("laser march task",&car_id,NULL,&tf_ns);
     robots_state_sub = nh.subscribe("robot_states",10,&SearchAction::RobotStateCallback,this);
+    robot_pose_sub = nh.subscribe("odom",1,&SearchAction::OnNewPose,this);
+    separate_area_client = nh.serviceClient<robot_msgs::SeparateArea>("separate_area");
     path_coverage_client = nh.serviceClient<robot_msgs::PathCoverage>("path_coverage");
     //Debug info
     logger.init_logger(car_id);
@@ -110,18 +116,29 @@ SearchAction::SearchAction():
  * 任务执行函数
  */
 void SearchAction::SearchExcuteCB(const robot_msgs::SearchGoalConstPtr &goal){
+    logger.DEBUGINFO(car_id,"get search goal");
     //首先对需要搜索的区域进行划分
+    robot_msgs::SeparateArea new_goal;
+    new_goal.request.area = goal->area;
+    new_goal.request.idList = goal->idList;
+    if(separate_area_client.call(new_goal)){
+        logger.DEBUGINFO(car_id,"call divide area");
+    }
+    else{
+        logger.DEBUGINFO(car_id,"fail to divide area");
+        return ;
+    }
     //call path coverage
     robot_msgs::PathCoverage path_coverage;
-    if(goal->area.size() != 4){
+    if(new_goal.response.area.size() != 4){
         logger.WARNINFO(car_id,"area edge point size wrong!!");
     }
-    for(auto point:goal->area){
-        logger.DEBUGINFO("point is : %f %f",point.pose.position.x,point.pose.position.y);
+    for(auto point:new_goal.response.area){
+        // logger.DEBUGINFO(car_id,"point is : %f %f",point.pose.position.x,point.pose.position.y);
         path_coverage.request.select_point.poses.push_back(point);
     }
-    path_coverage.request.start_point = GetStartPoint(goal);
-    logger.DEBUGINFO("end point is : %f %f",path_coverage.request.start_point.position.x,path_coverage.request.start_point.position.y);
+    path_coverage.request.start_point = GetStartPoint(new_goal.response.area);
+    logger.DEBUGINFO(car_id,"start point is : %f %f",path_coverage.request.start_point.position.x,path_coverage.request.start_point.position.y);
      while(!ros::service::waitForService("path_coverage",ros::Duration(1.0))){
         logger.DEBUGINFO(car_id,"waiting for service path coverage");
         ros::spinOnce();
@@ -160,15 +177,14 @@ void SearchAction::SearchExcuteCB(const robot_msgs::SearchGoalConstPtr &goal){
  * 如果在，则机器人未知作为出发点
  * 如果不在，机器人所在位置最近的定点作为出发点
  */
-geometry_msgs::Pose SearchAction::GetStartPoint(const robot_msgs::SearchGoalConstPtr &goal){
+geometry_msgs::Pose SearchAction::GetStartPoint(const std::vector<geometry_msgs::PoseStamped> &area){
     double max_x(-1e5),max_y(-1e5),min_x(1e5),min_y(1e5);
-    for(auto point:goal->area){
+    for(auto point:area){
         max_x = std::max(point.pose.position.x,max_x);
         max_y = std::max(point.pose.position.y,max_y);
         min_x = std::min(point.pose.position.x,min_x);
         min_y = std::min(point.pose.position.y,min_y);
     }
-    geometry_msgs::Pose robot_pose = GetMyPose();
     //如果机器人在区域内
     if(     robot_pose.position.x < max_x && robot_pose.position.x > max_x 
         &&  robot_pose.position.y < max_y && robot_pose.position.y > max_y ){
@@ -178,7 +194,7 @@ geometry_msgs::Pose SearchAction::GetStartPoint(const robot_msgs::SearchGoalCons
     else{
         double min_delta(1e5);
         geometry_msgs::Pose start_point;
-        for(auto point:goal->area){
+        for(auto point:area){
             double delta_xy = fabs(point.pose.position.x-robot_pose.position.x) + fabs(point.pose.position.y-robot_pose.position.y);
             if(delta_xy < min_delta){
                 start_point = point.pose;
@@ -211,29 +227,8 @@ void SearchAction::RobotStateCallback(const robot_msgs::RobotStatesConstPtr &msg
     }
 }
 
-geometry_msgs::Pose SearchAction::GetMyPose(){
-    geometry_msgs::Pose pose;
-    // tf::TransformListener listerner;
-    // tf::StampedTransform trans;
-    // while(ros::ok()){
-    //     try{
-    //         listerner.lookupTransform("map",tf_ns+"base_link",ros::Time(0),trans);
-    //     }
-    //     catch(tf::TransformException &exception) {
-    //         ros::Duration(0.5).sleep(); // sleep for half a second
-    //         ros::spinOnce();
-    //         continue;                
-    //     }
-    //     tf::quaternionTFToMsg(trans.getRotation(),pose.orientation);
-    //     pose.position.x = trans.getOrigin().x();
-    //     pose.position.y = trans.getOrigin().y();
-    //     pose.position.z = trans.getOrigin().z();
-    //     break;
-    // }
-    pose.position.x = 3;
-    pose.position.y = 3;
-    pose.position.z = 0;
-    return pose;
+void SearchAction::OnNewPose(const nav_msgs::OdometryConstPtr &odom){
+    robot_pose = odom->pose.pose;
 }
 
 

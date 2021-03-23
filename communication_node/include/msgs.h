@@ -340,7 +340,7 @@ struct HostCmd{
             mission_cmd = (MissionCmd)json[i]["type"].asUInt();
         }
     }
-
+    //服务类消息，目前只有切换hostip
     void getService(Json::Value json){
         for(int i = 0 ; i <  json.size(); i++){
             if((ServiceType)json[i]["type"].asUInt() == ServiceType::ChangeHost){
@@ -351,12 +351,16 @@ struct HostCmd{
         }
     }
 
+    //接受上位机遥控指令
     void getRemoteCtrl(Json::Value json){
         for(int i = 0 ; i <  json.size(); i++){
-            //首先判断id有没有我
-            // for(int j = 0 ; j > json[i]["id"].size(); j++){
-            //     if(json[i]["id"])
-            // }
+            sensor_msgs::Joy joy;
+            if(json[i]["instruction"].isArray()){
+                joy.axes[0] = json[i]["instruction"][0].asDouble();
+                joy.axes[1] = json[i]["instruction"][1].asDouble();
+                joy.buttons[5] = json[i]["instruction"][2].asDouble();
+            }
+            joy_pub.publish(joy);
         }
     }
 

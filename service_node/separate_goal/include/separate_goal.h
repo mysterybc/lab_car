@@ -8,6 +8,7 @@
 #include "geometry_msgs/Point.h"
 #include "robot_msgs/RobotStates.h"
 #include "robot_msgs/DebugInfo.h"
+#include "robot_msgs/SeparateArea.h"
 #include "string"
 
 
@@ -28,6 +29,8 @@ public:
     ~SeparateGoal() = default;
     bool CalGoal(robot_msgs::Separate::Request &req,
                  robot_msgs::Separate::Response &res);
+    bool CalArea(robot_msgs::SeparateArea::Request &req,
+                 robot_msgs::SeparateArea::Response & res);
     void MapCallback(const nav_msgs::OccupancyGridConstPtr &msg);
     bool IsOccupied(geometry_msgs::Point p);
     void RobotStateCallback(const robot_msgs::RobotStatesConstPtr &msg);
@@ -36,7 +39,8 @@ public:
 private:
     std::vector<RobotInfo> robots_info;
     ros::Subscriber robots_state_sub;
-    ros::ServiceServer separate_service; 
+    ros::ServiceServer separate_goal_server; 
+    ros::ServiceServer separate_area_server;
     ros::Subscriber map_sub;
     ros::NodeHandle nh;
     geometry_msgs::Pose my_pose;
