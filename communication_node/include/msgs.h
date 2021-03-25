@@ -261,11 +261,12 @@ struct RobotState{
 
 //接收的host指令
 struct HostCmd{
-    HostCmd(zmq_lib::Receiver* receiver_,std::string ip){
+    HostCmd(zmq_lib::Receiver* receiver_,std::string ip,int car_id){
         ros::NodeHandle nh;
         joy_pub = nh.advertise<sensor_msgs::Joy>("joy",10);
         receiver = receiver_;
         host_ip = ip;
+        robot_id = car_id;
     }
     //message类型
     enum HostMessageType{
@@ -355,10 +356,28 @@ struct HostCmd{
     void getRemoteCtrl(Json::Value json){
         for(int i = 0 ; i <  json.size(); i++){
             sensor_msgs::Joy joy;
-            if(json[i]["instruction"].isArray()){
-                joy.axes[0] = json[i]["instruction"][0].asDouble();
-                joy.axes[1] = json[i]["instruction"][1].asDouble();
-                joy.buttons[5] = json[i]["instruction"][2].asDouble();
+            bool has_me{false};
+            if(json[i]["id"].isArray()){
+                Json::Value json_id = json[i]["id"];
+                for(int i = 0; i < json_id.size(); i++){
+                    if(json_id[i].asInt() == robot_id){
+                        has_me = true;
+                    }
+                }
+            }
+            if(!has_me){
+                return ;
+            }
+            if(json[i]["instruction"].size()!=0){
+                double axes1,axes2;
+                axes1 = json[i]["instruction"][0].asDouble();
+                axes2 = json[i]["instruction"][1].asDouble();
+                joy.axes.push_back(axes1);
+                joy.axes.push_back(axes2);
+                for(int j = 0 ; j < 5; j++){
+                    joy.buttons.push_back(0);
+                }
+                joy.buttons.push_back(json[i]["instruction"][2].asInt());
             }
             joy_pub.publish(joy);
         }
@@ -370,11 +389,10 @@ struct HostCmd{
     }
 
     HostMessageType json2Msg(std::string msg){
-        std::cout << msg << std::endl;
         Json::Value json;
         Json::Reader reader;
         reader.parse(msg.c_str(),json);
-        message_type = (HostMessageType)json["message_type"].asInt();
+        message_type = (HostMessageType)json["mission_type"].asInt();
         switch(message_type){
             case HostMessageType::SingleMission : json2Mission(json["mission_array"]);break;
             case HostMessageType::MultiMission : json2Mission(json["mission_array"]);break;
@@ -392,4 +410,5 @@ struct HostCmd{
     private:
     zmq_lib::Receiver* receiver;
     ros::Publisher joy_pub;
+    int robot_id;
 };

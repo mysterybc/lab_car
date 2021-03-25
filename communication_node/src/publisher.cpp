@@ -19,28 +19,6 @@
 #include "my_param_server.h"
 
 Debug::DebugLogger logger;
-//通过tf寻找机器人位置
-void getPose(std::string map_frame,std::string robot_frame,StateMsg &state_msg ){
-    tf::TransformListener listener;
-    tf::StampedTransform trans;
-    while(ros::ok){
-        try{
-            listener.lookupTransform(map_frame,robot_frame,ros::Time(0),trans);
-        }
-        catch(tf::TransformException){
-            ros::Duration(0.1).sleep();
-            continue;
-        }
-        break;
-    }
-    tf::Quaternion quat = trans.getRotation();
-    double roll,yaw,pitch;
-    tf::Matrix3x3(quat).getEulerYPR(yaw,pitch,roll);
-    yaw = yaw / 3.1415926 * 180;
-    state_msg.x = trans.getOrigin().x();
-    state_msg.y = trans.getOrigin().y();
-    state_msg.yaw = yaw;
-}
 
 
 //service 上报路径
@@ -72,11 +50,26 @@ void OnNewAlgomsg(const std_msgs::UInt8MultiArrayConstPtr &msg, zmq_lib::Sender 
     sender.sendMsg(send_msg);
 }
 
-void OnNewRobotPose(const nav_msgs::OdometryConstPtr &msg,RobotStateMsg& robot_state_msg){
+void OnNewRobotPose(const nav_msgs::OdometryConstPtr &msg,RobotStateMsg& robot_state_msg,StateMsg &state_msg){
     static double last_vx{0},last_vy{0},last_w{0};
     robot_state_msg.vx = msg->twist.twist.linear.x;
     robot_state_msg.vy = msg->twist.twist.linear.y;
     robot_state_msg.w = msg->twist.twist.angular.z;
+
+    //这个消息是机器人通讯用的
+    tf::Quaternion quat;
+    tf::quaternionMsgToTF(msg->pose.pose.orientation,quat);
+    double roll,yaw,pitch;
+    tf::Matrix3x3(quat).getEulerYPR(yaw,pitch,roll);
+    yaw = yaw / 3.1415926 * 180;
+    state_msg.x = msg->pose.pose.position.x;
+    state_msg.y = msg->pose.pose.position.y;
+    state_msg.yaw = yaw;
+
+    //这个消息是嘉城学长要的
+    robot_state_msg.x = state_msg.x;
+    robot_state_msg.y = state_msg.y;
+    robot_state_msg.yaw = state_msg.yaw;
     
     //acc 目前是假的
     if(robot_state_msg.vx - last_vx > 0.05){
@@ -117,9 +110,9 @@ void OnNewRobotPose(const nav_msgs::OdometryConstPtr &msg,RobotStateMsg& robot_s
 }
 
 void OnNewTask(const robot_msgs::CurrentTaskConstPtr &msg, RobotTaskMsg& robot_task_msg){
-    robot_task_msg.current_task_int = msg->current_task;
-    
+    robot_task_msg.current_task_int = msg->current_task; 
 }
+
 void OnNewScan(const sensor_msgs::LaserScanConstPtr &msg, RobotPerceptionMsg& robot_perception_msg){
     robot_perception_msg.points.clear();
     double pi = 3.1415926;
@@ -158,7 +151,7 @@ int main(int argc,char **argv)
     //message init
     StateMsg state_msg(car_id);
     PathMsg path_msg(car_id);
-    //TODO 完成这几个
+    //NOTE jiacheng学长的消息 
     RobotStateMsg robot_state_msg(car_id);
     RobotTaskMsg robot_task_msg(car_id);
     RobotPerceptionMsg robot_perception_msg(car_id);
@@ -177,7 +170,7 @@ int main(int argc,char **argv)
     state_subs = nh.subscribe<robot_msgs::robot_states_enum>("decision_state",10,boost::bind(&DecisionSubCB,_1,std::ref(state_msg)));
     group_subs = nh.subscribe<std_msgs::Int8MultiArray>("my_group_member",10,boost::bind(&GroupSubCB,_1,std::ref(state_msg)));
     algomsg_subs = nh.subscribe<std_msgs::UInt8MultiArray>("algomsg_my",10,boost::bind(&OnNewAlgomsg,_1,std::ref(sender)));
-    robot_pose_sub = nh.subscribe<nav_msgs::Odometry>("odom",1,boost::bind(OnNewRobotPose,_1,std::ref(robot_state_msg)));
+    robot_pose_sub = nh.subscribe<nav_msgs::Odometry>("odom",1,boost::bind(OnNewRobotPose,_1,std::ref(robot_state_msg),std::ref(state_msg)));
     robot_task_sub = nh.subscribe<robot_msgs::CurrentTask>("current_task",1,boost::bind(OnNewTask,_1,std::ref(robot_task_msg)));
     laser_sub = nh.subscribe<sensor_msgs::LaserScan>("base_scan",1,boost::bind(OnNewScan,_1,std::ref(robot_perception_msg)));
 
@@ -187,14 +180,10 @@ int main(int argc,char **argv)
     ros::Rate loop(20);
     while(ros::ok())
     {
-        getPose(std::string("map"),tf_frame+std::string("base_link"),state_msg);
-        robot_state_msg.x = state_msg.x;
-        robot_state_msg.y = state_msg.y;
-        robot_state_msg.yaw = state_msg.yaw;
         sender.sendMsg(state_msg.fmtMsg());
-        sender.sendMsg(robot_state_msg.fmtMsg());
-        sender.sendMsg(robot_task_msg.fmtMsg());
-        sender.sendMsg(robot_perception_msg.fmtMsg());
+        // sender.sendMsg(robot_state_msg.fmtMsg());
+        // sender.sendMsg(robot_task_msg.fmtMsg());
+        // sender.sendMsg(robot_perception_msg.fmtMsg());
         ros::spinOnce();
         loop.sleep();
     }
