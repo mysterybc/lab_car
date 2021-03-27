@@ -8,6 +8,7 @@
 #include "robot_msgs/HostCmd.h"
 #include "robot_msgs/HostCmdArray.h"
 #include "robot_msgs/RobotStates.h"
+#include "apriltag_ros/AprilTagDetectionArray.h"
 #include "string"
 #include <geometry_msgs/PoseStamped.h>
 #include "std_msgs/String.h"
@@ -18,8 +19,6 @@
 #include "vector"
 #include "my_debug_info.h"
 #include<utility>
-#include "robot_msgs/CurrentTask.h"
-#include "thread"
 
 
 class GroupAsBasicLogic;
@@ -36,23 +35,27 @@ public:
 	BEHAVIAC_DECLARE_AGENTTYPE(BlackBoard, behaviac::Agent)
 
 	public: int car_id;
-///<<< BEGIN WRITING YOUR CODE CLASS_PART
+	public: std::vector<int> tag_id;
 
     public:void BackgrdFuncProcessing(TaskIndividual backgrdfunc);
 
     public: void CmdCallback(const robot_msgs::HostCmdArrayConstPtr &msg);
     public: void GroupStateCallback(const robot_msgs::RobotStatesConstPtr &msg); 
-	public:void PubDecisionState();
-	public:void PubMembers();
-    public: geometry_msgs::Pose GetGoal();
-	public: std::vector<robot_msgs::HostCmd> msgs;
+	public: void TagDetectionsCallback(const apriltag_ros::AprilTagDetectionArrayConstPtr &msg);
+	public:	void PubDecisionState();
+	public:	void PubMembers();
+	public: void PubTagPose();
+    public: std::vector<geometry_msgs::Pose> GetGoal();//每一个任务可能有多个点的goal
+	public: std::vector<robot_msgs::HostCmd> msgs;//一次发布多个任务
     public: std::vector<robot_msgs::HostCmd> TaskList;
-	public: geometry_msgs::Pose goal;
+	public: std::vector<geometry_msgs::Pose> goal;
+	public:  geometry_msgs::Pose tag_pose;
 	private: ros::Subscriber group_state_sub;
 	private: ros::Subscriber cmd_sub;
-	private: ros::Publisher  decision_state_pub;
+	private: ros::Subscriber tag_detection_sub;
+	private: ros::Publisher decision_state_pub;
 	private: ros::Publisher members_pub;
-	public: ros::Publisher current_task_pub;
+	private: ros::Publisher tag_pose_pub;
 };
 
 #endif

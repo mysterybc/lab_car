@@ -4,9 +4,8 @@
 # kinetic版本编译
 #git submodule init && git submodule update
 cd ..
-catkin_make -DCATKIN_WHITELIST_PACKAGES="robot_msgs" -DCATKIN_BLACKLIST_PACKAGES=""
-catkin_make -DCATKIN_WHITELIST_PACKAGES="robot_library" -DCATKIN_BLACKLIST_PACKAGES=""
-catkin_make -DCATKIN_WHITELIST_PACKAGES="" -DCATKIN_BLACKLIST_PACKAGES=""
+catkin_make -DCATKIN_WHITELIST_PACKAGES="robot_msgs;robot_library;apriltag_ros" -DCATKIN_BLACKLIST_PACKAGES=""
+catkin_make -DCATKIN_WHITELIST_PACKAGES="" -DCATKIN_BLACKLIST_PACKAGES="apriltag_ros"
 
 
 

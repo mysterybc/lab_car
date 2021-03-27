@@ -31,12 +31,13 @@ void SelectMission(){
         case '1':{GetMission(host_cmd,1);break;}
         case '2':{GetMission(host_cmd,2);break;}
         case '3':{GetMission(host_cmd,3);break;}
-        case '4':{ host_cmd.mission.mission = host_cmd.mission.STOP;break;}
-        case '5':{ host_cmd.mission.mission = host_cmd.mission.pause;break;}
-        case '6':{ host_cmd.mission.mission = host_cmd.mission.resume;break;}
+        case '4':{GetMission(host_cmd,4);break;}        
+        case '5':{ host_cmd.mission.mission = host_cmd.mission.STOP;break;}
+        case '6':{ host_cmd.mission.mission = host_cmd.mission.pause;break;}
+        case '7':{ host_cmd.mission.mission = host_cmd.mission.resume;break;}
         case '9':{
             int n;
-            std::cout << "--pleasr input task number--" << std::endl;
+            std::cout << "--please input task number--" << std::endl;
             std::cin >> n;
             for(int i = 1; i <= n; i++){
                 Command();
@@ -62,15 +63,90 @@ void SetId(robot_msgs::HostCmd &cmd){
 
 void GetMission(robot_msgs::HostCmd &cmd, int mission){
     double yaw = 3.14;
-    std::cout << "please input x :" << std::endl;
-    std::cin >> cmd.goal.pose.position.x;
-    std::cout << "please input y :" << std::endl;
-    std::cin >> cmd.goal.pose.position.y;
-    std::cout << "please input yaw :" << std::endl;
-    std::cin >> yaw;
-    cmd.goal.pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
-    cmd.goal.pose.position.z = 0;
-    cmd.mission.mission = mission;
+    if(mission==1||mission==2||mission==4)
+    {
+        geometry_msgs::PoseStamped goal;
+        std::cout << "please input x :" << std::endl;
+        std::cin >> goal.pose.position.x;
+        std::cout << "please input y :" << std::endl;
+        std::cin >> goal.pose.position.y;
+        std::cout << "please input yaw :" << std::endl;
+        std::cin >> yaw;
+        goal.pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
+        goal.pose.position.z = 0;
+        cmd.goal.push_back(goal);
+        cmd.mission.mission = mission;
+    }
+    else if(mission==3)
+    {
+        geometry_msgs::PoseStamped goal;
+        yaw = 0;
+        goal.pose.position.x = 3;
+        goal.pose.position.y = 15;
+        goal.pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
+        cmd.goal.push_back(goal);
+
+        goal.pose.position.x = 22;
+        goal.pose.position.y = 15;
+        goal.pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
+        cmd.goal.push_back(goal);
+
+        goal.pose.position.x = 3;
+        goal.pose.position.y = 6;
+        goal.pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
+        cmd.goal.push_back(goal);
+
+        goal.pose.position.x = 22;
+        goal.pose.position.y = 6;
+        goal.pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
+        cmd.goal.push_back(goal);
+        // geometry_msgs::PoseStamped goal;
+        // std::cout << "please input first x :" << std::endl;
+        // std::cin >> goal.pose.position.x;
+        // std::cout << "please input first y :" << std::endl;
+        // std::cin >> goal.pose.position.y;
+        // std::cout << "please input first yaw :" << std::endl;
+        // std::cin >> yaw;
+        // goal.pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
+        // goal.pose.position.z = 0;
+        // cmd.goal.push_back(goal);
+
+
+        // std::cout << "please input second x :" << std::endl;
+        // std::cin >> goal.pose.position.x;
+        // std::cout << "please input second y :" << std::endl;
+        // std::cin >> goal.pose.position.y;
+        // std::cout << "please input second yaw :" << std::endl;
+        // std::cin >> yaw;
+        // goal.pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
+        // goal.pose.position.z = 0;
+        // cmd.goal.push_back(goal);
+
+
+        // std::cout << "please input third x :" << std::endl;
+        // std::cin >> goal.pose.position.x;
+        // std::cout << "please input third y :" << std::endl;
+        // std::cin >> goal.pose.position.y;
+        // std::cout << "please input third yaw :" << std::endl;
+        // std::cin >> yaw;
+        // goal.pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
+        // goal.pose.position.z = 0;
+        // cmd.goal.push_back(goal);
+
+
+        // std::cout << "please input fourth x :" << std::endl;
+        // std::cin >> goal.pose.position.x;
+        // std::cout << "please input fourth y :" << std::endl;
+        // std::cin >> goal.pose.position.y;
+        // std::cout << "please input fourth yaw :" << std::endl;
+        // std::cin >> yaw;
+        // goal.pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
+        // goal.pose.position.z = 0;
+        // cmd.goal.push_back(goal);
+        
+        cmd.mission.mission =  mission;
+    }
+
 }
 
 
@@ -85,13 +161,14 @@ void Command(){
         std::cout   << "-----------------please input command-----------------" << std::endl
                     << "                1 :  march gps   mission              "  << std::endl
                     << "                2 :  march laser mission              "  << std::endl
-                    << "                3 :  build up mission                 "  << std::endl
-                    << "                4 :  system stand by                  "  << std::endl
-                    << "                5 :  mission pause                    "  << std::endl
-                    << "                6 :  mission resume                   "  << std::endl
+                    << "                3 :  search mission                   "  << std::endl
+                    << "                4 :  build up mission                 "  << std::endl
+                    << "                5 :  system stand by                  "  << std::endl
+                    << "                6 :  mission pause                    "  << std::endl
+                    << "                7 :  mission resume                   "  << std::endl
                     << "                9 :  multi mission                    "  << std::endl;
         std::cin  >> command;
-        if(command != '1' && command != '2' && command != '3' && command != '4' && command != '5' && command != '6'&& command != '9'){
+        if(command != '1' && command != '2' && command != '3' && command != '4' && command != '5' && command != '6'&& command != '7'&& command != '9'){
             std::cout << "---input wrong!!  please input again!!!---" << std::endl;
             std::cout << std::endl;
         }else{

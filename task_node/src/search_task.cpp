@@ -117,6 +117,11 @@ SearchAction::SearchAction():
  */
 void SearchAction::SearchExcuteCB(const robot_msgs::SearchGoalConstPtr &goal){
     logger.DEBUGINFO(car_id,"get search goal");
+    for(auto id : goal->idList)
+        std::cout << "id list has " << id << std::endl; 
+    for(auto point:goal->area){
+         logger.DEBUGINFO(car_id,"point is : %f %f",point.pose.position.x,point.pose.position.y);
+    }    
     //首先对需要搜索的区域进行划分
     robot_msgs::SeparateArea new_goal;
     new_goal.request.area = goal->area;

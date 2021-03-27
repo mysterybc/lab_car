@@ -5,7 +5,7 @@
         total_robot_ip: ["127.0.0.1:6661","127.0.0.1:6662","127.0.0.1:6663","127.0.0.1:6664"]
     </rosparam>
     <rosparam>
-        debug_output_id: [1]
+        debug_output_id: [1,2]
     </rosparam>
     <arg name="simulator" value="stage"/>
     <arg name="total_car_number" value="4" />
@@ -34,7 +34,6 @@
     <node pkg="tf" type="static_transform_publisher" name="map_to_base_link1" args="0 0 0 0 0 0 map robot_1/odom 100" />
     <node pkg="tf" type="static_transform_publisher" name="map_to_base_link2" args="0 0 0 0 0 0 map robot_2/odom 100" />
     <node pkg="tf" type="static_transform_publisher" name="map_to_base_link3" args="0 0 0 0 0 0 map robot_3/odom 100" />
-
     <!-- mapserver -->
     <node name="map_server" pkg="map_server" type="map_server" args="$(find bring_up)/map/stage_map.yaml" respawn="false" />
     <!-- rviz -->
@@ -42,6 +41,9 @@
 
 
     <!-- 我们的程序部分 -->
+    <!-- camera -->
+    <include file="$(find realsense2_camera)/launch/rs_t265.launch" />
+    <include file="$(find apriltag_ros)/launch/continuous_detection.launch" />
     <include file="$(find bring_up)/launch/simulation/labcar_simulation.launch" >
         <arg name="car_id" value="$(arg car_id1)" />
         <arg name="robot_name" value="$(arg robot_name1)"/>
