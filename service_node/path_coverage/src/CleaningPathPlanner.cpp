@@ -54,11 +54,11 @@ CleaningPathPlanning::CleaningPathPlanning(costmap_2d::Costmap2DROS *costmap2d_r
     
     //gzx: 我把获取机器人当前位置放到了这里，
     //melodic devel
-    geometry_msgs::PoseStamped pose;
-    bool isok = costmap2d_ros_->getRobotPose(pose);
-    tf::poseStampedMsgToTF(pose,initPose_);
+    // geometry_msgs::PoseStamped pose;
+    // bool isok = costmap2d_ros_->getRobotPose(pose);
+    // tf::poseStampedMsgToTF(pose,initPose_);
     //kinetic devel
-    // bool isok = costmap2d_ros_->getRobotPose(initPose_);
+    bool isok = costmap2d_ros_->getRobotPose(initPose_);
     if(!isok)
     {
         ROS_INFO("Failed to get robot location! Please check where goes wrong!");
@@ -157,7 +157,7 @@ vector<geometry_msgs::PoseStamped> CleaningPathPlanning::trasnsformtorospath()
     pathVec_[0].theta = pathVec_[0].theta *PI/180;
     vector<cellIndex>::iterator iter;
     int sizey = srcMap_.rows;
-    for(iter=pathVec_.begin(); iter!=pathVec_.end();iter++)
+    for(iter=(++pathVec_.begin()); iter!=pathVec_.end();iter++)
     {
          costmap2d_->mapToWorld((*iter).col, (sizey-(*iter).row-1), pose.position.x, pose.position.y);
          pose.orientation.w = cos((*iter).theta/ 2);//; //(sizey-(*iter).row-1)

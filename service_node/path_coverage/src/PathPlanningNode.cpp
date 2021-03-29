@@ -142,9 +142,9 @@ int main(int argc, char** argv){
     ros::init(argc, argv, "path_planning_node");
     ros::NodeHandle nh;
     //melodic devel
-    tf2_ros::Buffer tf(ros::Duration(10));
+    // tf2_ros::Buffer tf(ros::Duration(10));
     //kinetic devel
-    //tf::TransformListener tf(ros::Duration(10));
+    tf::TransformListener tf(ros::Duration(10));
 
     //创建costmap cleaning path需要
     costmap_2d::Costmap2DROS lcr("cleaning_costmap", tf);

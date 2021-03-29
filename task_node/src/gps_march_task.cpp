@@ -406,7 +406,7 @@ int ActionConfig::run_march_action(){
 		tm.globalTime += 50;
 		
 		//判断任务是否结束
-		if(ControllerTaskProgress() == 1){
+		if(ControllerTaskProgress() >= 0.99){
 			logger.DEBUGINFO(myconfig.robotID,"march task finish!");
 			break;
 		}
@@ -453,8 +453,8 @@ void ActionConfig::cancel_action_request(){
 void ActionConfig::config_controller(const robot_msgs::MarchGoalConstPtr &goal){
 	myconfig.idlist.clear();
 	myconfig.idform.clear();
-	mydata.others.id2msg.clear();
-	mydata.others.id2state.clear();
+	// mydata.others.id2msg.clear();
+	// mydata.others.id2state.clear();
 	for(auto number:goal->idList){
 		myconfig.idlist.push_back(number);
 		myconfig.idform.push_back(number);
@@ -474,13 +474,7 @@ int main(int argc, char* argv[]) {
 	std::string package_path = ros::package::getPath("robot_library");
 	myconfig.config_dir = package_path + "/bitrobot/config";
 	myconfig.debug_info = DEBUG_INFO_STATES | DEBUG_INFO_FUNCTION | DEBUG_INFO_COMPUTE;
-	myconfig.target_velocity = 0.8; // m/s
-	//最初多车仿真用
-	// myconfig.id2ns.clear();
-	// myconfig.id2ns[1] = "robot_0/";
-	// myconfig.id2ns[2] = "robot_1/";
-	// myconfig.id2ns[3] = "robot_2/";
-	// myconfig.id2ns[4] = "robot_3/";
+	myconfig.target_velocity = 0.5; // m/s
 	myconfig.idlist = {1, 2, 3, 4};  // These robots are all connected
 	myconfig.idform = {1, 2, 3, 4};  // These robots will be in a formation
 	myconfig.edge_scaling = 1.6;                // when not specifying dx, dy, default edge length = 1m (which is too small)
@@ -499,6 +493,7 @@ int main(int argc, char* argv[]) {
     my_lib::GetParam("path_follow",&myID);
 	myconfig.robotID = myID;
 	printf("This is Robot %d\n", myID);
+	logger.init_logger(myID);
 	
 	
 	// ----------------------- 
