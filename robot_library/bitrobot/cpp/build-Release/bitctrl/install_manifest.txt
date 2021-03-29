@@ -1,6 +1,6 @@
-/home/lovebc/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/install-all/lib/cmake/bitctrl/bitctrl-config.cmake
-/home/lovebc/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/install-all/lib/cmake/bitctrl/bitctrl-config-version.cmake
-/home/lovebc/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/install-all/lib/cmake/bitctrl/bitctrl-targets.cmake
-/home/lovebc/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/install-all/lib/cmake/bitctrl/bitctrl-targets-release.cmake
-/home/lovebc/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/install-all/lib/libbitctrl.so
-/home/lovebc/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/install-all/include/BIT.h
+/home/lovebc/workspace/ros/lab_car_ws/src/robot_library/bitrobot/cpp/install-all/lib/cmake/bitctrl/bitctrl-config.cmake
+/home/lovebc/workspace/ros/lab_car_ws/src/robot_library/bitrobot/cpp/install-all/lib/cmake/bitctrl/bitctrl-config-version.cmake
+/home/lovebc/workspace/ros/lab_car_ws/src/robot_library/bitrobot/cpp/install-all/lib/cmake/bitctrl/bitctrl-targets.cmake
+/home/lovebc/workspace/ros/lab_car_ws/src/robot_library/bitrobot/cpp/install-all/lib/cmake/bitctrl/bitctrl-targets-release.cmake
+/home/lovebc/workspace/ros/lab_car_ws/src/robot_library/bitrobot/cpp/install-all/lib/libbitctrl.so
+/home/lovebc/workspace/ros/lab_car_ws/src/robot_library/bitrobot/cpp/install-all/include/BIT.h

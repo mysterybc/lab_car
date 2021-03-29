@@ -4,18 +4,18 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
-  "/home/lovebc/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/Bitctrl/test/TestC.c" "/home/lovebc/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/build-Release/bitctrl/CMakeFiles/BIT_CTest.dir/test/TestC.c.o"
+  "/home/lovebc/workspace/ros/lab_car_ws/src/robot_library/bitrobot/cpp/Bitctrl/test/TestC.c" "/home/lovebc/workspace/ros/lab_car_ws/src/robot_library/bitrobot/cpp/build-Release/bitctrl/CMakeFiles/BIT_CTest.dir/test/TestC.c.o"
   )
 set(CMAKE_C_COMPILER_ID "GNU")
 
 # The include file search paths:
 set(CMAKE_C_TARGET_INCLUDE_PATH
-  "/home/lovebc/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/Bitctrl"
+  "/home/lovebc/workspace/ros/lab_car_ws/src/robot_library/bitrobot/cpp/Bitctrl"
   )
 
 # Targets to which this target links.
 set(CMAKE_TARGET_LINKED_INFO_FILES
-  "/home/lovebc/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/build-Release/bitctrl/CMakeFiles/bitctrl.dir/DependInfo.cmake"
+  "/home/lovebc/workspace/ros/lab_car_ws/src/robot_library/bitrobot/cpp/build-Release/bitctrl/CMakeFiles/bitctrl.dir/DependInfo.cmake"
   )
 
 # Fortran module output directory.

@@ -97,7 +97,9 @@ namespace impl{
 		add_to_config(config, nsavoid.ob_static(), "ob_static");
 		add_to_config(config, nsavoid.ob_agent(), "ob_agent");
 		add_to_config(config, nsavoid.ob_env(), "ob_dynamic");
+		add_to_config(config, nsavoid.ob_sensor(), "ob_sensor");
 		config.addarg(nsavoid_2D, "gen_nsavoid_2D");
+		config.addarg(nsavoid_vw, "gen_nsavoid_vw");
 		config.addarg(ob_size_robot, "ob_size_robot");
 		config.addarg(ob_size_human, "ob_size_human");
 		config.addarg(ob_size_envob, "ob_size_envob");

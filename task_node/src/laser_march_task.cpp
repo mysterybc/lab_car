@@ -49,22 +49,22 @@ std::string robot_frame;
 
 struct ActionConfig{
 	ActionConfig(ros::NodeHandle &node):
-		march_action(node,"march_action_laser",boost::bind(&ActionConfig::on_new_action,this,_1),false),
-		buildup_action(node,"build_up_action",true)
+		march_action(node,"march_action_laser",boost::bind(&ActionConfig::on_new_action,this,_1),false)
 	{
 		march_action.registerPreemptCallback(boost::bind(&ActionConfig::cancel_action_request,this));
 		march_action.start();
 		tm.timeElapsed = 0;
 		tm.loopCounter = 0;
 		tm.globalTime  = 0;
+		cancel_action = false;
 	}
 	int run_march_action();
 	void on_new_action(const robot_msgs::MarchGoalConstPtr &goal);
 	void cancel_action_request();
 	void config_controller(const robot_msgs::MarchGoalConstPtr &goal);
 	actionlib::SimpleActionServer<robot_msgs::MarchAction> march_action;
-	actionlib::SimpleActionClient<robot_msgs::BuildUpAction> buildup_action;
 	TimeInfo tm;
+	bool cancel_action;
 };
 
 
@@ -283,12 +283,13 @@ void on_new_scan(const sensor_msgs::LaserScan& scan) {
 	auto& data = scan.ranges;
 	int num = (int)data.size();
 	
-	double range_max = std::min(scan.range_max, 2.0f);
+	double range_min = std::max(scan.range_min,0.5f);
+	double range_max = std::min(scan.range_max, 10.0f);
 	double thMe = deg2rad(mydata.me.heading);
 	mydata.obstacles.clear();
 	for (int i = 0; i < num; ++i) {
 		float v = data[i];
-		if (v >= scan.range_min && v <= range_max) {
+		if (v >= range_min && v <= range_max) {
 			double th = thMe + scan.angle_min + scan.angle_increment * i;
 			double cc = std::cos(th);
 			double ss = std::sin(th);
@@ -297,7 +298,7 @@ void on_new_scan(const sensor_msgs::LaserScan& scan) {
 			one.x = float(mydata.me.x + cc * len);  
 			one.y = float(mydata.me.y + ss * len);  
 			one.radius = 50;      // Fixed as 10 cm	
-			mydata.obstacles.push_back(one);	
+			mydata.obstacles.push_back(one);
 		}
 	}
 }
@@ -426,11 +427,15 @@ int ActionConfig::run_march_action(){
 		tm.globalTime += 50;
 		
 		//判断任务是否结束
-		if(ControllerTaskProgress() >= 0.99){
+		if(ControllerTaskProgress() >= 0.995){
 			logger.DEBUGINFO(myconfig.robotID,"march task finish!");
 			break;
 		}
-		//printf("Loop %d ends.\n", tm.loopCounter - 1);
+		//打断任务
+		if(cancel_action){
+			logger.DEBUGINFO(myconfig.robotID,"mission cancel");
+			break;
+		}
 	
 		ros::spinOnce();
 		loop_rate.sleep();
@@ -464,8 +469,8 @@ void ActionConfig::cancel_action_request(){
     if(march_action.isPreemptRequested()){
         robot_msgs::MarchResult result;
         result.succeed = 2;
+		cancel_action = true;
         march_action.setPreempted(result,"goal cancel");
-		buildup_action.cancelAllGoals();
 		logger.DEBUGINFO(myconfig.robotID,"cancel cation!");
     }
 }
@@ -473,6 +478,7 @@ void ActionConfig::cancel_action_request(){
 void ActionConfig::config_controller(const robot_msgs::MarchGoalConstPtr &goal){
 	myconfig.idlist.clear();
 	myconfig.idform.clear();
+	cancel_action = false;
 	for(auto number:goal->idList){
 		myconfig.idlist.push_back(number);
 		myconfig.idform.push_back(number);
@@ -495,7 +501,7 @@ int main(int argc, char* argv[]) {
 	myconfig.target_velocity = 0.5; // m/s
 	myconfig.idlist = {1, 2, 3, 4};  // These robots are all connected
 	myconfig.idform = {1, 2, 3, 4};  // These robots will be in a formation
-	myconfig.edge_scaling = 1.6;                // when not specifying dx, dy, default edge length = 1m (which is too small)
+	myconfig.edge_scaling = 2.0;                // when not specifying dx, dy, default edge length = 1m (which is too small)
 	myconfig.dx = {0.5, 0.5, -0.5, -0.5 };   // optional, meter
 	myconfig.dy = {0.5, -0.5, -0.5, 0.5 };   // optional, meter
 
@@ -510,7 +516,7 @@ int main(int argc, char* argv[]) {
 	ros::NodeHandle node;
 	my_lib::GetParam("laser march task",&myID,NULL);
 	myconfig.robotID = myID;
-	printf("This is Robot %d\n", myID);
+	// printf("This is Robot %d\n", myID);
 	logger.init_logger(myID);
 	
 	
@@ -539,6 +545,7 @@ int main(int argc, char* argv[]) {
 
 	ActionConfig marchconfig(node);
 	init_controller(myconfig, mydata);
+	
 	ros::Rate loop(50);
 	while(ros::ok()){
 		loop.sleep();

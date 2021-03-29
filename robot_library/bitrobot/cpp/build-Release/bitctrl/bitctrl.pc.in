@@ -1,5 +1,5 @@
-prefix=/home/lovebc/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/install-all
-exec_prefix=/home/lovebc/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/install-all
+prefix=/home/lovebc/workspace/ros/lab_car_ws/src/robot_library/bitrobot/cpp/install-all
+exec_prefix=/home/lovebc/workspace/ros/lab_car_ws/src/robot_library/bitrobot/cpp/install-all
 libdir=${exec_prefix}/lib
 includedir=${prefix}/include
 

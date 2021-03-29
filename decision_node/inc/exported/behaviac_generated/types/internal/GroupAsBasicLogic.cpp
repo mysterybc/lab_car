@@ -19,6 +19,7 @@ void GroupAsBasicLogic::ActionCancel()
 	switch (CurrentTask)
 	{
 	case Assemble:
+		logger.DEBUGINFO(g_BlackBoardAgent->car_id,"cancel assemble  goal");
 		g_TaskRealizeAgent->build_up_action->cancelGoal();
 		break;
 
@@ -27,6 +28,7 @@ void GroupAsBasicLogic::ActionCancel()
 		break;
 
 	case March_laser:
+		logger.DEBUGINFO(g_BlackBoardAgent->car_id,"cancel laser march  goal");
 		g_TaskRealizeAgent->laser_march_action->cancelGoal();
 		break;
 
