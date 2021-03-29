@@ -21,13 +21,14 @@ NavigationSource::NavigationSource(){
     ros::Rate loop(10);
     while(ros::ok()){
         if(imu_.imu_init == true){
+            odometry_sub.shutdown();
             logger.DEBUGINFO(car_id,"imu init finish ! start yaw angle is %f",imu_.start_angle);
             break;
         }
         loop.sleep();
         ros::spinOnce();
     }
-    gps_.Start();
+    // gps_.Start();
     imu_.Start();
 }
 

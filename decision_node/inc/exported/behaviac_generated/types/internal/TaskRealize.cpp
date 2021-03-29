@@ -133,6 +133,7 @@ void TaskRealize::Search()
 }
 
 void TaskRealize::Search_FeedbackCallback(const robot_msgs::SearchFeedbackConstPtr &feedback){
+    // logger.DEBUGINFO(g_BlackBoardAgent->car_id,"in search CB and size is %d",g_BlackBoardAgent->tag_id.size());
     if(g_BlackBoardAgent->tag_id.size()==0)//when have not dectected the tag.
     {
     if(feedback->error_occured)
@@ -141,7 +142,7 @@ void TaskRealize::Search_FeedbackCallback(const robot_msgs::SearchFeedbackConstP
         fore_func_state = ForeFuncState::Running;
     }
 
-    else //tag detected
+    else if(fore_func_state==ForeFuncState::Running)//tag detected
     {
         g_GroupAsBasicLogicAgent->CurrentTask=TaskIndividual::NonTask;
     	g_TaskRealizeAgent->search_action->cancelGoal();//finish search behavior

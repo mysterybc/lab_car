@@ -242,6 +242,7 @@ StateInfo StateBIT::mean(const std::vector<int>& id_list) {
 			info.x += me.x;
 			info.y += me.y;
 			++nitem;
+			logger.DEBUGINFO(myconfig.robotID,"my pos is %f %f",mydata.me.x,mydata.me.y);
 		}
 		else {
 			auto it = others.id2state.find(id);
@@ -250,6 +251,7 @@ StateInfo StateBIT::mean(const std::vector<int>& id_list) {
 				info.x += q.x;
 				info.y += q.y;
 				++nitem;
+				logger.DEBUGINFO(myconfig.robotID,"other pos is %f %f",q.x,q.y);
 			}
 		}
 	}
@@ -276,6 +278,7 @@ void on_new_goal(const geometry_msgs::Pose& goal) {
 	
 	logger.DEBUGINFO(myconfig.robotID,"Get new goal  (x, y, z): %.2f, %.2f, %.2f\n", pos.x, pos.y, pos.z);
 	logger.DEBUGINFO(myconfig.robotID,"start pose is (x, y): %.2f, %.2f\n", start.x, start.y);
+	logger.DEBUGINFO(myconfig.robotID,"my pose is (x, y): %.2f, %.2f\n", mydata.me.x, mydata.me.y);
 
 }
 
@@ -321,16 +324,16 @@ void on_new_gps_pos(const nav_msgs::Odometry& msg){
 }
 
 void on_new_lidar_pos(const nav_msgs::Odometry& msg){
-	double yaw,roll,pitch;
-	tf::Quaternion quat;
-	tf::quaternionMsgToTF(msg.pose.pose.orientation,quat);
-    tf::Matrix3x3(quat).getEulerYPR(yaw,pitch,roll);
+	// double yaw,roll,pitch;
+	// tf::Quaternion quat;
+	// tf::quaternionMsgToTF(msg.pose.pose.orientation,quat);
+    // tf::Matrix3x3(quat).getEulerYPR(yaw,pitch,roll);
     StateInfo one;
 	one.ID = myconfig.robotID;
 	one.x = (float)m2cm(msg.pose.pose.position.x);
 	one.y = (float)m2cm(msg.pose.pose.position.y);
 	one.heading = mydata.me.heading;
-	one.heading = (float)rad2deg(yaw);
+	// one.heading = (float)rad2deg(yaw);
 	one.v = 0;  // TBD
 	one.w = 0;  // TBD
 	mydata.me = one;
@@ -349,13 +352,7 @@ int ActionConfig::run_march_action(){
 	ros::NodeHandle node;
 	ros::Rate loop_rate(20);
 	while (node.ok()) {
-		//printf("Loop %d starts.\n", tm.loopCounter);
 
-		if(!march_action.isActive()){
-			ControllerSetFunction(FUNC_ALL, 0);
-			return -1;
-		}
-	
 		// Check for new tasks
 		if (mydata.new_path) {
 			logger.DEBUGINFO(myconfig.robotID,"Starting a new path following task\n");
@@ -434,6 +431,11 @@ int ActionConfig::run_march_action(){
 		//打断任务
 		if(cancel_action){
 			logger.DEBUGINFO(myconfig.robotID,"mission cancel");
+			cancel_action = false;
+			geometry_msgs::Twist u_pub;
+			u_pub.linear.x = 0;
+			u_pub.angular.z = 0;  
+			cmd_pub.publish(u_pub);
 			break;
 		}
 	
@@ -458,7 +460,6 @@ void ActionConfig::on_new_action(const robot_msgs::MarchGoalConstPtr &goal){
         march_action.setAborted(result,"action fail");
     }
     else{
-			
 		result.succeed = true;
 		march_action.setAborted(result,"action success");
 	}
@@ -498,7 +499,7 @@ int main(int argc, char* argv[]) {
 	std::string package_path = ros::package::getPath("robot_library");
 	myconfig.config_dir = package_path + "/bitrobot/config";
 	myconfig.debug_info = DEBUG_INFO_STATES | DEBUG_INFO_FUNCTION | DEBUG_INFO_COMPUTE;
-	myconfig.target_velocity = 0.5; // m/s
+	myconfig.target_velocity = 0.6; // m/s
 	myconfig.idlist = {1, 2, 3, 4};  // These robots are all connected
 	myconfig.idform = {1, 2, 3, 4};  // These robots will be in a formation
 	myconfig.edge_scaling = 2.0;                // when not specifying dx, dy, default edge length = 1m (which is too small)

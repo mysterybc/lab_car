@@ -86,8 +86,7 @@ void BlackBoard::GroupStateCallback(const robot_msgs::RobotStatesConstPtr &msg)
 
 
 void BlackBoard::CmdCallback(const robot_msgs::HostCmdArrayConstPtr &msg){
-    if(g_BlackBoardAgent->car_id==2)
-    logger.DEBUGINFO(car_id,"Cmd received");
+    logger.DEBUGINFO(car_id,"Cmd received:%d",msg->host_cmd_array.begin()->mission);
 
     //1.清空msgs、list
     //2.反向初始化，复制局部变量vector到类内变量
@@ -149,8 +148,17 @@ void BlackBoard::CmdCallback(const robot_msgs::HostCmdArrayConstPtr &msg){
 
 
 void BlackBoard::TagDetectionsCallback(const apriltag_ros::AprilTagDetectionArrayConstPtr &msg ){
-    if(msg->detections.size()!=0)//have detected the tag
+    if(msg->detections.size()!=0){
         tag_pose=msg->detections[0].pose.pose.pose;
+        tag_id=msg->detections[0].id;
+        // logger.DEBUGINFO(car_id,"detected and size is %d",tag_id.size());
+    }
+    else
+    {
+        std::vector<int>().swap(tag_id);
+    }
+    
+        
 
 }
 

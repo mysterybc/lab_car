@@ -55,6 +55,7 @@ struct ActionConfig{
 		tm.timeElapsed = 0;
 		tm.loopCounter = 0;
 		tm.globalTime  = 0;
+		cancel_action = false;
 	}
 	int run_march_action();
 	void on_new_action(const robot_msgs::MarchGoalConstPtr &goal);
@@ -63,6 +64,7 @@ struct ActionConfig{
 	actionlib::SimpleActionServer<robot_msgs::MarchAction> march_action;
 	actionlib::SimpleActionClient<robot_msgs::BuildUpAction> buildup_action;
 	TimeInfo tm;
+	bool cancel_action;
 };
 
 
@@ -328,12 +330,6 @@ int ActionConfig::run_march_action(){
 	ros::NodeHandle node;
 	ros::Rate loop_rate(20);
 	while (node.ok()) {
-		//printf("Loop %d starts.\n", tm.loopCounter);
-
-		if(!march_action.isActive()){
-			ControllerSetFunction(FUNC_ALL, 0);
-			return -1;
-		}
 	
 		// Check for new tasks
 		if (mydata.new_path) {
@@ -406,11 +402,20 @@ int ActionConfig::run_march_action(){
 		tm.globalTime += 50;
 		
 		//判断任务是否结束
-		if(ControllerTaskProgress() >= 0.99){
+		if(ControllerTaskProgress() >= 0.995){
 			logger.DEBUGINFO(myconfig.robotID,"march task finish!");
 			break;
 		}
-		//printf("Loop %d ends.\n", tm.loopCounter - 1);
+		//打断任务
+		if(cancel_action){
+			logger.DEBUGINFO(myconfig.robotID,"mission cancel");
+			cancel_action = false;
+			geometry_msgs::Twist u_pub;
+			u_pub.linear.x = 0;
+			u_pub.angular.z = 0;  
+			cmd_pub.publish(u_pub);
+			break;
+		}
 	
 		ros::spinOnce();
 		loop_rate.sleep();
@@ -445,7 +450,7 @@ void ActionConfig::cancel_action_request(){
         robot_msgs::MarchResult result;
         result.succeed = 2;
         march_action.setPreempted(result,"goal cancel");
-		buildup_action.cancelAllGoals();
+		cancel_action = true;
 		logger.DEBUGINFO(myconfig.robotID,"cancel cation!");
     }
 }
@@ -453,6 +458,7 @@ void ActionConfig::cancel_action_request(){
 void ActionConfig::config_controller(const robot_msgs::MarchGoalConstPtr &goal){
 	myconfig.idlist.clear();
 	myconfig.idform.clear();
+	cancel_action = false;
 	// mydata.others.id2msg.clear();
 	// mydata.others.id2state.clear();
 	for(auto number:goal->idList){
