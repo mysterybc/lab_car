@@ -163,13 +163,13 @@ void BlackBoard::TagDetectionsCallback(const apriltag_ros::AprilTagDetectionArra
 }
 
 void BlackBoard::PubDecisionState(){
-    // if(g_GroupAsBasicLogicAgent->CurrentTask==NonTask)
-    //     logger.DEBUGINFO(car_id,"PubNonTask");
+
+    logger.DEBUGINFO(g_BlackBoardAgent->car_id,"pub!!!");
 	robot_msgs::robot_states_enum state_;
     if(g_GroupAsBasicLogicAgent->CurrentTask==NonTask)
         g_TaskRealizeAgent->fore_func_state=ForeFuncState::Idle;
-    else
-        g_TaskRealizeAgent->fore_func_state=ForeFuncState::Running;
+    // else
+    //     g_TaskRealizeAgent->fore_func_state=ForeFuncState::Running;
     
 	state_.robot_states_enum = g_TaskRealizeAgent->fore_func_state;
 	decision_state_pub.publish(state_);

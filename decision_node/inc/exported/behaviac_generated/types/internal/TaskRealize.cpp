@@ -49,6 +49,8 @@ void TaskRealize::Assemble_ActiveCallback(void){
 void TaskRealize::Assemble_DoneCallback(const actionlib::SimpleClientGoalState &state, const robot_msgs::BuildUpResultConstPtr &result){
     if(result->succeed!=_cancel)
         g_GroupAsBasicLogicAgent->CurrentTask=TaskIndividual::NonTask;
+    else
+        fore_func_state=ForeFuncState::Success;
     return ;
 }
 
@@ -99,6 +101,8 @@ void TaskRealize::March_ActiveCallback(void){
 void TaskRealize::March_DoneCallback(const actionlib::SimpleClientGoalState &state, const robot_msgs::MarchResultConstPtr &result){
     if(result->succeed!=_cancel)
         g_GroupAsBasicLogicAgent->CurrentTask=TaskIndividual::NonTask;
+    else
+        fore_func_state=ForeFuncState::Success;
     return ;
 }
 
@@ -133,21 +137,40 @@ void TaskRealize::Search()
 }
 
 void TaskRealize::Search_FeedbackCallback(const robot_msgs::SearchFeedbackConstPtr &feedback){
-    // logger.DEBUGINFO(g_BlackBoardAgent->car_id,"in search CB and size is %d",g_BlackBoardAgent->tag_id.size());
-    if(g_BlackBoardAgent->tag_id.size()==0)//when have not dectected the tag.
+    // if(g_BlackBoardAgent->car_id==2||tag_detected_from_group)
+    //     logger.DEBUGINFO(g_BlackBoardAgent->car_id,"i am here!!!");
+    bool tag_detected_from_me=false;
+    bool tag_detected_from_group=false;
+    tag_detected_from_me=(g_BlackBoardAgent->tag_id.size()!=0);
+    for(auto i : g_GroupAsBasicLogicAgent->GroupState)
     {
-    if(feedback->error_occured)
-        fore_func_state= ForeFuncState::Failure;
-    else
-        fore_func_state = ForeFuncState::Running;
+        if(i==ForeFuncState::Success)
+            tag_detected_from_group=true;
     }
 
-    else if(fore_func_state==ForeFuncState::Running)//tag detected
+    if(tag_detected_from_me||tag_detected_from_group)//when dectected the tag.
     {
-        g_GroupAsBasicLogicAgent->CurrentTask=TaskIndividual::NonTask;
-    	g_TaskRealizeAgent->search_action->cancelGoal();//finish search behavior
-        g_BlackBoardAgent->PubTagPose();//Pub tag pose
-        logger.DEBUGINFO(g_BlackBoardAgent->car_id,"Detect the tag,Search complete");
+        if(fore_func_state==ForeFuncState::Running)
+        {
+            g_GroupAsBasicLogicAgent->CurrentTask=TaskIndividual::NonTask;
+                logger.DEBUGINFO(g_BlackBoardAgent->car_id,"i am canceling!!!");
+            g_TaskRealizeAgent->search_action->cancelGoal();//finish search behavior
+            if(tag_detected_from_me)
+            {
+                g_BlackBoardAgent->PubTagPose();//Pub tag pose
+                logger.DEBUGINFO(g_BlackBoardAgent->car_id,"Detect the tag,Search complete");
+            }
+        }
+
+
+    }
+    else//when have not detected the tag
+    {
+        if(feedback->error_occured)
+            fore_func_state= ForeFuncState::Failure;
+        else
+            fore_func_state = ForeFuncState::Running;
+
     }
 
     return ;
@@ -161,6 +184,8 @@ void TaskRealize::Search_ActiveCallback(void){
 void TaskRealize::Search_DoneCallback(const actionlib::SimpleClientGoalState &state, const robot_msgs::SearchResultConstPtr &result){
     if(result->succeed!=_cancel)
         g_GroupAsBasicLogicAgent->CurrentTask=TaskIndividual::NonTask;
+    else
+        fore_func_state=ForeFuncState::Success;    
     return ;
 }
 

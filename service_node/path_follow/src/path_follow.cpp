@@ -464,7 +464,7 @@ void ActionConfig::cancel_action_request(){
         robot_msgs::PathFollowResult result;
         result.succeed = 2;
         PathFollow_action.setPreempted(result,"goal cancel");
-		logger.DEBUGINFO(myconfig.robotID,"cancel cation!");
+		logger.DEBUGINFO(myconfig.robotID,"cancel action!");
     }
 }
 

@@ -128,6 +128,7 @@ else
 
 void GroupAsBasicLogic::RealTimeProcessing()
 {
+	printf("AbaAba!!!");
 	g_BlackBoardAgent->PubDecisionState();
 	g_BlackBoardAgent->PubMembers();//定频率Pub
 

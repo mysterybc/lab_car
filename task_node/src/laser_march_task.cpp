@@ -472,7 +472,7 @@ void ActionConfig::cancel_action_request(){
         result.succeed = 2;
 		cancel_action = true;
         march_action.setPreempted(result,"goal cancel");
-		logger.DEBUGINFO(myconfig.robotID,"cancel cation!");
+		logger.DEBUGINFO(myconfig.robotID,"cancel action!");
     }
 }
 
