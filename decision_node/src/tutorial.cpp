@@ -92,12 +92,6 @@ int main(int argc, char** argv)
 	//Loop
 	ros::Rate loop(20);
 	int count = 0;
-	while(ros::ok())//init information
-		{
-		g_BlackBoardAgent->PubDecisionState();
-		g_BlackBoardAgent->PubMembers();
-		break;
-		}
 	while(ros::ok()){
 	// 	switch(g_BasicLogicAgent->CurrentTask){                               //给上位机发送，20hz
 	// 	case 0:g_BlackBoardAgent->PubDecisionState(ForeFuncState::IDLE);
@@ -135,13 +129,13 @@ int main(int argc, char** argv)
 		// }
 		
 		// UpdateLoop();
+		g_BlackBoardAgent->PubDecisionState();
+		g_BlackBoardAgent->PubMembers();//定频率Pub
 		if(set_behavior_tree)
 		{
-			if(g_BlackBoardAgent->car_id==2)
-			logger.DEBUGINFO(g_BlackBoardAgent->car_id,"ForegrdFunc Tree Start");
+			// logger.DEBUGINFO(g_BlackBoardAgent->car_id,"ForegrdFunc Tree Start");
 			UpdateLoop();
-			if(g_BlackBoardAgent->car_id==2)
-			logger.DEBUGINFO(g_BlackBoardAgent->car_id,"ForegrdFunc Tree End");
+			// logger.DEBUGINFO(g_BlackBoardAgent->car_id,"ForegrdFunc Tree End");
 			set_behavior_tree=false;
 		}
 		

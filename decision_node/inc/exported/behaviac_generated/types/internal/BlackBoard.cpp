@@ -139,8 +139,7 @@ void BlackBoard::CmdCallback(const robot_msgs::HostCmdArrayConstPtr &msg){
             std::vector<robot_msgs::HostCmd>().swap(TaskList);//1
             TaskList.assign(msgs.begin(),msgs.end());//5
             set_behavior_tree=true;//4
-            if(g_BlackBoardAgent->car_id==2)
-                logger.DEBUGINFO(car_id,"set_behavior_tree is True");
+            logger.DEBUGINFO(car_id,"set_behavior_tree is True");
         }
     }
 
@@ -164,12 +163,12 @@ void BlackBoard::TagDetectionsCallback(const apriltag_ros::AprilTagDetectionArra
 
 void BlackBoard::PubDecisionState(){
 
-    logger.DEBUGINFO(g_BlackBoardAgent->car_id,"pub!!!");
+    // logger.DEBUGINFO(g_BlackBoardAgent->car_id,"pub!!!");
 	robot_msgs::robot_states_enum state_;
-    if(g_GroupAsBasicLogicAgent->CurrentTask==NonTask)
-        g_TaskRealizeAgent->fore_func_state=ForeFuncState::Idle;
+    if(g_GroupAsBasicLogicAgent->CurrentTask!=NonTask)
+        g_TaskRealizeAgent->fore_func_state=ForeFuncState::Running;//本句可以被ActiveCB代替，但是目前没有ActiveCB所以暂时使用。
     // else
-    //     g_TaskRealizeAgent->fore_func_state=ForeFuncState::Running;
+        // g_TaskRealizeAgent->fore_func_state=ForeFuncState::Idle;
     
 	state_.robot_states_enum = g_TaskRealizeAgent->fore_func_state;
 	decision_state_pub.publish(state_);

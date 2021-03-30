@@ -19,18 +19,23 @@ void GroupAsBasicLogic::ActionCancel()
 	switch (CurrentTask)
 	{
 	case Assemble:
-		logger.DEBUGINFO(g_BlackBoardAgent->car_id,"cancel assemble  goal");
+		logger.DEBUGINFO(g_BlackBoardAgent->car_id,"cancel assemble goal");
 		g_TaskRealizeAgent->build_up_action->cancelGoal();
 		break;
 
 	case March_gps:
+		logger.DEBUGINFO(g_BlackBoardAgent->car_id,"cancel march goal");
 		g_TaskRealizeAgent->gps_march_action->cancelGoal();
 		break;
 
 	case March_laser:
-		logger.DEBUGINFO(g_BlackBoardAgent->car_id,"cancel laser march  goal");
+		logger.DEBUGINFO(g_BlackBoardAgent->car_id,"cancel march goal");
 		g_TaskRealizeAgent->laser_march_action->cancelGoal();
 		break;
+	case Search:
+		logger.DEBUGINFO(g_BlackBoardAgent->car_id,"cancel Search goal");
+		g_TaskRealizeAgent->search_action->cancelGoal();
+		break;	
 
 	default://其中含NonTask
 		break;
@@ -41,14 +46,35 @@ bool GroupAsBasicLogic::GroupIdle()
 {
 	bool group_idle=true;
 	auto iter=GroupState.begin();
-	for(int j=0;j<GroupState.size();j++)//组内状态
+	// logger.DEBUGINFO(g_BlackBoardAgent->car_id,"the size is:%d",	GroupState.size());
+	//test
+	// for(;iter!=GroupState.end();iter++)
+	// {
+	// 	 logger.DEBUGINFO(g_BlackBoardAgent->car_id,"GroupState:%d",	*iter);
+	// }
+	//test
+	// for(int j=0;j<GroupState.size();j++)//组内状态
+	// {
+	// 	logger.DEBUGINFO(g_BlackBoardAgent->car_id,"GroupState truly is:%d",	*(iter));
+	// 	if(*(++iter)==ForeFuncState::Running)//当前Success和Failure都作为Idle处理
+	// 		{
+	// 			group_idle=false;//有非空闲状态
+	// 			logger.DEBUGINFO(g_BlackBoardAgent->car_id,"Not Pass");	
+	// 		}
+	// }
+	iter=GroupState.begin();
+	for(;iter!=GroupState.end();iter++)
 	{
-		if(*(iter+j)==ForeFuncState::Running)//当前Success和Failure都作为Idle处理
-			{
-				group_idle=false;//有非空闲状态
-			}
+		// logger.DEBUGINFO(g_BlackBoardAgent->car_id,"GroupState truly is :%d",	*iter);
+		if(*iter==ForeFuncState::Running)//当前Success和Failure都作为Idle处理
+		{
+			group_idle=false;//有非空闲状态
+			// logger.DEBUGINFO(g_BlackBoardAgent->car_id,"Not Pass");	
+		}
 	}
-
+	
+	// if(group_idle==true)
+	// 	logger.DEBUGINFO(g_BlackBoardAgent->car_id,"PASS!!!");
 	return group_idle;
 }
 
@@ -77,7 +103,9 @@ void GroupAsBasicLogic::SendGoal()//Resume用的
 	case March_laser:
 		g_TaskRealizeAgent->March_laser();
 		break;
-
+	case Search:
+		g_TaskRealizeAgent->Search();
+		break;
 	default:
 		break;
 	}
@@ -103,8 +131,8 @@ void GroupAsBasicLogic::SetMemberAndGoal()
 
 bool GroupAsBasicLogic::TaskListEmpty()
 {
-		if(g_BlackBoardAgent->car_id==2)
-	logger.DEBUGINFO(g_BlackBoardAgent->car_id,"jobs finish");
+	// if(g_BlackBoardAgent->TaskList.empty())
+	// logger.DEBUGINFO(g_BlackBoardAgent->car_id,"jobs finish");
 	return g_BlackBoardAgent->TaskList.empty();
 }
 
@@ -128,7 +156,7 @@ else
 
 void GroupAsBasicLogic::RealTimeProcessing()
 {
-	printf("AbaAba!!!");
+	// logger.DEBUGINFO(g_BlackBoardAgent->car_id,"CurrentTask:%d",CurrentTask);
 	g_BlackBoardAgent->PubDecisionState();
 	g_BlackBoardAgent->PubMembers();//定频率Pub
 

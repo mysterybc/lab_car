@@ -42,15 +42,21 @@ void TaskRealize::Assemble_FeedbackCallback(const robot_msgs::BuildUpFeedbackCon
 }
 
 void TaskRealize::Assemble_ActiveCallback(void){
+    logger.DEBUGINFO(g_BlackBoardAgent->car_id,"activeCB!");
+    logger.DEBUGINFO(g_BlackBoardAgent->car_id,"activeCB!");
+    logger.DEBUGINFO(g_BlackBoardAgent->car_id,"activeCB!");
     fore_func_state = ForeFuncState::Running;
     return ;
 }
 
 void TaskRealize::Assemble_DoneCallback(const actionlib::SimpleClientGoalState &state, const robot_msgs::BuildUpResultConstPtr &result){
     if(result->succeed!=_cancel)
-        g_GroupAsBasicLogicAgent->CurrentTask=TaskIndividual::NonTask;
-    else
+    {
         fore_func_state=ForeFuncState::Success;
+        g_GroupAsBasicLogicAgent->CurrentTask=TaskIndividual::NonTask;
+    }
+    else
+        fore_func_state=ForeFuncState::Idle;
     return ;
 }
 
@@ -100,9 +106,13 @@ void TaskRealize::March_ActiveCallback(void){
 
 void TaskRealize::March_DoneCallback(const actionlib::SimpleClientGoalState &state, const robot_msgs::MarchResultConstPtr &result){
     if(result->succeed!=_cancel)
-        g_GroupAsBasicLogicAgent->CurrentTask=TaskIndividual::NonTask;
-    else
+    {
         fore_func_state=ForeFuncState::Success;
+        g_GroupAsBasicLogicAgent->CurrentTask=TaskIndividual::NonTask;
+    }
+    else
+        fore_func_state=ForeFuncState::Idle;
+
     return ;
 }
 
@@ -123,9 +133,8 @@ void TaskRealize::Search()
         geometry_msgs::PoseStamped goal_;
         goal_.pose = pose_;
         search_goal.area.push_back(goal_);
-        logger.DEBUGINFO(g_BlackBoardAgent->car_id,"point is : %f %f",pose_.position.x,pose_.position.y);
+        // logger.DEBUGINFO(g_BlackBoardAgent->car_id,"point is : %f %f",pose_.position.x,pose_.position.y);
     }
-    logger.DEBUGINFO(g_BlackBoardAgent->car_id,"Search_Is——SETTLED111");
     search_goal.idList.clear();
     for(int i = 0 ; i < g_GroupAsBasicLogicAgent->GroupMember.size(); i++)
         search_goal.idList.push_back(g_GroupAsBasicLogicAgent->GroupMember[i]);
@@ -133,19 +142,20 @@ void TaskRealize::Search()
                                 boost::bind(&TaskRealize::Search_DoneCallback,this,_1,_2),
                                 boost::bind(&TaskRealize::Search_ActiveCallback,this),
                                 boost::bind(&TaskRealize::Search_FeedbackCallback,this,_1));
-    // logger.DEBUGINFO(g_BlackBoardAgent->car_id,"Search_Is——SETTLED");
 }
 
 void TaskRealize::Search_FeedbackCallback(const robot_msgs::SearchFeedbackConstPtr &feedback){
-    // if(g_BlackBoardAgent->car_id==2||tag_detected_from_group)
-    //     logger.DEBUGINFO(g_BlackBoardAgent->car_id,"i am here!!!");
     bool tag_detected_from_me=false;
     bool tag_detected_from_group=false;
     tag_detected_from_me=(g_BlackBoardAgent->tag_id.size()!=0);
     for(auto i : g_GroupAsBasicLogicAgent->GroupState)
     {
         if(i==ForeFuncState::Success)
+        {
+            // logger.DEBUGINFO(g_BlackBoardAgent->car_id,"my friend or i success!!");
             tag_detected_from_group=true;
+        }
+
     }
 
     if(tag_detected_from_me||tag_detected_from_group)//when dectected the tag.
@@ -153,10 +163,13 @@ void TaskRealize::Search_FeedbackCallback(const robot_msgs::SearchFeedbackConstP
         if(fore_func_state==ForeFuncState::Running)
         {
             g_GroupAsBasicLogicAgent->CurrentTask=TaskIndividual::NonTask;
-                logger.DEBUGINFO(g_BlackBoardAgent->car_id,"i am canceling!!!");
+            // logger.DEBUGINFO(g_BlackBoardAgent->car_id,"i am canceling!!!");
             g_TaskRealizeAgent->search_action->cancelGoal();//finish search behavior
             if(tag_detected_from_me)
             {
+                g_GroupAsBasicLogicAgent->CurrentTask=TaskIndividual::NonTask;
+                g_TaskRealizeAgent->fore_func_state=ForeFuncState::Success;
+                // logger.DEBUGINFO(g_BlackBoardAgent->car_id,"my state is %d!!!",g_TaskRealizeAgent->fore_func_state);
                 g_BlackBoardAgent->PubTagPose();//Pub tag pose
                 logger.DEBUGINFO(g_BlackBoardAgent->car_id,"Detect the tag,Search complete");
             }
@@ -182,10 +195,18 @@ void TaskRealize::Search_ActiveCallback(void){
 }
 
 void TaskRealize::Search_DoneCallback(const actionlib::SimpleClientGoalState &state, const robot_msgs::SearchResultConstPtr &result){
+    //the car detected the tag cannot enter this DoneCB
     if(result->succeed!=_cancel)
+    {
+        g_TaskRealizeAgent->fore_func_state=ForeFuncState::Success;
+        // logger.DEBUGINFO(g_BlackBoardAgent->car_id,"I success!!");
         g_GroupAsBasicLogicAgent->CurrentTask=TaskIndividual::NonTask;
+    }
     else
-        fore_func_state=ForeFuncState::Success;    
+    {
+        //fore_func_state=ForeFuncState::Idle;
+    }
+    
     return ;
 }
 
