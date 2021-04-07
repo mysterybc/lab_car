@@ -85,12 +85,13 @@ struct RobotTaskMsg{
         msg["id"] = id;
         switch(current_task_int){
             case 0: msg["current_task"] = "NONE TASK!!!";break;
-            case 1: msg["current_task"] = "gps march!!!";break;
-            case 2: msg["current_task"] = "laser march!!!";break;
-            case 3: msg["current_task"] = "ASSEMBLE TASK!!!";break;
-            case 4:	msg["current_task"] = "STOP TASK!!!";break;
-            case 5:	msg["current_task"] = "Pause TASK!!!";break;
-            case 6:	msg["current_task"] = "Resume TASK!!!";break;
+            case 1: msg["current_task"] = "GPS March!!!";break;
+            case 2: msg["current_task"] = "Laser March!!!";break;
+            case 3: msg["current_task"] = "Search Task!!!";break;
+            case 4: msg["current_task"] = "ASSEMBLE TASK!!!";break;
+            case 5:	msg["current_task"] = "STOP TASK!!!";break;
+            case 6:	msg["current_task"] = "Pause TASK!!!";break;
+            case 7:	msg["current_task"] = "Resume TASK!!!";break;
         }
         return msg.toStyledString();
     }
@@ -124,6 +125,7 @@ struct RobotPerceptionMsg{
         Json::Value msg;
         msg["message_id"] = message_type;
         msg["id"] = id;
+        msg["obstracle_number"] = (int)points.size();
         for(auto point:points){
             Json::Value json_point;
             json_point["x"].append(point.x);
@@ -134,6 +136,7 @@ struct RobotPerceptionMsg{
     }
     void GetDataFromMsg(Json::Value json){
         id = json["id"].asInt();
+        obstracle_number = json["obstracle_number"].size();
         for(int i = 0 ; i < json["points"].size(); i++){
             Point point;
             point.x = json["points"][i][0].asDouble();
@@ -144,6 +147,7 @@ struct RobotPerceptionMsg{
     int message_type;
     int id;
     bool has_obstracle;
+    int obstracle_number;
     std::vector<Point> points;
 };
 
@@ -408,7 +412,6 @@ struct HostCmd{
         Json::Value json;
         Json::Reader reader;
         reader.parse(msg.c_str(),json);
-        std::cout << "message is " << json["mission_array"].toStyledString() << std::endl;
         message_type = (HostMessageType)json["mission_type"].asInt();
         switch(message_type){
             case HostMessageType::SingleMission : json2Mission(json["mission_array"]);break;

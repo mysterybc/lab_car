@@ -143,7 +143,7 @@ void SearchAction::SearchExcuteCB(const robot_msgs::SearchGoalConstPtr &goal){
         logger.WARNINFO(car_id,"area edge point size wrong!!");
     }
     for(auto point:new_goal.response.area){
-        // logger.DEBUGINFO(car_id,"point is : %f %f",point.pose.position.x,point.pose.position.y);
+        logger.DEBUGINFO(car_id,"atfer separate point is : %f %f",point.pose.position.x,point.pose.position.y);
         path_coverage.request.select_point.poses.push_back(point);
     }
     path_coverage.request.start_point = GetStartPoint(new_goal.response.area);

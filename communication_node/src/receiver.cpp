@@ -110,6 +110,7 @@ int main(int argc, char** argv){
         state_receive.receiveMsg(robot_msgs);
         host_receive.receiveMsg(host_msg);
         if(!host_msg.empty()){
+            std::cout << "message is " << host_msg << std::endl;
             decodeHostMsg(host_msg,host_cmd);
             if(host_cmd.message_type == HostCmd::HostMessageType::SingleMission
                || host_cmd.message_type == HostCmd::HostMessageType::MultiMission){
