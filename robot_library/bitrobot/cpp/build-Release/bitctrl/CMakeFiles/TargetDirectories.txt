@@ -1,8 +1,8 @@
-/home/lovebc/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/build-Release/bitctrl/CMakeFiles/install/strip.dir
-/home/lovebc/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/build-Release/bitctrl/CMakeFiles/install/local.dir
-/home/lovebc/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/build-Release/bitctrl/CMakeFiles/install.dir
-/home/lovebc/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/build-Release/bitctrl/CMakeFiles/list_install_components.dir
-/home/lovebc/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/build-Release/bitctrl/CMakeFiles/rebuild_cache.dir
-/home/lovebc/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/build-Release/bitctrl/CMakeFiles/bitctrl.dir
-/home/lovebc/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/build-Release/bitctrl/CMakeFiles/BIT_CTest.dir
-/home/lovebc/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/build-Release/bitctrl/CMakeFiles/edit_cache.dir
+/home/lovebc/workspace/ros/lab_car_ws/src/robot_library/bitrobot/cpp/build-Release/bitctrl/CMakeFiles/install/strip.dir
+/home/lovebc/workspace/ros/lab_car_ws/src/robot_library/bitrobot/cpp/build-Release/bitctrl/CMakeFiles/install/local.dir
+/home/lovebc/workspace/ros/lab_car_ws/src/robot_library/bitrobot/cpp/build-Release/bitctrl/CMakeFiles/install.dir
+/home/lovebc/workspace/ros/lab_car_ws/src/robot_library/bitrobot/cpp/build-Release/bitctrl/CMakeFiles/list_install_components.dir
+/home/lovebc/workspace/ros/lab_car_ws/src/robot_library/bitrobot/cpp/build-Release/bitctrl/CMakeFiles/rebuild_cache.dir
+/home/lovebc/workspace/ros/lab_car_ws/src/robot_library/bitrobot/cpp/build-Release/bitctrl/CMakeFiles/bitctrl.dir
+/home/lovebc/workspace/ros/lab_car_ws/src/robot_library/bitrobot/cpp/build-Release/bitctrl/CMakeFiles/BIT_CTest.dir
+/home/lovebc/workspace/ros/lab_car_ws/src/robot_library/bitrobot/cpp/build-Release/bitctrl/CMakeFiles/edit_cache.dir

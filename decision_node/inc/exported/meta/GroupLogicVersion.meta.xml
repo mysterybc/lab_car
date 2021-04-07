@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--EXPORTED BY TOOL, DON'T MODIFY IT!-->
-<agents version="1" signature="869142046">
+<agents version="1" signature="664928379">
   <agent type="GroupAsBasicLogic" base="behaviac::Agent" signature="2785138483">
     <properties>
       <property name="CurrentTask" type="TaskIndividual" member="false" static="false" defaultvalue="NonTask" />
@@ -14,7 +14,7 @@
       <property name="car_id" type="int" member="false" static="false" defaultvalue="0" />
     </properties>
   </agent>
-  <agent type="TaskRealize" base="behaviac::Agent" signature="3047321813">
+  <agent type="TaskRealize" base="behaviac::Agent" signature="1596480875">
     <properties>
       <property name="fore_func_state" type="ForeFuncState" member="false" static="false" defaultvalue="Running" />
     </properties>

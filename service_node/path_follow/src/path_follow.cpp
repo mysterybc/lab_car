@@ -58,6 +58,7 @@ struct ActionConfig{
 		tm.timeElapsed = 0;
 		tm.loopCounter = 0;
 		tm.globalTime  = 0;
+		cancel_action = false;
 	}
 	int run_PathFollow_action();
 	void on_new_action(const robot_msgs::PathFollowGoalConstPtr &goal);
@@ -65,6 +66,7 @@ struct ActionConfig{
 	void config_controller(const robot_msgs::PathFollowGoalConstPtr &goal);
 	actionlib::SimpleActionServer<robot_msgs::PathFollowAction> PathFollow_action;
 	TimeInfo tm;
+	bool cancel_action;
 };
 
 
@@ -341,11 +343,6 @@ int ActionConfig::run_PathFollow_action(){
 	ros::Rate loop_rate(20);
 	while (node.ok()) {
 		//printf("Loop %d starts.\n", tm.loopCounter);
-
-		if(!PathFollow_action.isActive()){
-			ControllerSetFunction(FUNC_ALL, 0);
-			return -1;
-		}
 	
 		// Check for new tasks
 		if (mydata.new_path) {
@@ -418,11 +415,20 @@ int ActionConfig::run_PathFollow_action(){
 		tm.globalTime += 50;
 		
 		//判断任务是否结束
-		if(ControllerTaskProgress() == 1){
+		if(ControllerTaskProgress() >= 0.995){
 			logger.DEBUGINFO(myconfig.robotID,"PathFollow task finish!");
 			break;
 		}
-		//printf("Loop %d ends.\n", tm.loopCounter - 1);
+		//打断任务
+		if(cancel_action){
+			logger.DEBUGINFO(myconfig.robotID,"mission cancel");
+			cancel_action = false;
+			geometry_msgs::Twist u_pub;
+			u_pub.linear.x = 0;
+			u_pub.angular.z = 0;  
+			cmd_pub.publish(u_pub);
+			break;
+		}
 	
 		ros::spinOnce();
 		loop_rate.sleep();
@@ -454,22 +460,18 @@ void ActionConfig::on_new_action(const robot_msgs::PathFollowGoalConstPtr &goal)
 void ActionConfig::cancel_action_request(){
 	logger.DEBUGINFO(myconfig.robotID,"get cancel request!");
     if(PathFollow_action.isPreemptRequested()){
+		cancel_action = true;
         robot_msgs::PathFollowResult result;
         result.succeed = 2;
         PathFollow_action.setPreempted(result,"goal cancel");
-		logger.DEBUGINFO(myconfig.robotID,"cancel cation!");
+		logger.DEBUGINFO(myconfig.robotID,"cancel action!");
     }
 }
 
 void ActionConfig::config_controller(const robot_msgs::PathFollowGoalConstPtr &goal){
 	myconfig.idlist.clear();
 	myconfig.idform.clear();
-	// mydata.others.id2msg.clear();
-	// mydata.others.id2state.clear();
-	// for(auto number:goal->idList){
-	// 	myconfig.idlist.push_back(number);
-	// 	myconfig.idform.push_back(number);
-	// }
+	cancel_action = false;
 	myconfig.idlist.push_back(myconfig.robotID);
 	myconfig.idform.push_back(myconfig.robotID);
 
@@ -491,7 +493,7 @@ int main(int argc, char* argv[]) {
 	myconfig.target_velocity = 0.5; // m/s
 	myconfig.idlist = {1, 2, 3, 4};  // These robots are all connected
 	myconfig.idform = {1, 2, 3, 4};  // These robots will be in a formation
-	myconfig.edge_scaling = 1.6;                // when not specifying dx, dy, default edge length = 1m (which is too small)
+	myconfig.edge_scaling = 2.0;                // when not specifying dx, dy, default edge length = 1m (which is too small)
 	myconfig.dx = {0.5, 0.5, -0.5, -0.5 };   // optional, meter
 	myconfig.dy = {0.5, -0.5, -0.5, 0.5 };   // optional, meter
 

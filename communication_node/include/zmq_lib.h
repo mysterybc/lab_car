@@ -70,6 +70,9 @@ namespace zmq_lib{
                 sub.connect(fmtaddr(ip));
             }
         }
+        ~Receiver(){
+            sub.close();
+        }
         //TODO 接收topic有用么？
         int receiveMsg(std::vector<std::string>& vec){
             zmq::message_t recv_msg;

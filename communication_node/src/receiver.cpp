@@ -94,8 +94,7 @@ int main(int argc, char** argv){
     std::map<int,RobotState> id2states;
     std::vector<std::string> robot_msgs;
     std::string host_msg;
-    HostCmd host_cmd(&host_receive,host_ip); //可能需要修改ip，因此将指针传入
-
+    HostCmd host_cmd(&host_receive,host_ip,car_id); 
     //ros pub
     ros::Publisher robot_state_pub = nh.advertise<robot_msgs::RobotStates>("robot_states",10);
     ros::Publisher algomsg_pub = nh.advertise<std_msgs::UInt8MultiArray>("algomsg_others",10);
@@ -111,6 +110,7 @@ int main(int argc, char** argv){
         state_receive.receiveMsg(robot_msgs);
         host_receive.receiveMsg(host_msg);
         if(!host_msg.empty()){
+            std::cout << "message is " << host_msg << std::endl;
             decodeHostMsg(host_msg,host_cmd);
             if(host_cmd.message_type == HostCmd::HostMessageType::SingleMission
                || host_cmd.message_type == HostCmd::HostMessageType::MultiMission){
@@ -133,7 +133,6 @@ int main(int argc, char** argv){
         ros::spinOnce();
         loop.sleep();
     }
-
     return 0;
 }
 

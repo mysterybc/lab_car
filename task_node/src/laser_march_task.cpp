@@ -49,22 +49,22 @@ std::string robot_frame;
 
 struct ActionConfig{
 	ActionConfig(ros::NodeHandle &node):
-		march_action(node,"march_action_laser",boost::bind(&ActionConfig::on_new_action,this,_1),false),
-		buildup_action(node,"build_up_action",true)
+		march_action(node,"march_action_laser",boost::bind(&ActionConfig::on_new_action,this,_1),false)
 	{
 		march_action.registerPreemptCallback(boost::bind(&ActionConfig::cancel_action_request,this));
 		march_action.start();
 		tm.timeElapsed = 0;
 		tm.loopCounter = 0;
 		tm.globalTime  = 0;
+		cancel_action = false;
 	}
 	int run_march_action();
 	void on_new_action(const robot_msgs::MarchGoalConstPtr &goal);
 	void cancel_action_request();
 	void config_controller(const robot_msgs::MarchGoalConstPtr &goal);
 	actionlib::SimpleActionServer<robot_msgs::MarchAction> march_action;
-	actionlib::SimpleActionClient<robot_msgs::BuildUpAction> buildup_action;
 	TimeInfo tm;
+	bool cancel_action;
 };
 
 
@@ -142,11 +142,11 @@ void init_controller(const ConfigBIT& config, StateBIT& state) {
 	//ControllerSetDebugInfo(config.debug_info, 1);
 	ControllerSetDebugInfo(DEBUG_INFO_ALL, 0);
 
-	ControllerSetDebugInfo(DEBUG_INFO_STATES, 0);
-	ControllerSetDebugInfo(DEBUG_INFO_COMPUTE, 0);
-	ControllerSetDebugInfo(DEBUG_INFO_FUNCTION, 0);
-	ControllerSetDebugInfo(DEBUG_INFO_COM_SEND, 0);
-	ControllerSetDebugInfo(DEBUG_INFO_COM_RECV, 0);
+	// ControllerSetDebugInfo(DEBUG_INFO_STATES, 0);
+	// ControllerSetDebugInfo(DEBUG_INFO_COMPUTE, 0);
+	// ControllerSetDebugInfo(DEBUG_INFO_FUNCTION, 0);
+	// ControllerSetDebugInfo(DEBUG_INFO_COM_SEND, 0);
+	// ControllerSetDebugInfo(DEBUG_INFO_COM_RECV, 0);
 	// printf("Turn off Debug Info99999!!!\n");
 
 	state.me.ID = config.robotID;
@@ -242,6 +242,7 @@ StateInfo StateBIT::mean(const std::vector<int>& id_list) {
 			info.x += me.x;
 			info.y += me.y;
 			++nitem;
+			logger.DEBUGINFO(myconfig.robotID,"my pos is %f %f",mydata.me.x,mydata.me.y);
 		}
 		else {
 			auto it = others.id2state.find(id);
@@ -250,6 +251,7 @@ StateInfo StateBIT::mean(const std::vector<int>& id_list) {
 				info.x += q.x;
 				info.y += q.y;
 				++nitem;
+				logger.DEBUGINFO(myconfig.robotID,"other pos is %f %f",q.x,q.y);
 			}
 		}
 	}
@@ -276,6 +278,7 @@ void on_new_goal(const geometry_msgs::Pose& goal) {
 	
 	logger.DEBUGINFO(myconfig.robotID,"Get new goal  (x, y, z): %.2f, %.2f, %.2f\n", pos.x, pos.y, pos.z);
 	logger.DEBUGINFO(myconfig.robotID,"start pose is (x, y): %.2f, %.2f\n", start.x, start.y);
+	logger.DEBUGINFO(myconfig.robotID,"my pose is (x, y): %.2f, %.2f\n", mydata.me.x, mydata.me.y);
 
 }
 
@@ -283,12 +286,13 @@ void on_new_scan(const sensor_msgs::LaserScan& scan) {
 	auto& data = scan.ranges;
 	int num = (int)data.size();
 	
-	double range_max = std::min(scan.range_max, 2.0f);
+	double range_min = std::max(scan.range_min,0.5f);
+	double range_max = std::min(scan.range_max, 10.0f);
 	double thMe = deg2rad(mydata.me.heading);
 	mydata.obstacles.clear();
 	for (int i = 0; i < num; ++i) {
 		float v = data[i];
-		if (v >= scan.range_min && v <= range_max) {
+		if (v >= range_min && v <= range_max) {
 			double th = thMe + scan.angle_min + scan.angle_increment * i;
 			double cc = std::cos(th);
 			double ss = std::sin(th);
@@ -297,7 +301,7 @@ void on_new_scan(const sensor_msgs::LaserScan& scan) {
 			one.x = float(mydata.me.x + cc * len);  
 			one.y = float(mydata.me.y + ss * len);  
 			one.radius = 50;      // Fixed as 10 cm	
-			mydata.obstacles.push_back(one);	
+			mydata.obstacles.push_back(one);
 		}
 	}
 }
@@ -328,7 +332,7 @@ void on_new_lidar_pos(const nav_msgs::Odometry& msg){
 	one.ID = myconfig.robotID;
 	one.x = (float)m2cm(msg.pose.pose.position.x);
 	one.y = (float)m2cm(msg.pose.pose.position.y);
-	one.heading = mydata.me.heading;
+	// one.heading = mydata.me.heading;
 	one.heading = (float)rad2deg(yaw);
 	one.v = 0;  // TBD
 	one.w = 0;  // TBD
@@ -348,13 +352,7 @@ int ActionConfig::run_march_action(){
 	ros::NodeHandle node;
 	ros::Rate loop_rate(20);
 	while (node.ok()) {
-		//printf("Loop %d starts.\n", tm.loopCounter);
 
-		if(!march_action.isActive()){
-			ControllerSetFunction(FUNC_ALL, 0);
-			return -1;
-		}
-	
 		// Check for new tasks
 		if (mydata.new_path) {
 			logger.DEBUGINFO(myconfig.robotID,"Starting a new path following task\n");
@@ -426,11 +424,20 @@ int ActionConfig::run_march_action(){
 		tm.globalTime += 50;
 		
 		//判断任务是否结束
-		if(ControllerTaskProgress() >= 0.99){
+		if(ControllerTaskProgress() >= 0.995){
 			logger.DEBUGINFO(myconfig.robotID,"march task finish!");
 			break;
 		}
-		//printf("Loop %d ends.\n", tm.loopCounter - 1);
+		//打断任务
+		if(cancel_action){
+			logger.DEBUGINFO(myconfig.robotID,"mission cancel");
+			cancel_action = false;
+			geometry_msgs::Twist u_pub;
+			u_pub.linear.x = 0;
+			u_pub.angular.z = 0;  
+			cmd_pub.publish(u_pub);
+			break;
+		}
 	
 		ros::spinOnce();
 		loop_rate.sleep();
@@ -453,7 +460,6 @@ void ActionConfig::on_new_action(const robot_msgs::MarchGoalConstPtr &goal){
         march_action.setAborted(result,"action fail");
     }
     else{
-			
 		result.succeed = true;
 		march_action.setAborted(result,"action success");
 	}
@@ -464,15 +470,16 @@ void ActionConfig::cancel_action_request(){
     if(march_action.isPreemptRequested()){
         robot_msgs::MarchResult result;
         result.succeed = 2;
+		cancel_action = true;
         march_action.setPreempted(result,"goal cancel");
-		buildup_action.cancelAllGoals();
-		logger.DEBUGINFO(myconfig.robotID,"cancel cation!");
+		logger.DEBUGINFO(myconfig.robotID,"cancel action!");
     }
 }
 
 void ActionConfig::config_controller(const robot_msgs::MarchGoalConstPtr &goal){
 	myconfig.idlist.clear();
 	myconfig.idform.clear();
+	cancel_action = false;
 	for(auto number:goal->idList){
 		myconfig.idlist.push_back(number);
 		myconfig.idform.push_back(number);
@@ -492,10 +499,10 @@ int main(int argc, char* argv[]) {
 	std::string package_path = ros::package::getPath("robot_library");
 	myconfig.config_dir = package_path + "/bitrobot/config";
 	myconfig.debug_info = DEBUG_INFO_STATES | DEBUG_INFO_FUNCTION | DEBUG_INFO_COMPUTE;
-	myconfig.target_velocity = 0.5; // m/s
+	myconfig.target_velocity = 0.6; // m/s
 	myconfig.idlist = {1, 2, 3, 4};  // These robots are all connected
 	myconfig.idform = {1, 2, 3, 4};  // These robots will be in a formation
-	myconfig.edge_scaling = 1.6;                // when not specifying dx, dy, default edge length = 1m (which is too small)
+	myconfig.edge_scaling = 2.0;                // when not specifying dx, dy, default edge length = 1m (which is too small)
 	myconfig.dx = {0.5, 0.5, -0.5, -0.5 };   // optional, meter
 	myconfig.dy = {0.5, -0.5, -0.5, 0.5 };   // optional, meter
 
@@ -510,7 +517,7 @@ int main(int argc, char* argv[]) {
 	ros::NodeHandle node;
 	my_lib::GetParam("laser march task",&myID,NULL);
 	myconfig.robotID = myID;
-	printf("This is Robot %d\n", myID);
+	// printf("This is Robot %d\n", myID);
 	logger.init_logger(myID);
 	
 	
@@ -539,6 +546,7 @@ int main(int argc, char* argv[]) {
 
 	ActionConfig marchconfig(node);
 	init_controller(myconfig, mydata);
+	
 	ros::Rate loop(50);
 	while(ros::ok()){
 		loop.sleep();

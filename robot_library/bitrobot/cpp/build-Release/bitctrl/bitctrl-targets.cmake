@@ -45,13 +45,13 @@ unset(_expectedTargets)
 add_library(bitctrl SHARED IMPORTED)
 
 set_target_properties(bitctrl PROPERTIES
-  INTERFACE_INCLUDE_DIRECTORIES "/home/lovebc/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/Bitctrl"
+  INTERFACE_INCLUDE_DIRECTORIES "/home/lovebc/workspace/ros/lab_car_ws/src/robot_library/bitrobot/cpp/Bitctrl"
 )
 
 # Import target "bitctrl" for configuration "Release"
 set_property(TARGET bitctrl APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
 set_target_properties(bitctrl PROPERTIES
-  IMPORTED_LOCATION_RELEASE "/home/lovebc/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/build-Release/bitctrl/libbitctrl.so"
+  IMPORTED_LOCATION_RELEASE "/home/lovebc/workspace/ros/lab_car_ws/src/robot_library/bitrobot/cpp/build-Release/bitctrl/libbitctrl.so"
   IMPORTED_SONAME_RELEASE "libbitctrl.so"
   )
 

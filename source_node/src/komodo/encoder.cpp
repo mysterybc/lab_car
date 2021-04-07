@@ -54,7 +54,7 @@ int Encoder::UpdateOdom()
     {
         // ROS_INFO(port);
         std::cout << "port:" << port <<std::endl;
-        ROS_INFO_STREAM("port is opened.");
+        ROS_INFO("port is opened.");
     }
     else
     {

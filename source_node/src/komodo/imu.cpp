@@ -95,7 +95,7 @@ int IMU::UpDateIMU(){
                     //roll += imu_data.angular_velocity.x * 0.01;
                     //pitch += imu_data.angular_velocity.y * 0.01;
                     yaw += imu_data.angular_velocity.z * 0.01;
-                    logger.DEBUGINFO(car_id,"yaw angle is %f",yaw);
+                    // logger.DEBUGINFO(car_id,"yaw angle is %f",yaw);
 
                     //std::cout<<"roll:  "<<roll<<" pitch: "<<pitch<<"yaw: "<<yaw<<std::endl;
 

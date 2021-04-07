@@ -6,11 +6,11 @@
 
 #IncludeRegexTransform: 
 
-/home/lovebc/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/Bitctrl/BIT.h
+/home/lovebc/workspace/ros/lab_car_ws/src/robot_library/bitrobot/cpp/Bitctrl/BIT.h
 
-/home/lovebc/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/Bitctrl/test/TestC.c
+/home/lovebc/workspace/ros/lab_car_ws/src/robot_library/bitrobot/cpp/Bitctrl/test/TestC.c
 BIT.h
-/home/lovebc/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/Bitctrl/test/BIT.h
+/home/lovebc/workspace/ros/lab_car_ws/src/robot_library/bitrobot/cpp/Bitctrl/test/BIT.h
 stdio.h
 -
 stdlib.h
@@ -20,7 +20,7 @@ string.h
 math.h
 -
 BIT.h
-/home/lovebc/workspace/ros/lab_car_ws/src/bitrobot/lib/repo-v0.0.4/cpp/Bitctrl/test/BIT.h
+/home/lovebc/workspace/ros/lab_car_ws/src/robot_library/bitrobot/cpp/Bitctrl/test/BIT.h
 stdlib.h
 -
 math.h

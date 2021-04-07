@@ -7,5 +7,6 @@
   <author email="reed.hedges@adept.com">Reed Hedges</author>
   <author>Adept MobileRobots</author>
   <license>BSD</license>
+  <buildtool_depend>catkin</buildtool_depend>
   <run_depend>roslaunch</run_depend>
 </package>

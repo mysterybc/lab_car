@@ -56,7 +56,7 @@ gen_tsingle_strict    false  # if strict, path_t will not advance if err >= ethr
 gen_use_autoselect  true    # whether perform auto-shape selection on Formation Experiments
 gen_align_tar       0       # float, kht, in TGroup, align thMe with targetV
 gen_align_loc       0       # float, khl, in TGroup, align thMe with centerTh
-gen_consn_trk       0.5       # float, kc2, in TGroup, K*(info.center-me)
+gen_consn_trk       1       # float, kc2, in TGroup, K*(info.center-me)
 
 # Formation Test8 Config
 gen_test8_enable false
@@ -164,21 +164,25 @@ gen_slow_lamN    1   1
 gen_nsavoid_len     0.2     # disk radius
 gen_nsavoid_lamV    50      # Weight, vLine over vRotate
 gen_nsavoid_2D      true    # If projection on (vx, vy)
-gen_nsavoid_vw      true    # If projection is also on (v, w)
+gen_nsavoid_vw      false    # If projection is also on (v, w)
 
-ob_static_dmin  0.6  # m, at this distance, the vmax is 0 m/s
-ob_static_vmax  0.8  # m/s, max approach (linear) at (1+dmin) meters
+ob_static_dmin  0.5  # m, at this distance, the vmax is 0 m/s
+ob_static_vmax  0.5  # m/s, max approach (linear) at (1+dmin) meters
 ob_static_safe  3  # m, won't consider if at (safe+dmin) meters
 
-ob_agent_dmin 0.8  # The inter-agent distance is (ob_agent_dmin + ob_size_robot) +- gen_nsavoid_len
-ob_agent_vmax 0.8
+ob_sensor_dmin  0.5  # m, at this distance, the vmax is 0 m/s
+ob_sensor_vmax  0.5  # m/s, max approach (linear) at (1+dmin) meters
+ob_sensor_safe  3  # m, won't consider if at (safe+dmin) meters
+
+ob_agent_dmin 0.5  # The inter-agent distance is (ob_agent_dmin + ob_size_robot) +- gen_nsavoid_len
+ob_agent_vmax 0.5
 ob_agent_safe 3
 
-ob_dynamic_dmin  0.8
-ob_dynamic_vmax  0.8
+ob_dynamic_dmin  1.0
+ob_dynamic_vmax  0.5
 ob_dynamic_safe  3
 
-ob_size_robot 0.4
+ob_size_robot 0.7
 ob_size_human 0.6
 ob_size_envob -1   # if >= 0, this will overwrite obR info from setObstacles
 

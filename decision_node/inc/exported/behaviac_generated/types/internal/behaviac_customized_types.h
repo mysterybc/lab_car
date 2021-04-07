@@ -16,6 +16,7 @@ enum TaskIndividual
 	NonTask,
 	March_gps,
 	March_laser,
+	Search,
 	Assemble,
 	Stop,
 	Pause,

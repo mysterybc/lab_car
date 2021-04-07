@@ -79,6 +79,7 @@ public:
     void SearchExcuteCB(const robot_msgs::SearchGoalConstPtr &goal);
     geometry_msgs::Pose GetStartPoint(const std::vector<geometry_msgs::PoseStamped> &area);
     void OnNewPose(const nav_msgs::OdometryConstPtr &odom);
+    void PreemptCB();
 
     int car_id;
     std::vector<RobotInfo> robots_info;
@@ -92,6 +93,7 @@ public:
     TaskClientRealize<robot_msgs::PathFollowAction,robot_msgs::PathFollowGoal,
                       robot_msgs::PathFollowResultConstPtr,robot_msgs::PathFollowFeedbackConstPtr> path_follow_client;
     geometry_msgs::Pose robot_pose;
+    bool cancel_goal;
 };
 
 /**
@@ -107,8 +109,10 @@ SearchAction::SearchAction():
     robot_pose_sub = nh.subscribe("odom",1,&SearchAction::OnNewPose,this);
     separate_area_client = nh.serviceClient<robot_msgs::SeparateArea>("separate_area");
     path_coverage_client = nh.serviceClient<robot_msgs::PathCoverage>("path_coverage");
+    search_server.registerPreemptCallback(std::bind(&SearchAction::PreemptCB,this));
     //Debug info
     logger.init_logger(car_id);
+    cancel_goal = false;
     search_server.start();
 }
 
@@ -117,6 +121,11 @@ SearchAction::SearchAction():
  */
 void SearchAction::SearchExcuteCB(const robot_msgs::SearchGoalConstPtr &goal){
     logger.DEBUGINFO(car_id,"get search goal");
+    for(auto id : goal->idList)
+        std::cout << "id list has " << id << std::endl; 
+    for(auto point:goal->area){
+         logger.DEBUGINFO(car_id,"point is : %f %f",point.pose.position.x,point.pose.position.y);
+    }    
     //首先对需要搜索的区域进行划分
     robot_msgs::SeparateArea new_goal;
     new_goal.request.area = goal->area;
@@ -134,7 +143,7 @@ void SearchAction::SearchExcuteCB(const robot_msgs::SearchGoalConstPtr &goal){
         logger.WARNINFO(car_id,"area edge point size wrong!!");
     }
     for(auto point:new_goal.response.area){
-        // logger.DEBUGINFO(car_id,"point is : %f %f",point.pose.position.x,point.pose.position.y);
+        logger.DEBUGINFO(car_id,"atfer separate point is : %f %f",point.pose.position.x,point.pose.position.y);
         path_coverage.request.select_point.poses.push_back(point);
     }
     path_coverage.request.start_point = GetStartPoint(new_goal.response.area);
@@ -163,14 +172,38 @@ void SearchAction::SearchExcuteCB(const robot_msgs::SearchGoalConstPtr &goal){
             search_server.setSucceeded(result,"failed");
             return;
         }
-        if(path_follow_client.goal_state == actionlib::SimpleClientGoalState::SUCCEEDED){
+        else if(path_follow_client.goal_state == actionlib::SimpleClientGoalState::SUCCEEDED){
             result.succeed = true;
             search_server.setSucceeded(result,"success");
             logger.DEBUGINFO(car_id,"search action success!!!");
             return;
         }
+        else{
+            robot_msgs::SearchFeedback feedback;
+            feedback.error_occured = false;
+            search_server.publishFeedback(feedback);
+        }
+        //结束条件
+        if(cancel_goal){
+            cancel_goal = false;
+            break;
+        }
+        ros::spinOnce();
+        loop.sleep();
     }
 }
+
+void SearchAction::PreemptCB(){
+    if(search_server.isPreemptRequested()){
+        logger.DEBUGINFO(car_id,"search task get cancel request!");
+        cancel_goal = true;
+        path_follow_client.action_client->cancelGoal();
+        robot_msgs::SearchResult result;
+        result.succeed = 2;
+        search_server.setPreempted(result,"goal cancel");
+    }
+}
+
 
 /**
  * 判断机器人是否在探索区域内

@@ -6,6 +6,7 @@
 #include "GroupAsBasicLogic.h"
 #include "robot_msgs/BuildUpAction.h"
 #include "robot_msgs/MarchAction.h"
+#include "robot_msgs/SearchAction.h"
 #include "actionlib/client/simple_action_client.h"
 #include <iostream>
 #include <string>
@@ -40,13 +41,21 @@ public:
 	private: void March_ActiveCallback(void);
 	private: void March_DoneCallback(const actionlib::SimpleClientGoalState &state, const robot_msgs::MarchResultConstPtr &result);
 
-	public: actionlib::SimpleActionClient<robot_msgs::BuildUpAction>* build_up_action;
+	public: void Search();
+
+	private: void Search_FeedbackCallback(const robot_msgs::SearchFeedbackConstPtr &feedback);
+	private: void Search_ActiveCallback(void);
+	private: void Search_DoneCallback(const actionlib::SimpleClientGoalState &state, const robot_msgs::SearchResultConstPtr &result);
+
+	public:actionlib::SimpleActionClient<robot_msgs::BuildUpAction>* build_up_action;
 	public:actionlib::SimpleActionClient<robot_msgs::MarchAction>* gps_march_action;
 	public:actionlib::SimpleActionClient<robot_msgs::MarchAction>* laser_march_action;
+	public:actionlib::SimpleActionClient<robot_msgs::SearchAction>* search_action;
 
 	private: ros::NodeHandle nh;
     private: robot_msgs::BuildUpGoal assemble_goal;
 	private: robot_msgs::MarchGoal march_goal;
+	private: robot_msgs::SearchGoal search_goal;
 };
 
 #endif

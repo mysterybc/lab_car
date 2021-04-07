@@ -47,7 +47,6 @@ public:
 
 	public: TaskIndividual TaskListPop();
 
-public :int test_count;
 };
 
 

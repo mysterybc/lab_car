@@ -36,5 +36,16 @@
         <property ResultOption="BT_SUCCESS" />
       </node>
     </node>
+    <node class="Sequence" id="10">
+      <node class="Condition" id="11">
+        <property Operator="Equal" />
+        <property Opl="TaskIndividual GroupAsBasicLogic.GroupAsBasicLogic::CurrentTask" />
+        <property Opr="const TaskIndividual Search" />
+      </node>
+      <node class="Action" id="12">
+        <property Method="TaskRealize.TaskRealize::Search()" />
+        <property ResultOption="BT_SUCCESS" />
+      </node>
+    </node>
   </node>
 </behavior>

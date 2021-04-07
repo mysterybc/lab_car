@@ -4,6 +4,9 @@
     <rosparam>
         total_robot_ip: ["tcp://127.0.0.1:6661"]
     </rosparam>
+    <rosparam>
+        debug_output_id: [1]
+    </rosparam>
     <arg name="total_car_number" value="1" />
     <arg name="host_ip_address" value="127.0.0.1:6666" />
     <arg name="simulator" value="stage"/>
@@ -45,18 +48,19 @@
     </node> -->
     <!-- tasks  1、build up nohost 2、-->
     <node pkg="task_node"     type="build_up_task_nohost"       name="build_up_task_nohost"/>
-    <!-- <node pkg="task_node"     type="gps_march_task"             name="gps_march_task" /> -->
-    <!-- <node pkg="task_node"     type="laser_march_task"           name="laser_march_task" /> -->
-    <node pkg="task_node"     type="search_task"                name="search_task" />
+    <node pkg="task_node"     type="gps_march_task"             name="gps_march_task" />
+    <node pkg="task_node"     type="laser_march_task"           name="laser_march_task" />
+    <node pkg="task_node"     type="search_task"                name="search_task"  output="screen"/>
 
     <!-- behavior tree -->
-    <!-- <node pkg="decision_node" type="decision_node"      name="decision_node"  output="screen"   /> -->
+    <node pkg="decision_node" type="decision_node"      name="decision_node"  output="screen"   />
 
     <!-- services 1、separate 2、path coverage -->
     <node pkg="service_node" type="separate_goal"      name="separate_goal"  />
-    <node pkg="service_node" type="path_coverage" respawn="false" name="path_coverage" output="screen" clear_params="true">
+    <node pkg="service_node" type="path_coverage"      name="path_coverage" output="screen" clear_params="true">
         <rosparam file="$(find service_node)/path_coverage/gazebo_config/global_costmap_params.yaml" command="load" />
     </node>
+    <node pkg="service_node" type="path_follow"        name="path_follow" />
 
 
     <!-- communication 1、send robot state  2、receive other robot state -->

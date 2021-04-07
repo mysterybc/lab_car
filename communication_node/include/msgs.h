@@ -12,6 +12,7 @@
 #include "robot_msgs/HostCmdArray.h"
 #include "std_msgs/UInt8MultiArray.h"
 #include "sensor_msgs/Joy.h"
+#include "robot_msgs/CurrentTask.h"
 //my lib
 #include "zmq_lib.h"
 
@@ -23,6 +24,133 @@ Json::Value string2json(std::string &msg){
     reader.parse(msg.c_str(),json);
     return json;
 }
+
+/********************************   jiacheng_ver*************************************/
+#define ROBOT_STATE 1
+#define RRBOT_TASK 2
+#define ROBOT_PERCEPTION 3
+//机器人状态消息
+struct RobotStateMsg{
+    RobotStateMsg(const int car_id){
+        message_type = ROBOT_STATE;
+        id = car_id;
+    }
+    std::string fmtMsg(){
+        Json::Value msg;
+        msg["message_id"] = message_type;
+        msg["id"] = id;
+        msg["state"] = "running";
+        msg["pose"].append(x);
+        msg["pose"].append(y);
+        msg["pose"].append(yaw);
+        msg["speed"].append(vx);
+        msg["speed"].append(vy);
+        msg["speed"].append(w);
+        msg["acc"].append(acc_x);
+        msg["acc"].append(acc_y);
+        msg["acc"].append(acc_yaw);
+        return msg.toStyledString();
+    }
+    void GetDataFromMsg(Json::Value msg){
+        id = msg["id"].asInt();
+        robot_state = msg["state"].asString();
+        x = msg["pose"][0].asDouble();
+        y = msg["pose"][1].asDouble();
+        yaw = msg["pose"][2].asDouble();
+        vx = msg["speed"][0].asDouble();
+        vy = msg["speed"][1].asDouble();
+        w = msg["speed"][2].asDouble();
+        acc_x = msg["acc"][0].asDouble();
+        acc_y = msg["acc"][1].asDouble();
+        acc_yaw = msg["acc"][2].asDouble();
+    }
+    int message_type;
+    int id;
+    double x,y,yaw; //in m m deg
+    double vx,vy,w; // in m/s m/s deg/s
+    double acc_x,acc_y,acc_yaw;
+    std::string robot_state;
+};
+
+//机器人任务信息
+struct RobotTaskMsg{
+    RobotTaskMsg(const int car_id){
+        message_type = RRBOT_TASK;
+        id = car_id;
+        current_task_int = 0;
+    }
+    std::string fmtMsg(){
+        Json::Value msg;
+        msg["message_id"] = message_type;
+        msg["id"] = id;
+        switch(current_task_int){
+            case 0: msg["current_task"] = "NONE TASK!!!";break;
+            case 1: msg["current_task"] = "GPS March!!!";break;
+            case 2: msg["current_task"] = "Laser March!!!";break;
+            case 3: msg["current_task"] = "Search Task!!!";break;
+            case 4: msg["current_task"] = "ASSEMBLE TASK!!!";break;
+            case 5:	msg["current_task"] = "STOP TASK!!!";break;
+            case 6:	msg["current_task"] = "Pause TASK!!!";break;
+            case 7:	msg["current_task"] = "Resume TASK!!!";break;
+        }
+        return msg.toStyledString();
+    }
+    void GetDataFromMsg(Json::Value msg){
+        id = msg["id"].asInt();
+        current_task_str = msg["current_task"].asString();
+    }
+    int message_type;
+    int id;
+    uint8_t current_task_int;
+    std::string current_task_str;
+};
+
+struct Point{
+    Point(){
+        x = 0; 
+        y = 0;
+    }
+    double x;
+    double y;
+};
+
+//机器人检测信息
+struct RobotPerceptionMsg{
+    RobotPerceptionMsg(const int car_id){
+        message_type = ROBOT_PERCEPTION;
+        id = car_id;
+        has_obstracle = false;
+    }
+    std::string fmtMsg(){
+        Json::Value msg;
+        msg["message_id"] = message_type;
+        msg["id"] = id;
+        msg["obstracle_number"] = (int)points.size();
+        for(auto point:points){
+            Json::Value json_point;
+            json_point["x"].append(point.x);
+            json_point["y"].append(point.y);
+            msg["points"].append(json_point);
+        }
+        return msg.toStyledString();
+    }
+    void GetDataFromMsg(Json::Value json){
+        id = json["id"].asInt();
+        obstracle_number = json["obstracle_number"].size();
+        for(int i = 0 ; i < json["points"].size(); i++){
+            Point point;
+            point.x = json["points"][i][0].asDouble();
+            point.y = json["points"][i][1].asDouble();
+            points.push_back(point);
+        }
+    }
+    int message_type;
+    int id;
+    bool has_obstracle;
+    int obstracle_number;
+    std::vector<Point> points;
+};
+
 
 //发送的，给上位机发也给机器人发
 //机器人状态消息
@@ -137,11 +265,12 @@ struct RobotState{
 
 //接收的host指令
 struct HostCmd{
-    HostCmd(zmq_lib::Receiver* receiver_,std::string ip){
+    HostCmd(zmq_lib::Receiver* receiver_,std::string ip,int car_id){
         ros::NodeHandle nh;
         joy_pub = nh.advertise<sensor_msgs::Joy>("joy",10);
         receiver = receiver_;
         host_ip = ip;
+        robot_id = car_id;
     }
     //message类型
     enum HostMessageType{
@@ -195,18 +324,34 @@ struct HostCmd{
                 }
             }
             cmd.mission.mission = json[i]["type"].asUInt();
-            cmd.goal.header.stamp = ros::Time().now();
-            cmd.goal.header.frame_id = "map";
+            geometry_msgs::PoseStamped goal;
+            goal.header.stamp = ros::Time().now();
+            goal.header.frame_id = "map";
             double yaw = 0;
-            if(json[i]["instruction"].size() != 0){
-                cmd.goal.pose.position.x = json[i]["instruction"][0].asDouble();
-                cmd.goal.pose.position.y = json[i]["instruction"][1].asDouble();
-                cmd.goal.pose.position.z = 0;
-                yaw = json[i]["instruction"][2].asDouble();
+            if(cmd.mission.mission == 3){
+                for(int j = 0 ; j < json[i]["instruction"].size(); j++){
+                    if(json[i]["instruction"][i].isArray()){
+                        goal.pose.position.x = json[i]["instruction"][j][0].asDouble();
+                        goal.pose.position.y = json[i]["instruction"][j][1].asDouble();
+                        goal.pose.position.z = 0;
+                    }
+                    goal.pose.orientation = tf::createQuaternionMsgFromYaw(0);
+                    cmd.goal.push_back(goal);
+                }
             }
-            //目前输入角度，手动坐标-1
-            yaw = yaw / 180.0 * 3.1415926;
-            cmd.goal.pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
+            else{
+                if(json[i]["instruction"].isArray()){
+                    goal.pose.position.x = json[i]["instruction"][0].asDouble();
+                    goal.pose.position.y = json[i]["instruction"][1].asDouble();
+                    goal.pose.position.z = 0;
+                }
+                yaw = json[i]["instruction"][2].asDouble();
+                //目前输入角度，手动坐标-1
+                yaw = yaw / 180.0 * 3.1415926;
+                goal.pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
+                cmd.goal.push_back(goal);
+            }
+            
             host_cmd_array.host_cmd_array.push_back(cmd);
         }
     }
@@ -231,10 +376,28 @@ struct HostCmd{
     void getRemoteCtrl(Json::Value json){
         for(int i = 0 ; i <  json.size(); i++){
             sensor_msgs::Joy joy;
-            if(json[i]["instruction"].isArray()){
-                joy.axes[0] = json[i]["instruction"][0].asDouble();
-                joy.axes[1] = json[i]["instruction"][1].asDouble();
-                joy.buttons[5] = json[i]["instruction"][2].asDouble();
+            bool has_me{false};
+            if(json[i]["id"].isArray()){
+                Json::Value json_id = json[i]["id"];
+                for(int i = 0; i < json_id.size(); i++){
+                    if(json_id[i].asInt() == robot_id){
+                        has_me = true;
+                    }
+                }
+            }
+            if(!has_me){
+                return ;
+            }
+            if(json[i]["instruction"].size()!=0){
+                double axes1,axes2;
+                axes1 = json[i]["instruction"][0].asDouble();
+                axes2 = json[i]["instruction"][1].asDouble();
+                joy.axes.push_back(axes1);
+                joy.axes.push_back(axes2);
+                for(int j = 0 ; j < 5; j++){
+                    joy.buttons.push_back(0);
+                }
+                joy.buttons.push_back(json[i]["instruction"][2].asInt());
             }
             joy_pub.publish(joy);
         }
@@ -246,11 +409,10 @@ struct HostCmd{
     }
 
     HostMessageType json2Msg(std::string msg){
-        std::cout << msg << std::endl;
         Json::Value json;
         Json::Reader reader;
         reader.parse(msg.c_str(),json);
-        message_type = (HostMessageType)json["message_type"].asInt();
+        message_type = (HostMessageType)json["mission_type"].asInt();
         switch(message_type){
             case HostMessageType::SingleMission : json2Mission(json["mission_array"]);break;
             case HostMessageType::MultiMission : json2Mission(json["mission_array"]);break;
@@ -268,4 +430,5 @@ struct HostCmd{
     private:
     zmq_lib::Receiver* receiver;
     ros::Publisher joy_pub;
+    int robot_id;
 };
