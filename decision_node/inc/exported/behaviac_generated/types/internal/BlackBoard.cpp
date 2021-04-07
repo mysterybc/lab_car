@@ -11,7 +11,7 @@ BlackBoard::BlackBoard()
     members_pub = nh.advertise<std_msgs::Int8MultiArray>("my_group_member",10);
     tag_pose_pub=nh.advertise<geometry_msgs::Pose>("tag_pose",10);
     group_state_sub=nh.subscribe("robot_states",10,&BlackBoard::GroupStateCallback,this);
-    tag_detection_sub=nh.subscribe("tag_detections",10,&BlackBoard::TagDetectionsCallback,this);
+    tag_detection_sub=nh.subscribe("/tag_detections",10,&BlackBoard::TagDetectionsCallback,this);
     std::string namespace_=nh.getNamespace();
     nh.getParam(namespace_+"/car_id",car_id);
     logger.init_logger(car_id);

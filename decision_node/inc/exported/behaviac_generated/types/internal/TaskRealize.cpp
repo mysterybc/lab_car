@@ -163,6 +163,7 @@ void TaskRealize::Search_FeedbackCallback(const robot_msgs::SearchFeedbackConstP
         if(fore_func_state==ForeFuncState::Running)
         {
             g_GroupAsBasicLogicAgent->CurrentTask=TaskIndividual::NonTask;
+            g_TaskRealizeAgent->fore_func_state=ForeFuncState::Success;
             // logger.DEBUGINFO(g_BlackBoardAgent->car_id,"i am canceling!!!");
             g_TaskRealizeAgent->search_action->cancelGoal();//finish search behavior
             if(tag_detected_from_me)

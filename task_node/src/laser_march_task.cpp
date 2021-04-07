@@ -142,11 +142,11 @@ void init_controller(const ConfigBIT& config, StateBIT& state) {
 	//ControllerSetDebugInfo(config.debug_info, 1);
 	ControllerSetDebugInfo(DEBUG_INFO_ALL, 0);
 
-	ControllerSetDebugInfo(DEBUG_INFO_STATES, 0);
-	ControllerSetDebugInfo(DEBUG_INFO_COMPUTE, 0);
-	ControllerSetDebugInfo(DEBUG_INFO_FUNCTION, 0);
-	ControllerSetDebugInfo(DEBUG_INFO_COM_SEND, 0);
-	ControllerSetDebugInfo(DEBUG_INFO_COM_RECV, 0);
+	// ControllerSetDebugInfo(DEBUG_INFO_STATES, 0);
+	// ControllerSetDebugInfo(DEBUG_INFO_COMPUTE, 0);
+	// ControllerSetDebugInfo(DEBUG_INFO_FUNCTION, 0);
+	// ControllerSetDebugInfo(DEBUG_INFO_COM_SEND, 0);
+	// ControllerSetDebugInfo(DEBUG_INFO_COM_RECV, 0);
 	// printf("Turn off Debug Info99999!!!\n");
 
 	state.me.ID = config.robotID;
@@ -324,16 +324,16 @@ void on_new_gps_pos(const nav_msgs::Odometry& msg){
 }
 
 void on_new_lidar_pos(const nav_msgs::Odometry& msg){
-	// double yaw,roll,pitch;
-	// tf::Quaternion quat;
-	// tf::quaternionMsgToTF(msg.pose.pose.orientation,quat);
-    // tf::Matrix3x3(quat).getEulerYPR(yaw,pitch,roll);
+	double yaw,roll,pitch;
+	tf::Quaternion quat;
+	tf::quaternionMsgToTF(msg.pose.pose.orientation,quat);
+    tf::Matrix3x3(quat).getEulerYPR(yaw,pitch,roll);
     StateInfo one;
 	one.ID = myconfig.robotID;
 	one.x = (float)m2cm(msg.pose.pose.position.x);
 	one.y = (float)m2cm(msg.pose.pose.position.y);
-	one.heading = mydata.me.heading;
-	// one.heading = (float)rad2deg(yaw);
+	// one.heading = mydata.me.heading;
+	one.heading = (float)rad2deg(yaw);
 	one.v = 0;  // TBD
 	one.w = 0;  // TBD
 	mydata.me = one;

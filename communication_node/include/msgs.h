@@ -320,18 +320,34 @@ struct HostCmd{
                 }
             }
             cmd.mission.mission = json[i]["type"].asUInt();
-            cmd.goal[0].header.stamp = ros::Time().now();
-            cmd.goal[0].header.frame_id = "map";
+            geometry_msgs::PoseStamped goal;
+            goal.header.stamp = ros::Time().now();
+            goal.header.frame_id = "map";
             double yaw = 0;
-            if(json[i]["instruction"].size() != 0){
-                cmd.goal[0].pose.position.x = json[i]["instruction"][0].asDouble();
-                cmd.goal[0].pose.position.y = json[i]["instruction"][1].asDouble();
-                cmd.goal[0].pose.position.z = 0;
-                yaw = json[i]["instruction"][2].asDouble();
+            if(cmd.mission.mission == 3){
+                for(int j = 0 ; j < json[i]["instruction"].size(); j++){
+                    if(json[i]["instruction"][i].isArray()){
+                        goal.pose.position.x = json[i]["instruction"][j][0].asDouble();
+                        goal.pose.position.y = json[i]["instruction"][j][1].asDouble();
+                        goal.pose.position.z = 0;
+                    }
+                    goal.pose.orientation = tf::createQuaternionMsgFromYaw(0);
+                    cmd.goal.push_back(goal);
+                }
             }
-            //目前输入角度，手动坐标-1
-            yaw = yaw / 180.0 * 3.1415926;
-            cmd.goal[0].pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
+            else{
+                if(json[i]["instruction"].isArray()){
+                    goal.pose.position.x = json[i]["instruction"][0].asDouble();
+                    goal.pose.position.y = json[i]["instruction"][1].asDouble();
+                    goal.pose.position.z = 0;
+                }
+                yaw = json[i]["instruction"][2].asDouble();
+                //目前输入角度，手动坐标-1
+                yaw = yaw / 180.0 * 3.1415926;
+                goal.pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
+                cmd.goal.push_back(goal);
+            }
+            
             host_cmd_array.host_cmd_array.push_back(cmd);
         }
     }
@@ -392,6 +408,7 @@ struct HostCmd{
         Json::Value json;
         Json::Reader reader;
         reader.parse(msg.c_str(),json);
+        std::cout << "message is " << json["mission_array"].toStyledString() << std::endl;
         message_type = (HostMessageType)json["mission_type"].asInt();
         switch(message_type){
             case HostMessageType::SingleMission : json2Mission(json["mission_array"]);break;

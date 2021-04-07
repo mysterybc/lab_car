@@ -118,12 +118,14 @@ void OnNewScan(const sensor_msgs::LaserScanConstPtr &msg, RobotPerceptionMsg& ro
     double pi = 3.1415926;
     double angle = -3.1415927;
     double angle_inc = 0.0175;
+    int count{0};
     for(auto range:msg->ranges){
-        if(range <= 3){
+        if(range <= 3 && count <5){
             Point point;
             point.y = sin(pi-angle)*range;
             point.x = cos(pi-angle)*range;
             robot_perception_msg.points.push_back(point);
+            count ++;
         }
         angle += angle_inc;
     }
@@ -178,12 +180,18 @@ int main(int argc,char **argv)
     //loop
     //in loop send state message
     ros::Rate loop(20);
+    int count{0};
     while(ros::ok())
     {
+        //old robot states
         sender.sendMsg(state_msg.fmtMsg());
-        // sender.sendMsg(robot_state_msg.fmtMsg());
-        // sender.sendMsg(robot_task_msg.fmtMsg());
-        // sender.sendMsg(robot_perception_msg.fmtMsg());
+        //old robot states
+        if(count++==1){
+            sender.sendMsg(robot_state_msg.fmtMsg());
+            sender.sendMsg(robot_task_msg.fmtMsg());
+            sender.sendMsg(robot_perception_msg.fmtMsg());
+            count = 0;
+        }
         ros::spinOnce();
         loop.sleep();
     }

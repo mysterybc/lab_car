@@ -13,7 +13,7 @@
     <!-- Remap topics from those used in code to those on the ROS network -->
     <remap from="image_rect" to="$(arg camera_name)/$(arg image_topic)" />
     <remap from="camera_info" to="$(arg camera_name)/camera_info" />
-    <remap from="tag_detections" to="/robot_0/tag_detections"/>
+    <!-- <remap from="tag_detections" to="/robot_0/tag_detections"/> -->
 
 
     <param name="camera_frame" type="str" value="$(arg camera_frame)" />
