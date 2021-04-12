@@ -142,7 +142,7 @@ int main(int argc,char **argv)
     //config id & ip
     int car_id;
     std::string tf_frame;
-    my_lib::GetParam("publish_robot_state",&car_id,NULL,&tf_frame,&ip_address,NULL,NULL,NULL);
+    my_lib::GetParam("publish_robot_state",&car_id,NULL,&tf_frame,&ip_address);
 
     //zmq_init
     zmq::context_t ctx(1);

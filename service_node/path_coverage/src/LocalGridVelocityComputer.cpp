@@ -50,9 +50,9 @@ void LocalGridVelocityComputer::computeTransAndRotateDelta()
 void LocalGridVelocityComputer::updatePose()
 {
     //kinetic devel
-    tf::Stamped<tf::Pose> pose;
-    if(costmap2d_ros_->getRobotPose(pose))
-        tf::poseStampedTFToMsg(pose, current_pose_);
+    tf::Stamped<tf::Pose> pose;   
+        if(costmap2d_ros_->getRobotPose(pose))   
+    tf::poseStampedTFToMsg(pose, current_pose_);   
     //melodic devel
     // costmap2d_ros_->getRobotPose(current_pose_);
 }

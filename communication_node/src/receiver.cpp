@@ -81,7 +81,7 @@ int main(int argc, char** argv){
     std::string host_ip;
     std::string my_ip;
     std::vector<std::string> total_ip;
-    my_lib::GetParam("publish_robot_state",&car_id,NULL,NULL,&my_ip,&host_ip,NULL,&total_ip);
+    my_lib::GetParam("publish_robot_state",&car_id,NULL,NULL,&my_ip,&host_ip,&total_ip);
 
 
     //zmq_init

@@ -24,6 +24,7 @@
 
 <launch>
     <!-- 全局参数 -->
+    <param name="is_simulation" value="false"/>
     <!-- ip只有通讯节点使用 -->
     <arg name="car_id" value="2"/>
     <param name="total_car_number" type="int" value="2" />
@@ -38,18 +39,19 @@
     </rosparam>
     <!-- 下面两个source_node使用 -->
     <!-- ttyUSB0为驱动接口，无需改变 -->
-    <param name="imu_port" type="string" value="/dev/ttyUSB2" />
-    <param name="gps_port" type="string" value="/dev/ttyUSB1" />
+    <param name="imu_port" type="string" value="/dev/ttyUSB1" />
+    <param name="gps_port" type="string" value="/dev/ttyUSB2" />
     <!-- 遥控器接口 -->
     <arg name="joy_port" value="/dev/input/js0"/>
-
+    <include file="$(find realsense2_camera)/launch/rs_t265.launch" />
+    <include file="$(find apriltag_ros)/launch/continuous_detection.launch" />
     <!-- 1 -->
     <node pkg="tf" type="static_transform_publisher" name="world_map_broadcaster" args="0 0 -0.4 0 0 0 /world /map 100" />
     <node pkg="tf" type="static_transform_publisher" name="lidar_base_broadcaster" args="-0.2 0 -0.4 0 0 0 /lidar_link /base_link 100" />
     <node pkg="tf" type="static_transform_publisher" name="lidar_velodyne_broadcaster" args="0 0 0 0 0 0 /lidar_link /velodyne 100" />
     <!-- 2 -->
     <node pkg="source_node"  type="driver_source_node"      name="driver_source_node"     output="screen"/> 
-    <!-- <node pkg="source_node"  type="navigation_source_node"  name="navigation_source_node" output="screen"/>  -->
+    <node pkg="source_node"  type="navigation_source_node"  name="navigation_source_node" output="screen"/> 
     <!-- 3 -->
     <node pkg="control_node" type="remote_control_node" name="remote_control_node" output="screen"/> 
     <!-- 4 -->
@@ -70,8 +72,10 @@
     </node>
     <!-- 7 -->
     <node pkg="task_node"      type="build_up_task_nohost" name="build_up_task_nohost"     />
-    <node pkg="task_node"      name="gps_march_task"       type="gps_march_task"        output="screen"   />
+    <node pkg="task_node"      name="gps_march_task"       type="gps_march_task"          />
     <node pkg="task_node"      name="laser_march_task"     type="laser_march_task"         />
+    <node pkg="task_node"           name="search_task"          type="search_task"           output="screen"    />
+
     <!-- 8 -->
     <node pkg="decision_node" type="decision_node"  name="decision_node"   output="screen" />
     <!-- 9 -->
@@ -124,7 +128,11 @@
 
     </node>
     <!-- 12 -->
-    <node pkg="service_node" type="separate_goal"      name="separate_goal" />
+    <node pkg="service_node"        type="separate_goal"        name="separate_goal"        output="screen"   />
+    <node pkg="service_node" type="path_coverage"      name="path_coverage"  clear_params="true" output="screen"  >
+        <rosparam file="$(find bring_up)/cfg/real_world/car$(arg car_id)/path_coverage_param.yaml" command="load" />
+    </node>
+    <node pkg="service_node" type="path_follow"        name="path_follow"  output="screen"/>   
     <!-- 12 -->
     <node pkg="communication_node" name="receiver" type="receiver" />
     <node pkg="communication_node" name="publisher" type="publisher" />

@@ -75,7 +75,7 @@ struct ConfigBIT {
 	
 	std::vector<int> idlist, idform;
 	std::vector<float> dx, dy;
-	float edge_scaling = 1.6f;
+	float edge_scaling = 2.5f;
 };
 struct StateBIT {
 	StateInfo mean(const std::vector<int>& id_list);
@@ -273,7 +273,7 @@ int main(int argc, char* argv[]) {
 	// myconfig.id2ns[4] = "robot_3/";
 	myconfig.idlist = {1, 2, 3, 4};  // These robots are all connected
 	myconfig.idform = {1, 2, 3, 4};  // These robots will be in a formation
-	myconfig.edge_scaling = 2.0;                // when not specifying dx, dy, default edge length = 1m (which is too small)
+	myconfig.edge_scaling = 2.5;                // when not specifying dx, dy, default edge length = 1m (which is too small)
 	myconfig.dx = {0.5, 0.5, -0.5, -0.5 };   // optional, meter
 	myconfig.dy = {0.5, -0.5, -0.5, 0.5 };   // optional, meter
 
