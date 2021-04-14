@@ -39,8 +39,8 @@
     </rosparam>
     <!-- 下面两个source_node使用 -->
     <!-- ttyUSB0为驱动接口，无需改变 -->
-    <param name="imu_port" type="string" value="/dev/ttyUSB1" />
-    <param name="gps_port" type="string" value="/dev/ttyUSB2" />
+    <param name="imu_port" type="string" value="/dev/imu_port" />
+    <param name="gps_port" type="string" value="/dev/gps_port" />
     <!-- 遥控器接口 -->
     <arg name="joy_port" value="/dev/input/js0"/>
     <include file="$(find realsense2_camera)/launch/rs_t265.launch" />

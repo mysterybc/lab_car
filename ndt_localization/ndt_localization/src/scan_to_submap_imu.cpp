@@ -17,6 +17,7 @@
 #include <pcl/filters/approximate_voxel_grid.h>
 #include <pcl/filters/radius_outlier_removal.h>
 #include <pcl/filters/statistical_outlier_removal.h>
+#include <pcl/filters/impl/filter.hpp>
 
 #include <tf/transform_datatypes.h>
 #include <tf/transform_broadcaster.h>
@@ -58,7 +59,7 @@ const int laserCloudNum = laserCloudX * laserCloudY;
 pcl::PointCloud<PointT>::Ptr laserCloudMapArray[laserCloudNum];
 
 
-ros::Publisher sub_map_pub,transform_before_points_pub,transformed_points_pub,pubPoseForKITTI;
+ros::Publisher sub_map_pub,transform_before_points_pub,transformed_points_pub,pubPoseForKITTI,filtered_pointcloud_pub;
 //点云指针
 pcl::PointCloud<PointT>::ConstPtr  prev_cloud_Ptr(new pcl::PointCloud<PointT>);
 pcl::PointCloud<PointT>::Ptr  cur_cloud_Ptr(new pcl::PointCloud<PointT>);
@@ -125,8 +126,8 @@ pcl::PointCloud<PointT>::ConstPtr distance_filter(const pcl::PointCloud<PointT>:
     return filtered;
 }
 //高度滤波器
-double height = 4.0;
-pcl::PointCloud<PointT>::ConstPtr height_filter(const pcl::PointCloud<PointT>::ConstPtr& cloud)
+// double height = 4.0;
+pcl::PointCloud<PointT>::ConstPtr height_filter(const pcl::PointCloud<PointT>::ConstPtr& cloud, double max_height,double min_height)
 {
     pcl::PointCloud<PointT>::Ptr filtered(new pcl::PointCloud<PointT>());
     filtered->reserve(cloud->size());
@@ -134,7 +135,7 @@ pcl::PointCloud<PointT>::ConstPtr height_filter(const pcl::PointCloud<PointT>::C
     std::copy_if(cloud->begin(), cloud->end(), std::back_inserter(filtered->points),
       [&](const PointT& p) {
         double d = p.z;
-        return d > -height && d < height;
+        return d > min_height && d < max_height;
       }
     );
 
@@ -151,17 +152,25 @@ double downsample_resolution = 0.2;
 
 //点云滤波处理
 pcl::PointCloud<PointT>::ConstPtr filter_point(const pcl::PointCloud<PointT>::Ptr& source_point)
-{
+{    
+    //remove nan
+    pcl::PointCloud<PointT>::Ptr nan_filtered(source_point);
+    std::vector<int> indices;
+    pcl::removeNaNFromPointCloud(*nan_filtered, *nan_filtered, indices);
 
-    pcl::PointCloud<PointT>::ConstPtr filtered = distance_filter(source_point);
-    ROS_INFO("distance");
 
+    //distance filter
+    pcl::PointCloud<PointT>::ConstPtr filtered= distance_filter(nan_filtered);
+    // ROS_INFO("distance");
+    
+
+    filtered = height_filter(filtered,4.0,0);
 
     boost::shared_ptr<pcl::VoxelGrid<PointT>> voxelgrid(new pcl::VoxelGrid<PointT>());
     voxelgrid->setLeafSize(downsample_resolution, downsample_resolution, downsample_resolution);
     downsample_filter = voxelgrid;
     filtered = downsample(filtered);
-    ROS_INFO("downsample");
+    // ROS_INFO("downsample");
     
 
     pcl::RadiusOutlierRemoval<PointT>::Ptr rad(new pcl::RadiusOutlierRemoval<PointT>());
@@ -169,8 +178,12 @@ pcl::PointCloud<PointT>::ConstPtr filter_point(const pcl::PointCloud<PointT>::Pt
     rad->setMinNeighborsInRadius(min_neighbors);
     outlier_removal_filter = rad;
     filtered = outlier_removal(filtered);
-    ROS_INFO("outlier_removal");
 
+    sensor_msgs::PointCloud2 output;
+    pcl::toROSMsg (*filtered, output);
+    output.header.frame_id = "velodyne";
+
+    filtered_pointcloud_pub.publish(output);
     return filtered;
 }
 
@@ -187,6 +200,7 @@ int not_first_frame;
 //submap生成： 输入：1、预估的变换关系 2、完整的点云地图（或者分割好的点云cube） 输出：当前预估关系的map下的submap
 void sub_map_generation(const Eigen::Matrix4f transform,const pcl::PointCloud<PointT>::Ptr laserCloudMapArray[] , pcl::PointCloud<PointT>::Ptr sub_map)
 {
+    double sub_map_start_time = ros::Time::now().toSec();
     int cur_I,cur_J;
     int trans_to_map_X,trans_to_map_Y;
 
@@ -236,12 +250,13 @@ void sub_map_generation(const Eigen::Matrix4f transform,const pcl::PointCloud<Po
     //显示地图的点云数量
 //    std::cerr << "map_PointCloud : " << sub_map->width * sub_map->height
 //    << " data points (" << pcl::getFieldsList(*sub_map) << ")."<<std::endl;
-
+    // std::cout << "sub map generation cost time is " << ros::Time::now().toSec() - sub_map_start_time << std::endl;
     sensor_msgs::PointCloud2 output;
     pcl::toROSMsg (*sub_map, output);
     output.header.frame_id = "world";
 
     sub_map_pub.publish(output);
+    // std::cout << "sub map generation include publish pointcloud cost time is " << ros::Time::now().toSec() - sub_map_start_time << std::endl;
 }
 
 void RosQ2RPY(const geometry_msgs::Quaternion& quaternion ,double& roll,double& pitch,double& yaw)
@@ -401,7 +416,9 @@ Eigen::Matrix4f matching_scan_to_map_fix(double& score,const pcl::PointCloud<Poi
     transform_before_points_pub.publish(before_cloud);
 
     //该函数可以读一帧，匹配一帧
+        // double matching_start_time = ros::Time::now().toSec();
     cur_trans = ndtmatch.matching(score,cur_point,sub_map,cur_trans);
+    // std::cout << "scan matching cost time is " << ros::Time::now().toSec() - matching_start_time << std::endl;
 
     error_trans.block(0,0,3,3) = cur_trans.block(0,0,3,3) * prev_trans.block(0,0,3,3).transpose();
     error_trans.block<3, 1>(0, 3) = cur_trans.block<3, 1>(0, 3) - prev_trans.block<3, 1>(0, 3);
@@ -516,7 +533,6 @@ Eigen::Matrix4f matching_scan_to_map_fix_without_imu(double& score,const pcl::Po
 
     transform_before_points_pub.publish(before_cloud);
 
-    //该函数可以读一帧，匹配一帧
     cur_trans = ndtmatch.matching(score,cur_point,sub_map,cur_trans);
 
     error_trans.block(0,0,3,3) = cur_trans.block(0,0,3,3) * prev_trans.block(0,0,3,3).transpose();
@@ -552,7 +568,7 @@ void velodyne_points_cb(const sensor_msgs::PointCloud2::ConstPtr& msg)
 
     timeScanCur = msg->header.stamp.toSec();
 
-	ROS_INFO("velodyne points is receiving ");
+	// ROS_INFO("velodyne points is receiving ");
     pcl::fromROSMsg(*msg, *cur_cloud_Ptr);
 
     pcl::PointCloud<PointT>::ConstPtr fliter_cloud_Ptr = filter_point(cur_cloud_Ptr);
@@ -566,7 +582,7 @@ void velodyne_points_cb(const sensor_msgs::PointCloud2::ConstPtr& msg)
 
     ros::Duration cost_time = end - begin;
 
-    std::cout<<"cost_time:"<<cost_time<<"score:"<<score<<std::endl;
+    std::cout<<"cost_time: "<<cost_time.toSec()<<"   score: "<<score<<std::endl;
 
     not_first_frame = 1;
 
@@ -610,7 +626,7 @@ void map_input(pcl::PointCloud<PointT>::ConstPtr& filtered_map_ptr)
 
     //对地图进行滤波
 
-    filtered_map_ptr = height_filter(map_Ptr);
+    filtered_map_ptr = height_filter(map_Ptr,4.0,-0.3);
     
     boost::shared_ptr<pcl::VoxelGrid<PointT>> voxelgrid(new pcl::VoxelGrid<PointT>());
     ROS_INFO("height filter");
@@ -714,10 +730,12 @@ int main (int argc, char** argv)
 
     //initialpose
 
+
     sub_map_pub = nh.advertise<sensor_msgs::PointCloud2>("sub_map_points", 1);
     transformed_points_pub = nh.advertise<sensor_msgs::PointCloud2>("transformed_points", 1);
     transform_before_points_pub = nh.advertise<sensor_msgs::PointCloud2>("transform_before_points", 1);
     pubPoseForKITTI = nh.advertise<nav_msgs::Odometry>("/odom", 1);
+    filtered_pointcloud_pub = nh.advertise<sensor_msgs::PointCloud2>("filtered_pointcloud",1);
 
 
     ros::Rate r(100.0);

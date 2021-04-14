@@ -147,17 +147,17 @@ bool SeparateGoal::CalGoal(robot_msgs::Separate::Request &req,
     }
     else{
         if(x_flag >= online_car/2){
-            goal_point.position.x += 1;
+            goal_point.position.x += 2;
         }
         else{
-            goal_point.position.x -= 1;
+            goal_point.position.x -= 2;
         }
         if(online_car > 2){
             if(y_flag >= online_car/2){
-                goal_point.position.y += 1;
+                goal_point.position.y += 2;
             }
             else{
-                goal_point.position.y -= 1;
+                goal_point.position.y -= 2;
             }
         }
     }
