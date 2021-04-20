@@ -1,27 +1,27 @@
 #include "separate_goal.h"
 #include "tf/transform_listener.h"
 #include "algorithm"
-#include "my_param_server.h"
+
 
 Debug::DebugLogger logger;
 
 SeparateGoal::SeparateGoal(){
     ros::NodeHandle nh;
     //获取group空间名
-    my_lib::GetParam("path_follow",&car_id,NULL,&tf_ns);
+    param_server.GetParam("path_follow_node");
     robots_pose_sub = nh.subscribe("odom",10,&SeparateGoal::OnNewPose,this);
     robots_state_sub = nh.subscribe("robot_states",10,&SeparateGoal::RobotStateCallback,this);
     map_sub = nh.subscribe("/map",10,&SeparateGoal::MapCallback,this);
     separate_goal_server = nh.advertiseService("separate_goal",&SeparateGoal::CalGoal,this);
     separate_area_server = nh.advertiseService("separate_area",&SeparateGoal::CalArea,this);
     //Debug info
-    logger.init_logger(car_id);
+    logger.init_logger(param_server.car_id);
 
 }
 
 bool SeparateGoal::CalArea( robot_msgs::SeparateArea::Request &req,
                             robot_msgs::SeparateArea::Response & res){
-    logger.DEBUGINFO(car_id,"separate area start!!");
+    logger.DEBUGINFO(param_server.car_id,"separate area start!!");
     int x_flag{0}, y_flag{0};
     //确定需要进行散点的车辆数
     int online_car{1};
@@ -120,11 +120,11 @@ bool SeparateGoal::CalArea( robot_msgs::SeparateArea::Request &req,
 bool SeparateGoal::CalGoal(robot_msgs::Separate::Request &req,
                            robot_msgs::Separate::Response &res){
     goal_point = req.goal;  
-    logger.DEBUGINFO(car_id,"separate start!!");
+    logger.DEBUGINFO(param_server.car_id,"separate start!!");
     int x_flag{0}, y_flag{0};
     //确定需要进行散点的车辆数
     int online_car{1};
-    logger.DEBUGINFO(car_id,"get my pose!!");
+    logger.DEBUGINFO(param_server.car_id,"get my pose!!");
     //统计在线车辆，并判定散点方式
     for(auto it : robots_info){
         if(it.car_id == 0){
@@ -147,17 +147,17 @@ bool SeparateGoal::CalGoal(robot_msgs::Separate::Request &req,
     }
     else{
         if(x_flag >= online_car/2){
-            goal_point.position.x += 2;
+            goal_point.position.x += 1.5;
         }
         else{
-            goal_point.position.x -= 2;
+            goal_point.position.x -= 1.5;
         }
         if(online_car > 2){
             if(y_flag >= online_car/2){
-                goal_point.position.y += 2;
+                goal_point.position.y += 1.5;
             }
             else{
-                goal_point.position.y -= 2;
+                goal_point.position.y -= 1.5;
             }
         }
     }

@@ -142,13 +142,6 @@ void init_controller(const ConfigBIT& config, StateBIT& state) {
 	//ControllerSetDebugInfo(config.debug_info, 1);
 	ControllerSetDebugInfo(DEBUG_INFO_ALL, 0);
 
-	ControllerSetDebugInfo(DEBUG_INFO_STATES, 0);
-	ControllerSetDebugInfo(DEBUG_INFO_COMPUTE, 0);
-	ControllerSetDebugInfo(DEBUG_INFO_FUNCTION, 0);
-	ControllerSetDebugInfo(DEBUG_INFO_COM_SEND, 0);
-	ControllerSetDebugInfo(DEBUG_INFO_COM_RECV, 0);
-	// printf("Turn off Debug Info99999!!!\n");
-
 	state.me.ID = config.robotID;
 	state.me.x = 0;
 	state.me.y = 0;
@@ -208,12 +201,6 @@ void algomsg2multiarr(const std::string& msg, std_msgs::UInt8MultiArray& data) {
 		data.data[i] = (uint8_t)msg[i];
 	}
 }
-
-//use tf instead
-// void on_new_pos(const nav_msgs::Odometry& state) {
-// 	mydata.me = odm2stateinfo(myconfig.robotID, state);
-// 	ROS_DEBUG("Get new state (x, y, z): %.2f, %.2f, %.2f\n", mydata.me.x, mydata.me.y, mydata.me.heading);
-// }
 
 //get other robot pos
 void RobotHandler::on_new_pos(const robot_msgs::RobotStatesConstPtr& states) {
@@ -404,6 +391,11 @@ int ActionConfig::run_march_action(){
 		//判断任务是否结束
 		if(ControllerTaskProgress() >= 0.995){
 			logger.DEBUGINFO(myconfig.robotID,"march task finish!");
+            cancel_action = false;
+			geometry_msgs::Twist u_pub;
+			u_pub.linear.x = 0;
+			u_pub.angular.z = 0;  
+			cmd_pub.publish(u_pub);
 			break;
 		}
 		//打断任务
@@ -459,8 +451,6 @@ void ActionConfig::config_controller(const robot_msgs::MarchGoalConstPtr &goal){
 	myconfig.idlist.clear();
 	myconfig.idform.clear();
 	cancel_action = false;
-	// mydata.others.id2msg.clear();
-	// mydata.others.id2state.clear();
 	for(auto number:goal->idList){
 		myconfig.idlist.push_back(number);
 		myconfig.idform.push_back(number);
@@ -481,9 +471,7 @@ int main(int argc, char* argv[]) {
 	myconfig.config_dir = package_path + "/bitrobot/config";
 	myconfig.debug_info = DEBUG_INFO_STATES | DEBUG_INFO_FUNCTION | DEBUG_INFO_COMPUTE;
 	myconfig.target_velocity = 0.5; // m/s
-	myconfig.idlist = {1, 2, 3, 4};  // These robots are all connected
-	myconfig.idform = {1, 2, 3, 4};  // These robots will be in a formation
-	myconfig.edge_scaling = 2.5;                // when not specifying dx, dy, default edge length = 1m (which is too small)
+	myconfig.edge_scaling = 1.8;                // when not specifying dx, dy, default edge length = 1m (which is too small)
 	myconfig.dx = {0.5, 0.5, -0.5, -0.5 };   // optional, meter
 	myconfig.dy = {0.5, -0.5, -0.5, 0.5 };   // optional, meter
 
@@ -496,10 +484,10 @@ int main(int argc, char* argv[]) {
 	// ----------------------- 
 	ros::init(argc, argv, "bitform");
 	ros::NodeHandle node;
-    my_lib::GetParam("path_follow",&myID);
-	myconfig.robotID = myID;
-	printf("This is Robot %d\n", myID);
-	logger.init_logger(myID);
+    my_lib::ParamServer param_server;
+    param_server.GetParam("gps_march_task");
+	myconfig.robotID = param_server.car_id;
+	logger.init_logger(param_server.car_id);
 	
 	
 	// ----------------------- 

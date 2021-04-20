@@ -81,7 +81,7 @@ public:
     void OnNewPose(const nav_msgs::OdometryConstPtr &odom);
     void PreemptCB();
 
-    int car_id;
+    my_lib::ParamServer param_server;
     std::vector<RobotInfo> robots_info;
     ros::NodeHandle nh;
     std::string tf_ns;
@@ -104,14 +104,14 @@ SearchAction::SearchAction():
     path_follow_client("PathFollow_action_laser")
 {
     ros::NodeHandle nh;
-    my_lib::GetParam("laser march task",&car_id,NULL,&tf_ns);
+    param_server.GetParam("search task");
     robots_state_sub = nh.subscribe("robot_states",10,&SearchAction::RobotStateCallback,this);
     robot_pose_sub = nh.subscribe("odom",1,&SearchAction::OnNewPose,this);
     separate_area_client = nh.serviceClient<robot_msgs::SeparateArea>("separate_area");
     path_coverage_client = nh.serviceClient<robot_msgs::PathCoverage>("path_coverage");
     search_server.registerPreemptCallback(std::bind(&SearchAction::PreemptCB,this));
     //Debug info
-    logger.init_logger(car_id);
+    logger.init_logger(param_server.car_id);
     cancel_goal = false;
     search_server.start();
 }
@@ -120,43 +120,43 @@ SearchAction::SearchAction():
  * 任务执行函数
  */
 void SearchAction::SearchExcuteCB(const robot_msgs::SearchGoalConstPtr &goal){
-    logger.DEBUGINFO(car_id,"get search goal");
+    logger.DEBUGINFO(param_server.car_id,"get search goal");
     for(auto id : goal->idList)
         std::cout << "id list has " << id << std::endl; 
     for(auto point:goal->area){
-         logger.DEBUGINFO(car_id,"point is : %f %f",point.pose.position.x,point.pose.position.y);
+         logger.DEBUGINFO(param_server.car_id,"point is : %f %f",point.pose.position.x,point.pose.position.y);
     }    
     //首先对需要搜索的区域进行划分
     robot_msgs::SeparateArea new_goal;
     new_goal.request.area = goal->area;
     new_goal.request.idList = goal->idList;
     if(separate_area_client.call(new_goal)){
-        logger.DEBUGINFO(car_id,"call divide area");
+        logger.DEBUGINFO(param_server.car_id,"call divide area");
     }
     else{
-        logger.DEBUGINFO(car_id,"fail to divide area");
+        logger.DEBUGINFO(param_server.car_id,"fail to divide area");
         return ;
     }
     //call path coverage
     robot_msgs::PathCoverage path_coverage;
     if(new_goal.response.area.size() != 4){
-        logger.WARNINFO(car_id,"area edge point size wrong!!");
+        logger.WARNINFO(param_server.car_id,"area edge point size wrong!!");
     }
     for(auto point:new_goal.response.area){
-        logger.DEBUGINFO(car_id,"atfer separate point is : %f %f",point.pose.position.x,point.pose.position.y);
+        logger.DEBUGINFO(param_server.car_id,"atfer separate point is : %f %f",point.pose.position.x,point.pose.position.y);
         path_coverage.request.select_point.poses.push_back(point);
     }
     path_coverage.request.start_point = GetStartPoint(new_goal.response.area);
-    logger.DEBUGINFO(car_id,"start point is : %f %f",path_coverage.request.start_point.position.x,path_coverage.request.start_point.position.y);
+    logger.DEBUGINFO(param_server.car_id,"start point is : %f %f",path_coverage.request.start_point.position.x,path_coverage.request.start_point.position.y);
      while(!ros::service::waitForService("path_coverage",ros::Duration(1.0))){
-        logger.DEBUGINFO(car_id,"waiting for service path coverage");
+        logger.DEBUGINFO(param_server.car_id,"waiting for service path coverage");
         ros::spinOnce();
     }
     if(path_coverage_client.call(path_coverage)){
-        logger.DEBUGINFO(car_id,"call path coverage");
+        logger.DEBUGINFO(param_server.car_id,"call path coverage");
     }
     else{
-        logger.DEBUGINFO(car_id,"fail to call path");
+        logger.DEBUGINFO(param_server.car_id,"fail to call path");
         return ;
     }
     // path_follow_client
@@ -168,14 +168,14 @@ void SearchAction::SearchExcuteCB(const robot_msgs::SearchGoalConstPtr &goal){
     while(ros::ok()){
         if(path_follow_client.goal_state == actionlib::SimpleClientGoalState::ABORTED){
             result.succeed = false;
-            logger.DEBUGINFO(car_id,"search action failed!!!");
+            logger.DEBUGINFO(param_server.car_id,"search action failed!!!");
             search_server.setSucceeded(result,"failed");
             return;
         }
         else if(path_follow_client.goal_state == actionlib::SimpleClientGoalState::SUCCEEDED){
             result.succeed = true;
             search_server.setSucceeded(result,"success");
-            logger.DEBUGINFO(car_id,"search action success!!!");
+            logger.DEBUGINFO(param_server.car_id,"search action success!!!");
             return;
         }
         else{
@@ -195,7 +195,7 @@ void SearchAction::SearchExcuteCB(const robot_msgs::SearchGoalConstPtr &goal){
 
 void SearchAction::PreemptCB(){
     if(search_server.isPreemptRequested()){
-        logger.DEBUGINFO(car_id,"search task get cancel request!");
+        logger.DEBUGINFO(param_server.car_id,"search task get cancel request!");
         cancel_goal = true;
         path_follow_client.action_client->cancelGoal();
         robot_msgs::SearchResult result;

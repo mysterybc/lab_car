@@ -1,13 +1,12 @@
 #include "build_up_task.h"
 #include "my_debug_info.h"
-#include "my_param_server.h"
 
 Debug::DebugLogger logger;
 BuildUpTask::BuildUpTask()
     :build_up_action(nh,"build_up_action",boost::bind(&BuildUpTask::BuildUpExcuteCB,this,_1),false),
     plan_action(nh,"move_base",true)
 {
-    my_lib::GetParam("path_follow",&car_id,NULL,&tf_ns);
+    param_server.GetParam("build_up_task_node");
     build_up_action.registerPreemptCallback(std::bind(&BuildUpTask::BuildUpPreemptCB,this));
     statue_sub_ = nh.subscribe("move_base/status",10,&BuildUpTask::MoveBaseStatusCB,this);
     report_path_client = nh.serviceClient<robot_msgs::ReportPath>("report_path");
@@ -18,7 +17,7 @@ BuildUpTask::BuildUpTask()
     build_up_action.start();
 
     //Debug info
-    logger.init_logger(car_id);
+    logger.init_logger(param_server.car_id);
 
 }
 
@@ -36,7 +35,7 @@ void BuildUpTask::ResetTask(){
 void BuildUpTask::BuildUpPreemptCB(){
     
     if(build_up_action.isPreemptRequested()){
-        logger.DEBUGINFO(car_id,"action_preempt");
+        logger.DEBUGINFO(param_server.car_id,"action_preempt");
         if(task_state.status == actionlib_msgs::GoalStatus::ACTIVE)
             plan_action.cancelGoal();
         result.succeed = CANCEL;
@@ -49,45 +48,32 @@ bool BuildUpTask::MakePlanWithoutExcute(geometry_msgs::Pose goal){
     tf::TransformListener tf_listener;
     tf::StampedTransform transform;
     ros::Rate rate(100.0);
-    while (ros::ok()){
-        try{
-            tf_listener.lookupTransform("map", tf_ns+"base_link",ros::Time(0), transform);
-        }
-        catch (tf::TransformException &ex) {
-            ros::Duration(0.5).sleep();
-            continue;
-        }
-        break;
-    }
     nav_msgs::GetPlan get_plan;
     get_plan.request.start.header.frame_id = "map";
     get_plan.request.start.header.stamp = ros::Time().now();
-    get_plan.request.start.pose.position.x = transform.getOrigin().x();
-    get_plan.request.start.pose.position.y = transform.getOrigin().y();
-    get_plan.request.start.pose.position.z = transform.getOrigin().z();
-    tf::quaternionTFToMsg(transform.getRotation(),get_plan.request.start.pose.orientation);
+    get_plan.request.start.pose = start_point;
     get_plan.request.goal.header =  get_plan.request.start.header;
     get_plan.request.goal.pose = goal_point;
     get_plan.request.tolerance = 0.3;
     while(!ros::service::waitForService("move_base/make_plan",ros::Duration(2.0))){
-        logger.DEBUGINFO(car_id,"waiting for service move_base/make_plan");
+        logger.DEBUGINFO(param_server.car_id,"waiting for service move_base/make_plan");
         ros::spinOnce();
     }
     if(make_plan_client.call(get_plan)){
-        logger.DEBUGINFO(car_id,"call path");
+        logger.DEBUGINFO(param_server.car_id,"call path");
     }
     else{
-        logger.DEBUGINFO(car_id,"fail to call path");
+        logger.DEBUGINFO(param_server.car_id,"fail to call path");
         return false;
     }
     //report path
     robot_msgs::ReportPath report_path;
     report_path.request.Path = get_plan.response.plan;
     if(report_path_client.call(report_path)){
-        logger.DEBUGINFO(car_id,"report  path");
+        logger.DEBUGINFO(param_server.car_id,"report  path");
     }
     else{
-        logger.DEBUGINFO(car_id,"fail to report path");
+        logger.DEBUGINFO(param_server.car_id,"fail to report path");
         return false;
     }
     return true;
@@ -95,7 +81,7 @@ bool BuildUpTask::MakePlanWithoutExcute(geometry_msgs::Pose goal){
 
 void BuildUpTask::BuildUpExcuteCB(const robot_msgs::BuildUpGoalConstPtr &goal){
     //set goal
-    logger.DEBUGINFO(car_id,"get goal");
+    logger.DEBUGINFO(param_server.car_id,"get goal");
     goal_point = goal.get()->goal;
     //separate_goal
     robot_msgs::Separate separate_goal;
@@ -103,15 +89,15 @@ void BuildUpTask::BuildUpExcuteCB(const robot_msgs::BuildUpGoalConstPtr &goal){
     separate_goal.request.goal = goal_point;
     separate_goal.request.idList = goal->idList;
     if(separate_goal_client.call(separate_goal)){
-        logger.DEBUGINFO(car_id,"separate goal success!");
+        logger.DEBUGINFO(param_server.car_id,"separate goal success!");
         goal_point = separate_goal.response.goal;
     }
     else{
-        logger.DEBUGINFO(car_id,"separate goal failed!");
+        logger.DEBUGINFO(param_server.car_id,"separate goal failed!");
         ResetTask();
         return ;
     }
-    logger.DEBUGINFO(car_id," car number is %d, build up target position is [%f,%f]",car_id,goal_point.position.x,goal_point.position.y);
+    logger.DEBUGINFO(param_server.car_id," car number is %d, build up target position is [%f,%f]",param_server.car_id,goal_point.position.x,goal_point.position.y);
     //make plan and report path
     if(!MakePlanWithoutExcute(goal_point)){
         ResetTask();
@@ -125,13 +111,13 @@ void BuildUpTask::BuildUpExcuteCB(const robot_msgs::BuildUpGoalConstPtr &goal){
             return ;
         }
         if(get_host_config_client.call(config_cmd)){
-            logger.DEBUGINFO(car_id,"get host cmd");
+            logger.DEBUGINFO(param_server.car_id,"get host cmd");
             if(config_cmd.response.cmd.data == "ok"){
-                logger.DEBUGINFO(car_id,"path accepted!!");
+                logger.DEBUGINFO(param_server.car_id,"path accepted!!");
                 break;
             }
             else if(config_cmd.response.cmd.data == "no"){
-                logger.DEBUGINFO(car_id,"replan!!");
+                logger.DEBUGINFO(param_server.car_id,"replan!!");
                 MakePlanWithoutExcute(goal_point);
             }
             else{
@@ -139,7 +125,7 @@ void BuildUpTask::BuildUpExcuteCB(const robot_msgs::BuildUpGoalConstPtr &goal){
             }
         }
         else{
-            logger.DEBUGINFO(car_id,"host cmd not accseeable!! retrying!!");
+            logger.DEBUGINFO(param_server.car_id,"host cmd not accseeable!! retrying!!");
         }
         ros::spinOnce();
         loop1.sleep();
@@ -155,13 +141,13 @@ void BuildUpTask::BuildUpExcuteCB(const robot_msgs::BuildUpGoalConstPtr &goal){
         ros::spinOnce();
         if(task_state.status == actionlib_msgs::GoalStatus::SUCCEEDED){
             result.succeed = true;
-            logger.DEBUGINFO(car_id,"build up task finished");
+            logger.DEBUGINFO(param_server.car_id,"build up task finished");
             build_up_action.setSucceeded(result,"goal_reached");
             break;
         }
         else if(task_state.status == actionlib_msgs::GoalStatus::ABORTED){
             result.succeed = false;
-            logger.DEBUGINFO(car_id,"build up task error");
+            logger.DEBUGINFO(param_server.car_id,"build up task error");
             build_up_action.setAborted(result,"task failed");
             break;
         }
@@ -183,6 +169,10 @@ void BuildUpTask::MoveBaseStatusCB(const actionlib_msgs::GoalStatusArrayConstPtr
         return ;
     }
     task_state.status = (--msg->status_list.end())->status;    
+}
+
+void BuildUpTask::OnNewPose(const nav_msgs::OdometryConstPtr& msg){
+    start_point = msg->pose.pose;
 }
 
 

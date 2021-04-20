@@ -25,7 +25,7 @@
 <launch>
     <!-- 全局参数 -->
     <param name="is_simulation" value="false"/>
-    <!-- ip只有通讯节点使用 -->
+    <param name="localization_topic" value="odom" />
     <arg name="car_id" value="2"/>
     <param name="total_car_number" type="int" value="2" />
     <param name="car_id" type="int" value="$(arg car_id)" />
@@ -37,12 +37,14 @@
     <rosparam>
         debug_output_id: [1,2]
     </rosparam>
-    <!-- 下面两个source_node使用 -->
-    <!-- ttyUSB0为驱动接口，无需改变 -->
+    <!-- source node  -->
     <param name="imu_port" type="string" value="/dev/imu_port" />
     <param name="gps_port" type="string" value="/dev/gps_port" />
-    <!-- 遥控器接口 -->
     <arg name="joy_port" value="/dev/input/js0"/>
+
+
+
+
     <include file="$(find realsense2_camera)/launch/rs_t265.launch" />
     <include file="$(find apriltag_ros)/launch/continuous_detection.launch" />
     <!-- 1 -->

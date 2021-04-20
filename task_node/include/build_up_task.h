@@ -12,10 +12,12 @@
 #include "actionlib/client/simple_action_client.h"
 #include "move_base_msgs/MoveBaseAction.h"
 #include "actionlib_msgs/GoalStatusArray.h"
+#include "nav_msgs/Odometry.h"
 #include "robot_msgs/GetConfigCmd.h"
 #include "robot_msgs/ReportPath.h"
 #include "nav_msgs/GetPlan.h"
 #include "robot_msgs/DebugInfo.h"
+#include "my_param_server.h"
 #include <thread>
 #include <string>
 
@@ -30,21 +32,23 @@ public:
     void PubGoal(geometry_msgs::Pose pose);
     void MoveBaseStatusCB(const actionlib_msgs::GoalStatusArrayConstPtr &msg);
     bool MakePlanWithoutExcute(geometry_msgs::Pose goal);
+    void OnNewPose(const nav_msgs::OdometryConstPtr& msg);
     void ResetTask();
 
 
     ros::NodeHandle nh;
     ros::Publisher goal_pub_;
     ros::Subscriber statue_sub_;
+    ros::Subscriber robot_pose_sub;
     ros::ServiceClient report_path_client;
     ros::ServiceClient get_host_config_client;
     ros::ServiceClient make_plan_client;
     ros::ServiceClient separate_goal_client;
     actionlib::SimpleActionServer<robot_msgs::BuildUpAction> build_up_action;
     actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> plan_action;
-    int car_id;
-    std::string tf_ns;
+    my_lib::ParamServer param_server;
     geometry_msgs::Pose goal_point;
+    geometry_msgs::Pose start_point;
     robot_msgs::BuildUpResult result;
     actionlib_msgs::GoalStatus task_state;
 

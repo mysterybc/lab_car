@@ -35,7 +35,7 @@ public:
     Error node_error;
     uint8_t update_frequence;
     std::string node_name;
-    int car_id;
+    my_lib::ParamServer param_server;
 };
 
 

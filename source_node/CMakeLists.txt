@@ -38,4 +38,8 @@ target_link_libraries(driver_source_node ${catkin_LIBRARIES})
 add_executable(sensor_fusion_node  src/sensor_fusion.cpp)
 target_link_libraries(sensor_fusion_node ${catkin_LIBRARIES})
 
+#发布控制速度 测试用
+# add_executable(pub_cmdvel  src/pub_cmdvel.cpp)
+# target_link_libraries(pub_cmdvel ${catkin_LIBRARIES})
+
 

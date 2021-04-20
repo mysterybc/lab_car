@@ -143,13 +143,6 @@ void init_controller(const ConfigBIT& config, StateBIT& state) {
 	//ControllerSetDebugInfo(config.debug_info, 1);
 	ControllerSetDebugInfo(DEBUG_INFO_ALL, 0);
 
-	// ControllerSetDebugInfo(DEBUG_INFO_STATES, 0);
-	// ControllerSetDebugInfo(DEBUG_INFO_COMPUTE, 0);
-	// ControllerSetDebugInfo(DEBUG_INFO_FUNCTION, 0);
-	// ControllerSetDebugInfo(DEBUG_INFO_COM_SEND, 0);
-	// ControllerSetDebugInfo(DEBUG_INFO_COM_RECV, 0);
-	// printf("Turn off Debug Info99999!!!\n");
-
 	state.me.ID = config.robotID;
 	state.me.x = 0;
 	state.me.y = 0;
@@ -210,12 +203,6 @@ void algomsg2multiarr(const std::string& msg, std_msgs::UInt8MultiArray& data) {
 	}
 }
 
-//use tf instead
-// void on_new_pos(const nav_msgs::Odometry& state) {
-// 	mydata.me = odm2stateinfo(myconfig.robotID, state);
-// 	ROS_DEBUG("Get new state (x, y, z): %.2f, %.2f, %.2f\n", mydata.me.x, mydata.me.y, mydata.me.heading);
-// }
-
 //get other robot pos
 void RobotHandler::on_new_pos(const robot_msgs::RobotStatesConstPtr& states) {
 	for(auto robot_state : states->robot_states){
@@ -243,7 +230,6 @@ StateInfo StateBIT::mean(const std::vector<int>& id_list) {
 			info.x += me.x;
 			info.y += me.y;
 			++nitem;
-			logger.DEBUGINFO(myconfig.robotID,"my pos is %f %f",mydata.me.x,mydata.me.y);
 		}
 		else {
 			auto it = others.id2state.find(id);
@@ -252,7 +238,6 @@ StateInfo StateBIT::mean(const std::vector<int>& id_list) {
 				info.x += q.x;
 				info.y += q.y;
 				++nitem;
-				logger.DEBUGINFO(myconfig.robotID,"other pos is %f %f",q.x,q.y);
 			}
 		}
 	}
@@ -316,14 +301,6 @@ void on_new_imu_pos(const sensor_msgs::ImuConstPtr &msg){
     mydata.me.heading = (float)rad2deg(yaw);
 }
 
-void on_new_gps_pos(const nav_msgs::Odometry& msg){
-	double yaw,roll,pitch;
-	tf::Quaternion quat;
-	tf::quaternionMsgToTF(msg.pose.pose.orientation,quat);
-    tf::Matrix3x3(quat).getEulerYPR(yaw,pitch,roll);
-    mydata.me.heading = (float)rad2deg(yaw);
-}
-
 void on_new_lidar_pos(const nav_msgs::Odometry& msg){
     StateInfo one;
 	one.ID = myconfig.robotID;
@@ -331,16 +308,21 @@ void on_new_lidar_pos(const nav_msgs::Odometry& msg){
 	one.y = (float)m2cm(msg.pose.pose.position.y);
 	one.v = 0;  // TBD
 	one.w = 0;  // TBD
-	if(myconfig.is_simulation){
-		double yaw,roll,pitch;
-		tf::Quaternion quat;
-		tf::quaternionMsgToTF(msg.pose.pose.orientation,quat);
-		tf::Matrix3x3(quat).getEulerYPR(yaw,pitch,roll);
-		one.heading = (float)rad2deg(yaw);
-	}
-	else{
-		one.heading = mydata.me.heading;
-	}
+    double yaw,roll,pitch;
+    tf::Quaternion quat;
+    tf::quaternionMsgToTF(msg.pose.pose.orientation,quat);
+    tf::Matrix3x3(quat).getEulerYPR(yaw,pitch,roll);
+    one.heading = (float)rad2deg(yaw);
+	// if(myconfig.is_simulation){
+	// 	double yaw,roll,pitch;
+	// 	tf::Quaternion quat;
+	// 	tf::quaternionMsgToTF(msg.pose.pose.orientation,quat);
+	// 	tf::Matrix3x3(quat).getEulerYPR(yaw,pitch,roll);
+	// 	one.heading = (float)rad2deg(yaw);
+	// }
+	// else{
+	// 	one.heading = mydata.me.heading;
+	// }
 	mydata.me = one;
 }
 
@@ -429,8 +411,13 @@ int ActionConfig::run_march_action(){
 		tm.globalTime += 50;
 		
 		//判断任务是否结束
-		if(ControllerTaskProgress() >= 0.995){
+		if(ControllerTaskProgress() > 0.99){
 			logger.DEBUGINFO(myconfig.robotID,"march task finish!");
+            cancel_action = false;
+			geometry_msgs::Twist u_pub;
+			u_pub.linear.x = 0;
+			u_pub.angular.z = 0;  
+			cmd_pub.publish(u_pub);
 			break;
 		}
 		//打断任务
@@ -505,14 +492,11 @@ int main(int argc, char* argv[]) {
 	myconfig.config_dir = package_path + "/bitrobot/config";
 	myconfig.debug_info = DEBUG_INFO_STATES | DEBUG_INFO_FUNCTION | DEBUG_INFO_COMPUTE;
 	myconfig.target_velocity = 0.6; // m/s
-	myconfig.idlist = {1, 2, 3, 4};  // These robots are all connected
-	myconfig.idform = {1, 2, 3, 4};  // These robots will be in a formation
-	myconfig.edge_scaling = 2.5;                // when not specifying dx, dy, default edge length = 1m (which is too small)
+	myconfig.edge_scaling = 1.8;                // when not specifying dx, dy, default edge length = 1m (which is too small)
 	myconfig.dx = {0.5, 0.5, -0.5, -0.5 };   // optional, meter
 	myconfig.dy = {0.5, -0.5, -0.5, 0.5 };   // optional, meter
 
 	int nrobot = (int)myconfig.idlist.size();
-	int myID = -1;
 	
 
 	// ----------------------- 
@@ -520,21 +504,19 @@ int main(int argc, char* argv[]) {
 	// ----------------------- 
 	ros::init(argc, argv, "bitform");
 	ros::NodeHandle node;
-	my_lib::GetParam("path_follow",&myID,NULL,NULL,NULL,NULL,NULL,&myconfig.is_simulation);	
-	std::cout << "issimulation" << myconfig.is_simulation << std::endl;
-	myconfig.robotID = myID;
-	// printf("This is Robot %d\n", myID);
-	logger.init_logger(myID);
+    my_lib::ParamServer param_server;
+    param_server.GetParam("gps_march_task");
+	myconfig.robotID = param_server.car_id;
+    myconfig.is_simulation = param_server.is_simulation;
+	logger.init_logger(param_server.car_id);
 	
 	
 	// ----------------------- 
 	// Initializing PUB/SUB
 	// ----------------------- 
 	goal_sub = node.subscribe("formation_goal", 2, &on_new_goal);
-	//ros::Subscriber pos_sub  = node.subscribe("base_pose_ground_truth", 100, &on_new_pos);
-	// ros::Subscriber gps_pos_sub  = node.subscribe("gps_odom", 100, &on_new_gps_pos);
-	ros::Subscriber lidar_pos_sub  = node.subscribe("odom", 100, &on_new_lidar_pos);
-	ros::Subscriber imu_pos_sub  = node.subscribe("IMU_data", 100, &on_new_imu_pos);
+	ros::Subscriber lidar_pos_sub  = node.subscribe(param_server.localization_topic, 100, &on_new_lidar_pos);
+	// ros::Subscriber imu_pos_sub  = node.subscribe("IMU_data", 100, &on_new_imu_pos);
 	scan_sub = node.subscribe("base_scan", 2, &on_new_scan);
 	cmd_pub  = node.advertise<geometry_msgs::Twist>("cmd_vel", 1);
 	msg_pub  = node.advertise<std_msgs::UInt8MultiArray>("algomsg_my", 10);
@@ -546,9 +528,6 @@ int main(int argc, char* argv[]) {
 	// ----------------------- 
 	// Initializing Controller
 	// ----------------------- 
-	
-	// init_controller(myconfig, mydata);  // If it fails, it will crash.
-	// 									// So, don't worry.
 
 	ActionConfig marchconfig(node);
 	init_controller(myconfig, mydata);

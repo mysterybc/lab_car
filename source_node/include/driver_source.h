@@ -30,7 +30,7 @@ private:
     serial::Serial sp;
     ros::Publisher vel_pub;
     ros::Publisher odom_pub_;
-    int car_id;
+    my_lib::ParamServer param_server;
     //与车id相关的参数
     double turn_radius;        //小车0.26 大车0.29
     double twist_flag;         //小车-1 大车1
@@ -58,7 +58,7 @@ public:
     ros::Publisher  state_pub;
     ros::Subscriber cmd_sub;
 
-    int car_id;
+    my_lib::ParamServer param_server;
     State node_state;
     Error node_error;
     uint8_t update_frequence;

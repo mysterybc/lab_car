@@ -1,17 +1,17 @@
 #include "control_node/remote_control_node.h"
 #include "my_debug_info.h"
-#include "my_param_server.h"
+
 Debug::DebugLogger logger;
 
 RemoteControlNode::RemoteControlNode(){
     ros::NodeHandle nh;
     std::string path = "config file path";
-    my_lib::GetParam("publish_robot_state",&car_id);
-    logger.init_logger(car_id);
+    param_server.GetParam("receiver_node");
+    logger.init_logger(param_server.car_id);
     if(LoadConfig(path)){
         node_state = State::HAVE_CONFIG;
     }else{
-        logger.WARNINFO(car_id,"remote control _node: Config failed");
+        logger.WARNINFO(param_server.car_id,"remote control _node: Config failed");
     }
     state_pub = nh.advertise<robot_msgs::PerceptionNodeMsg>("remote_control_state",10);
     cmd_sub = nh.subscribe<robot_msgs::Cmd>("remote_control_cmd",10,&RemoteControlNode::CmdCallback,this);
@@ -19,7 +19,7 @@ RemoteControlNode::RemoteControlNode(){
 
 
 bool RemoteControlNode::LoadConfig(std::string file){
-    logger.DEBUGINFO(car_id,"remote control _node: load config");
+    logger.DEBUGINFO(param_server.car_id,"remote control _node: load config");
     //TODO 应该在这里读取配置文件，目前只初始化更新频率和节点名称；
     update_frequence = 10;
     node_name = "remote control node";
@@ -29,7 +29,7 @@ void RemoteControlNode::UpdateState(){
     ros::NodeHandle nh;
     ros::Rate loop(update_frequence);
     double start_time = ros::Time().now().toSec();
-    logger.DEBUGINFO(car_id,"remote control _node: state thread start");
+    logger.DEBUGINFO(param_server.car_id,"remote control _node: state thread start");
     while(nh.ok() && node_state!=State::EXIT){
         robot_msgs::PerceptionNodeMsg msg;
         //TODO 目前获取的是ros秒可能需要进一步处理
@@ -45,17 +45,17 @@ void RemoteControlNode::UpdateState(){
 
 
 State RemoteControlNode::Start(){
-    logger.DEBUGINFO(car_id,"remote control source running");
+    logger.DEBUGINFO(param_server.car_id,"remote control source running");
     return State::RUNNING;
 }
 //Stop需要reset参数
 State RemoteControlNode::Stop(){
-    logger.DEBUGINFO(car_id,"remote control source stop");
+    logger.DEBUGINFO(param_server.car_id,"remote control source stop");
     return State::STOP;
 }
 //退出需要清理线程
 State RemoteControlNode::Exit(){
-    logger.DEBUGINFO(car_id,"remote control source exit");
+    logger.DEBUGINFO(param_server.car_id,"remote control source exit");
     state_pub.shutdown();
     cmd_sub.shutdown();
     return State::EXIT;
@@ -64,18 +64,18 @@ State RemoteControlNode::Exit(){
 State RemoteControlNode::Pause(){
     if(node_state!=State::RUNNING)
         return node_state;
-    logger.DEBUGINFO(car_id,"remote control source pause");
+    logger.DEBUGINFO(param_server.car_id,"remote control source pause");
     return State::PAUSED;
 }
 State RemoteControlNode::Resume(){
     if(node_state!=State::PAUSED)
         return node_state;
-    logger.DEBUGINFO(car_id,"remote control source resume");
+    logger.DEBUGINFO(param_server.car_id,"remote control source resume");
     return State::RUNNING;
 }
 
 void RemoteControlNode::CmdCallback(const robot_msgs::CmdConstPtr &msg){
-    logger.DEBUGINFO(car_id,"remote control  source get command");
+    logger.DEBUGINFO(param_server.car_id,"remote control  source get command");
     switch(msg->cmd){
         case (int)Cmd::START : node_state = Start();  break;
         case (int)Cmd::PAUSE : node_state = Pause();  break;

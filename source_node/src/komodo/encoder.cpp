@@ -2,21 +2,21 @@
 extern Debug::DebugLogger logger;
 Encoder::Encoder(){
     ros::NodeHandle nh;
-    my_lib::GetParam("encoder",&car_id);
-    if(car_id == 1){
+    param_server.GetParam("encoder_node");
+    if(param_server.car_id == 1){
         turn_radius = 0.26;
         twist_flag = -1;
-        linear_fb_factor = 1;
-        angular_fb_factor = 3.7;
-        linear_cmd_factor = 0.7;
+        linear_fb_factor = 1.0;
+        angular_fb_factor = 3.5;
+        linear_cmd_factor = 0.74;
         angular_cmd_factor = 1.2;
     }
     else{
         turn_radius = 0.29;
         twist_flag = 1;
         linear_fb_factor = 1;
-        angular_fb_factor = 3.7;
-        linear_cmd_factor = 0.7;
+        angular_fb_factor = 2.71;
+        linear_cmd_factor = 0.525;
         angular_cmd_factor = 0.7;
     }
     
@@ -66,7 +66,7 @@ int Encoder::UpdateOdom()
     //! ros odometry message
     nav_msgs::Odometry odom_;
 
-    odom_.header.frame_id = "odom";
+    odom_.header.frame_id = "odom_raw";
     odom_.child_frame_id = "base_link";
 
     ros::Rate loop_rate(100);

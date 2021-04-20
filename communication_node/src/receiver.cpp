@@ -77,24 +77,21 @@ int main(int argc, char** argv){
     ros::NodeHandle nh;
 
     //config id & ip
-    int car_id;
-    std::string host_ip;
-    std::string my_ip;
-    std::vector<std::string> total_ip;
-    my_lib::GetParam("publish_robot_state",&car_id,NULL,NULL,&my_ip,&host_ip,&total_ip);
+    my_lib::ParamServer param_server;
+    param_server.GetParam("receiver_node");
 
 
     //zmq_init
     zmq::context_t ctx(1);
-    zmq_lib::Receiver state_receive(fmtInputIp(total_ip,my_ip),ctx);
-    zmq_lib::Receiver host_receive(std::vector<std::string>{host_ip},ctx);
+    zmq_lib::Receiver state_receive(fmtInputIp(param_server.total_ip,param_server.my_ip),ctx);
+    zmq_lib::Receiver host_receive(std::vector<std::string>{param_server.host_ip},ctx);
 
 
     //message init
     std::map<int,RobotState> id2states;
     std::vector<std::string> robot_msgs;
     std::string host_msg;
-    HostCmd host_cmd(&host_receive,host_ip,car_id); 
+    HostCmd host_cmd(&host_receive,param_server.host_ip,param_server.car_id); 
     //ros pub
     ros::Publisher robot_state_pub = nh.advertise<robot_msgs::RobotStates>("robot_states",10);
     ros::Publisher algomsg_pub = nh.advertise<std_msgs::UInt8MultiArray>("algomsg_others",10);

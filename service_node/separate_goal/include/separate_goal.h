@@ -10,6 +10,7 @@
 #include "robot_msgs/DebugInfo.h"
 #include "robot_msgs/SeparateArea.h"
 #include "string"
+#include "my_param_server.h"
 
 
 class RobotInfo{
@@ -47,8 +48,5 @@ private:
     geometry_msgs::Pose my_pose;
     geometry_msgs::Pose goal_point;
     nav_msgs::OccupancyGrid map;
-    std::string tf_ns;
-    int car_id;
-    int total_car_number;
-
+    my_lib::ParamServer param_server;
 };

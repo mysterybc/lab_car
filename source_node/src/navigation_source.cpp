@@ -5,29 +5,29 @@ Debug::DebugLogger logger;
 NavigationSource::NavigationSource(){
     ros::NodeHandle nh;
     std::string path = "config file path";
-    my_lib::GetParam("path_follow",&car_id);
-    logger.init_logger(car_id);
+    param_server.GetParam("navigation_source_node");
+    logger.init_logger(param_server.car_id);
     if(LoadConfig(path)){
         node_state = State::HAVE_CONFIG;
     }else{
         node_error = Error::NO_ERROR;
-        logger.WARNINFO(car_id,"navigation_node: Config failed");
+        logger.WARNINFO(param_server.car_id,"navigation_node: Config failed");
     }
     state_pub = nh.advertise<robot_msgs::SourceNodeMsg>("navigation_state",10);
     cmd_sub = nh.subscribe<robot_msgs::Cmd>("navigation_cmd",10,&NavigationSource::CmdCallback,this);
     odometry_sub = nh.subscribe<nav_msgs::Odometry>("odom",10,&NavigationSource::OdmCallback,this);
-    imu_.car_id = car_id;
-    gps_.car_id = car_id;
-    ros::Rate loop(10);
-    while(ros::ok()){
-        if(imu_.imu_init == true){
-            odometry_sub.shutdown();
-            logger.DEBUGINFO(car_id,"imu init finish ! start yaw angle is %f",imu_.start_angle);
-            break;
-        }
-        loop.sleep();
-        ros::spinOnce();
-    }
+    imu_.car_id = param_server.car_id;
+    gps_.car_id = param_server.car_id;
+    // ros::Rate loop(10);
+    // while(ros::ok()){
+    //     if(imu_.imu_init == true){
+    //         odometry_sub.shutdown();
+    //         logger.DEBUGINFO(param_server.car_id,"imu init finish ! start yaw angle is %f",imu_.start_angle);
+    //         break;
+    //     }
+    //     loop.sleep();
+    //     ros::spinOnce();
+    // }
     // gps_.Start();
     imu_.Start();
 }
@@ -37,7 +37,7 @@ void NavigationSource::UpdateState(){
     ros::NodeHandle nh;
     ros::Rate loop(update_frequence);
     double start_time = ros::Time().now().toSec();
-    logger.DEBUGINFO(car_id,"navigation_node: state thread start");
+    logger.DEBUGINFO(param_server.car_id,"navigation_node: state thread start");
     while(nh.ok() && node_state!=State::EXIT){
         robot_msgs::SourceNodeMsg msg;
         //TODO 目前获取的是ros秒可能需要进一步处理
@@ -61,21 +61,21 @@ bool NavigationSource::LoadConfig(std::string file){
 }
 
 State NavigationSource::Start(){
-    logger.DEBUGINFO(car_id,"navigation source running");
+    logger.DEBUGINFO(param_server.car_id,"navigation source running");
     //gps_.Start();
     imu_.Start();
     return State::RUNNING;
 }
 //Stop需要reset参数
 State NavigationSource::Stop(){
-    logger.DEBUGINFO(car_id,"navigation source stop");
+    logger.DEBUGINFO(param_server.car_id,"navigation source stop");
     gps_.Stop();
     imu_.Stop();
     return State::STOP;
 }
 //退出需要清理线程
 State NavigationSource::Exit(){
-    logger.DEBUGINFO(car_id,"navigation source exit");
+    logger.DEBUGINFO(param_server.car_id,"navigation source exit");
     gps_.Exit();
     imu_.Exit();
     state_pub.shutdown();
@@ -86,7 +86,7 @@ State NavigationSource::Exit(){
 State NavigationSource::Pause(){
     if(node_state!=State::RUNNING)
         return node_state;
-    logger.DEBUGINFO(car_id,"navigation source pause");
+    logger.DEBUGINFO(param_server.car_id,"navigation source pause");
     gps_.Pause();
     imu_.Pause();
     return State::PAUSED;
@@ -94,14 +94,14 @@ State NavigationSource::Pause(){
 State NavigationSource::Resume(){
     if(node_state!=State::PAUSED)
         return node_state;
-    logger.DEBUGINFO(car_id,"navigation source resume");
+    logger.DEBUGINFO(param_server.car_id,"navigation source resume");
     gps_.Resume();
     imu_.Resume();
     return State::RUNNING;
 }
 
 void NavigationSource::CmdCallback(const robot_msgs::CmdConstPtr &msg){
-    logger.DEBUGINFO(car_id,"navigation source get command");
+    logger.DEBUGINFO(param_server.car_id,"navigation source get command");
     switch(msg->cmd){
         case (int)Cmd::START : node_state = Start(); break;
         case (int)Cmd::PAUSE : node_state = Pause(); break;

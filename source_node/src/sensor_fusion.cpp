@@ -3,6 +3,8 @@
 #include "nav_msgs/Odometry.h"
 #include "sensor_msgs/Imu.h"
 #include "tf/transform_datatypes.h"
+#include "robot_msgs/CurrentTask.h"
+#include "tf/transform_broadcaster.h"
 //my lib
 #include "my_param_server.h"
 
@@ -11,15 +13,18 @@ struct SensorFusion{
 
     SensorFusion(){
         ros::NodeHandle nh;
-        lidar_odom_sub = nh.subscribe("odom",1,&SensorFusion::OnNewLidarPose,this);
+        param_server.GetParam("sensor_fusion_node");
+        lidar_odom_sub = nh.subscribe("lidar_odom",1,&SensorFusion::OnNewLidarPose,this);
         gps_odom_sub = nh.subscribe("gps_odom",2,&SensorFusion::OnNewGpsPose,this);
         encoder_odom_sub = nh.subscribe("odom_raw",2,&SensorFusion::OnNewEncoderPose,this);
         imu_data_sub = nh.subscribe("IMU_data",2,&SensorFusion::OnNewImuData,this);
+        current_task_sub = nh.subscribe("current_task",2,&SensorFusion::OnNewTask,this);
         lidar_imu_fusion_pub = nh.advertise<nav_msgs::Odometry>("lidar_imu_fusion_odom",5);
         robot_static_count = 0;
         is_robot_static = true;
         is_lidar_odom_recv = false;
-        
+        trans.frame_id_ = "odom";
+        trans.child_frame_id_ = param_server.tf_ns + "/base_link";
     }
 
 
@@ -30,10 +35,12 @@ struct SensorFusion{
 
     void OnNewImuData(const sensor_msgs::ImuConstPtr& msg){
         imu_data = *msg;
-        IsRobotStatic();
-        if(is_lidar_odom_recv){
-            Fusion();
+        //等待接收到lidar pose
+        if(!is_lidar_odom_recv){
+            return ;
         }
+        IsRobotStatic();
+        Fusion();
     }
 
     void OnNewGpsPose(const nav_msgs::OdometryConstPtr& msg){
@@ -44,10 +51,15 @@ struct SensorFusion{
         encoder_odom = *msg;
     }
 
+    void OnNewTask(const robot_msgs::CurrentTaskConstPtr& msg){
+        current_task = msg->current_task;
+    }
+
     bool IsRobotStatic(){
-        if( fabs(encoder_odom.twist.twist.linear.x) < 0.1 && 
-            fabs(imu_data.angular_velocity.z) < 0.1 && 
-            fabs(imu_data.angular_velocity.y) < 0.1)
+        if( current_task == 0 &&
+            fabs(encoder_odom.twist.twist.linear.x) < 0.05 && 
+            fabs(imu_data.angular_velocity.z) < 0.05 && 
+            fabs(imu_data.angular_velocity.y) < 0.05)
         {
             robot_static_count++;
         }
@@ -77,14 +89,36 @@ struct SensorFusion{
             yaw += imu_data.angular_velocity.z * 0.01;
             lidar_imu_fusion_odom.pose.pose.orientation = tf::createQuaternionMsgFromRollPitchYaw(roll, pitch, yaw);
         }
-        
+        lidar_imu_fusion_pub.publish(lidar_imu_fusion_odom);
+        SetTF();
+        tf_pub.sendTransform(trans);
+        is_lidar_odom_recv = false;
     }
+
+    void SetTF(){
+        //xyz
+        tf::Vector3 tf_origin;
+        tf_origin.setX(lidar_imu_fusion_odom.pose.pose.position.x);
+        tf_origin.setY(lidar_imu_fusion_odom.pose.pose.position.y);
+        tf_origin.setZ(lidar_imu_fusion_odom.pose.pose.position.z);
+        trans.setOrigin(tf_origin);
+        //oriention
+        tf::Quaternion tf_quat;
+        tf::quaternionMsgToTF(lidar_imu_fusion_odom.pose.pose.orientation,tf_quat);
+        trans.setRotation(tf_quat);
+        //time
+        trans.stamp_ = imu_data.header.stamp;
+    }
+
+
     //sub & pub
     ros::Subscriber lidar_odom_sub;
     ros::Subscriber gps_odom_sub;
     ros::Subscriber encoder_odom_sub;
     ros::Subscriber imu_data_sub;
+    ros::Subscriber current_task_sub;
     ros::Publisher lidar_imu_fusion_pub;
+    tf::TransformBroadcaster tf_pub;
 
 
     nav_msgs::Odometry lidar_odom;
@@ -92,10 +126,13 @@ struct SensorFusion{
     nav_msgs::Odometry encoder_odom;
     nav_msgs::Odometry lidar_imu_fusion_odom;
     sensor_msgs::Imu imu_data;
+    tf::StampedTransform trans;
     int robot_static_count;
     bool is_robot_static;
     bool is_lidar_odom_recv;
     double yaw;
+    my_lib::ParamServer param_server;
+    uint8_t current_task;
 };
 
 

@@ -2,6 +2,7 @@
 #include "control_node/control.h"
 #include "geometry_msgs/Twist.h"
 #include "sensor_msgs/Joy.h"
+#include "my_param_server.h"
 
 #define MAX_VEL 1.2f
 #define MAX_ANGULAR_VEL 0.8f
@@ -37,6 +38,6 @@ public:
     void CmdCallback(const robot_msgs::CmdConstPtr &msg);
 
     RemoteControl remote_control;
-    int car_id;
+    my_lib::ParamServer param_server;
 };
 

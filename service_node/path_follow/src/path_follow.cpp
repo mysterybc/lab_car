@@ -422,6 +422,11 @@ int ActionConfig::run_PathFollow_action(){
 		//判断任务是否结束
 		if(ControllerTaskProgress() >= 0.995){
 			logger.DEBUGINFO(myconfig.robotID,"PathFollow task finish!");
+            cancel_action = false;
+			geometry_msgs::Twist u_pub;
+			u_pub.linear.x = 0;
+			u_pub.angular.z = 0;  
+			cmd_pub.publish(u_pub);
 			break;
 		}
 		//打断任务
@@ -498,11 +503,10 @@ int main(int argc, char* argv[]) {
 	myconfig.target_velocity = 0.5; // m/s
 	myconfig.idlist = {1, 2, 3, 4};  // These robots are all connected
 	myconfig.idform = {1, 2, 3, 4};  // These robots will be in a formation
-	myconfig.edge_scaling = 2.5;                // when not specifying dx, dy, default edge length = 1m (which is too small)
+	myconfig.edge_scaling = 1.8;                // when not specifying dx, dy, default edge length = 1m (which is too small)
 	myconfig.dx = {0.5, 0.5, -0.5, -0.5 };   // optional, meter
 	myconfig.dy = {0.5, -0.5, -0.5, 0.5 };   // optional, meter
 
-	int myID = -1;
 	
 
 	// ----------------------- 
@@ -510,9 +514,11 @@ int main(int argc, char* argv[]) {
 	// ----------------------- 
 	ros::init(argc, argv, "path_follow");
 	ros::NodeHandle node;
-	my_lib::GetParam("path_follow",&myID,NULL,NULL,NULL,NULL,NULL,&myconfig.is_simulation);
-	myconfig.robotID = myID;
-	logger.init_logger(myID);
+    my_lib::ParamServer param_server;
+    param_server.GetParam("path_follow_node");
+	myconfig.robotID = param_server.car_id;
+    myconfig.is_simulation = param_server.is_simulation;
+	logger.init_logger(param_server.car_id);
 	
 	
 	// ----------------------- 

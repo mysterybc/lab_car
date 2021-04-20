@@ -137,26 +137,24 @@ int main(int argc,char **argv)
 {
     ros::init(argc,argv,"publish_robot_state");
     ros::NodeHandle nh;
-    std::string ip_address;
 
     //config id & ip
-    int car_id;
-    std::string tf_frame;
-    my_lib::GetParam("publish_robot_state",&car_id,NULL,&tf_frame,&ip_address);
+    my_lib::ParamServer param_server;
+    param_server.GetParam("publisher_node");
 
     //zmq_init
     zmq::context_t ctx(1);
-    zmq_lib::Sender sender(ip_address,ctx);
+    zmq_lib::Sender sender(param_server.my_ip,ctx);
 
 
 
     //message init
-    StateMsg state_msg(car_id);
-    PathMsg path_msg(car_id);
+    StateMsg state_msg(param_server.car_id);
+    PathMsg path_msg(param_server.car_id);
     //NOTE jiacheng学长的消息 
-    RobotStateMsg robot_state_msg(car_id);
-    RobotTaskMsg robot_task_msg(car_id);
-    RobotPerceptionMsg robot_perception_msg(car_id);
+    RobotStateMsg robot_state_msg(param_server.car_id);
+    RobotTaskMsg robot_task_msg(param_server.car_id);
+    RobotPerceptionMsg robot_perception_msg(param_server.car_id);
 
 
     //sub 

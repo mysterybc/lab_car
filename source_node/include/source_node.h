@@ -2,7 +2,7 @@
 
 #include "ros/ros.h"
 
-#define pi 3.14
+#define pi 3.14159
 
 enum class State{
     NOT_CONFIG    = 0,
