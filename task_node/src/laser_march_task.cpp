@@ -114,7 +114,8 @@ struct ConfigBIT {
 	
 	std::vector<int> idlist, idform;
 	std::vector<float> dx, dy;
-	float edge_scaling = 1.6f;
+	float edge_scaling = 2.5f;
+	bool is_simulation;
 };
 struct StateBIT {
 	StateInfo mean(const std::vector<int>& id_list);
@@ -324,18 +325,22 @@ void on_new_gps_pos(const nav_msgs::Odometry& msg){
 }
 
 void on_new_lidar_pos(const nav_msgs::Odometry& msg){
-	double yaw,roll,pitch;
-	tf::Quaternion quat;
-	tf::quaternionMsgToTF(msg.pose.pose.orientation,quat);
-    tf::Matrix3x3(quat).getEulerYPR(yaw,pitch,roll);
     StateInfo one;
 	one.ID = myconfig.robotID;
 	one.x = (float)m2cm(msg.pose.pose.position.x);
 	one.y = (float)m2cm(msg.pose.pose.position.y);
-	// one.heading = mydata.me.heading;
-	one.heading = (float)rad2deg(yaw);
 	one.v = 0;  // TBD
 	one.w = 0;  // TBD
+	if(myconfig.is_simulation){
+		double yaw,roll,pitch;
+		tf::Quaternion quat;
+		tf::quaternionMsgToTF(msg.pose.pose.orientation,quat);
+		tf::Matrix3x3(quat).getEulerYPR(yaw,pitch,roll);
+		one.heading = (float)rad2deg(yaw);
+	}
+	else{
+		one.heading = mydata.me.heading;
+	}
 	mydata.me = one;
 }
 
@@ -502,7 +507,7 @@ int main(int argc, char* argv[]) {
 	myconfig.target_velocity = 0.6; // m/s
 	myconfig.idlist = {1, 2, 3, 4};  // These robots are all connected
 	myconfig.idform = {1, 2, 3, 4};  // These robots will be in a formation
-	myconfig.edge_scaling = 2.0;                // when not specifying dx, dy, default edge length = 1m (which is too small)
+	myconfig.edge_scaling = 2.5;                // when not specifying dx, dy, default edge length = 1m (which is too small)
 	myconfig.dx = {0.5, 0.5, -0.5, -0.5 };   // optional, meter
 	myconfig.dy = {0.5, -0.5, -0.5, 0.5 };   // optional, meter
 
@@ -515,7 +520,8 @@ int main(int argc, char* argv[]) {
 	// ----------------------- 
 	ros::init(argc, argv, "bitform");
 	ros::NodeHandle node;
-	my_lib::GetParam("laser march task",&myID,NULL);
+	my_lib::GetParam("path_follow",&myID,NULL,NULL,NULL,NULL,NULL,&myconfig.is_simulation);	
+	std::cout << "issimulation" << myconfig.is_simulation << std::endl;
 	myconfig.robotID = myID;
 	// printf("This is Robot %d\n", myID);
 	logger.init_logger(myID);

@@ -88,8 +88,8 @@ bool PathCoverageNode::on_service(  robot_msgs::PathCoverage::Request & req,
         //加上原点坐标，计算出图片中相对于左下角的xy坐标
         //y由于图像需要进行翻转
         for(auto &point:req.select_point.poses){
-            point.pose.position.x = (point.pose.position.x + origin_x)/resolution;
-            point.pose.position.y = size_y - (point.pose.position.y + origin_y)/resolution;
+            point.pose.position.x = (point.pose.position.x - origin_x)/resolution;
+            point.pose.position.y = size_y - (point.pose.position.y - origin_y)/resolution;
             points.push_back(cv::Point(point.pose.position.x,point.pose.position.y));
         }
 
@@ -111,8 +111,8 @@ bool PathCoverageNode::on_service(  robot_msgs::PathCoverage::Request & req,
     //设置起始点
     {
         cv::Point start(req.start_point.position.x,req.start_point.position.y);
-        start.x = (req.start_point.position.x + origin_x)/resolution;
-        start.y =  size_y - (req.start_point.position.y + origin_y)/resolution;
+        start.x = (req.start_point.position.x - origin_x)/resolution;
+        start.y =  size_y - (req.start_point.position.y - origin_y)/resolution;
         init_point_vector.push_back(start);
         // std::cout << "start point x is : " << start.x << std::endl;
         // std::cout << "start point y is : " << start.y << std::endl;
@@ -144,7 +144,7 @@ int main(int argc, char** argv){
     //melodic devel
     // tf2_ros::Buffer tf(ros::Duration(10));
     //kinetic devel
-    tf::TransformListener tf(ros::Duration(10));
+    tf::TransformListener tf(ros::Duration(10));   
 
     //创建costmap cleaning path需要
     costmap_2d::Costmap2DROS lcr("cleaning_costmap", tf);

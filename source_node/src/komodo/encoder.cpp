@@ -27,7 +27,7 @@ int Encoder::UpdateOdom()
     ros::NodeHandle n;
 
     std::string port;
-    n.param<std::string>("vehicle_port", port, "/dev/ttyUSB0"); 
+    n.param<std::string>("vehicle_port", port, "/dev/driver_port"); 
 
     //创建timeout
     serial::Timeout to = serial::Timeout::simpleTimeout(100);

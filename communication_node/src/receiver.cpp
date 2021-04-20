@@ -81,7 +81,7 @@ int main(int argc, char** argv){
     std::string host_ip;
     std::string my_ip;
     std::vector<std::string> total_ip;
-    my_lib::GetParam("publish_robot_state",&car_id,NULL,NULL,&my_ip,&host_ip,NULL,&total_ip);
+    my_lib::GetParam("publish_robot_state",&car_id,NULL,NULL,&my_ip,&host_ip,&total_ip);
 
 
     //zmq_init
@@ -110,7 +110,6 @@ int main(int argc, char** argv){
         state_receive.receiveMsg(robot_msgs);
         host_receive.receiveMsg(host_msg);
         if(!host_msg.empty()){
-            std::cout << "message is " << host_msg << std::endl;
             decodeHostMsg(host_msg,host_cmd);
             if(host_cmd.message_type == HostCmd::HostMessageType::SingleMission
                || host_cmd.message_type == HostCmd::HostMessageType::MultiMission){
@@ -124,8 +123,11 @@ int main(int argc, char** argv){
                 if(json["message_type"] == "control_msg"){
                     pubAlgomsg(msg,algomsg_pub);
                 }
-                else{
+                else if(json["message_type"] == "state"){
                     decodeRobotMsgs(msg,id2states);
+                }
+                else{
+                    //上报上位机的消息不要
                 }
             }
         }

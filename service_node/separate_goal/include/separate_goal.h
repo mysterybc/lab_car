@@ -31,14 +31,15 @@ public:
                  robot_msgs::Separate::Response &res);
     bool CalArea(robot_msgs::SeparateArea::Request &req,
                  robot_msgs::SeparateArea::Response & res);
+    void OnNewPose(const nav_msgs::OdometryConstPtr &msg);
     void MapCallback(const nav_msgs::OccupancyGridConstPtr &msg);
     bool IsOccupied(geometry_msgs::Point p);
     void RobotStateCallback(const robot_msgs::RobotStatesConstPtr &msg);
-    geometry_msgs::Pose GetMyPose();
 
 private:
     std::vector<RobotInfo> robots_info;
     ros::Subscriber robots_state_sub;
+    ros::Subscriber robots_pose_sub;;
     ros::ServiceServer separate_goal_server; 
     ros::ServiceServer separate_area_server;
     ros::Subscriber map_sub;

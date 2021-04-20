@@ -101,8 +101,8 @@ RemoteControl::RemoteControl()
 {
     joystrick_drive_ = true;
     subJoy_   = nh_.subscribe("joy", 1000, &RemoteControl::joyCallback, this);
-    // subTwist_ = nh_.subscribe("cmd_vel", 1000, &RemoteControl::twistCallback, this);
-    pubTwist_ = nh_.advertise<geometry_msgs::Twist>("cmd_vel", 1000);
+    subTwist_ = nh_.subscribe("cmd_vel", 1000, &RemoteControl::twistCallback, this);
+    pubTwist_ = nh_.advertise<geometry_msgs::Twist>("komodo/cmd_vel", 1000);
 }
 //如果在手动模式下，就发布手柄控制命令
 void RemoteControl::joyCallback(const sensor_msgs::Joy::ConstPtr& msg)

@@ -9,6 +9,7 @@ SeparateGoal::SeparateGoal(){
     ros::NodeHandle nh;
     //获取group空间名
     my_lib::GetParam("path_follow",&car_id,NULL,&tf_ns);
+    robots_pose_sub = nh.subscribe("odom",10,&SeparateGoal::OnNewPose,this);
     robots_state_sub = nh.subscribe("robot_states",10,&SeparateGoal::RobotStateCallback,this);
     map_sub = nh.subscribe("/map",10,&SeparateGoal::MapCallback,this);
     separate_goal_server = nh.advertiseService("separate_goal",&SeparateGoal::CalGoal,this);
@@ -22,7 +23,6 @@ bool SeparateGoal::CalArea( robot_msgs::SeparateArea::Request &req,
                             robot_msgs::SeparateArea::Response & res){
     logger.DEBUGINFO(car_id,"separate area start!!");
     int x_flag{0}, y_flag{0};
-    my_pose = GetMyPose();
     //确定需要进行散点的车辆数
     int online_car{1};
     for(auto it : robots_info){
@@ -41,7 +41,7 @@ bool SeparateGoal::CalArea( robot_msgs::SeparateArea::Request &req,
         }
     }
     switch(online_car){
-        case 1: req.area = res.area; break;
+        case 1: res.area = req.area; break;
         case 2:
         {
             geometry_msgs::PoseStamped mid_pose1,mid_pose2;
@@ -124,7 +124,6 @@ bool SeparateGoal::CalGoal(robot_msgs::Separate::Request &req,
     int x_flag{0}, y_flag{0};
     //确定需要进行散点的车辆数
     int online_car{1};
-    my_pose = GetMyPose();
     logger.DEBUGINFO(car_id,"get my pose!!");
     //统计在线车辆，并判定散点方式
     for(auto it : robots_info){
@@ -148,17 +147,17 @@ bool SeparateGoal::CalGoal(robot_msgs::Separate::Request &req,
     }
     else{
         if(x_flag >= online_car/2){
-            goal_point.position.x += 1;
+            goal_point.position.x += 2;
         }
         else{
-            goal_point.position.x -= 1;
+            goal_point.position.x -= 2;
         }
         if(online_car > 2){
             if(y_flag >= online_car/2){
-                goal_point.position.y += 1;
+                goal_point.position.y += 2;
             }
             else{
-                goal_point.position.y -= 1;
+                goal_point.position.y -= 2;
             }
         }
     }
@@ -198,26 +197,8 @@ void SeparateGoal::RobotStateCallback(const robot_msgs::RobotStatesConstPtr &msg
 /** 获取自己的位姿
  * 
  * */
-geometry_msgs::Pose SeparateGoal::GetMyPose(){
-    geometry_msgs::Pose pose;
-    tf::TransformListener listerner;
-    tf::StampedTransform trans;
-    while(ros::ok()){
-        try{
-            listerner.lookupTransform("map",tf_ns+"base_link",ros::Time(0),trans);
-        }
-        catch(tf::TransformException &exception) {
-            ros::Duration(0.5).sleep(); // sleep for half a second
-            ros::spinOnce();
-            continue;                
-        }
-        tf::quaternionTFToMsg(trans.getRotation(),pose.orientation);
-        pose.position.x = trans.getOrigin().x();
-        pose.position.y = trans.getOrigin().y();
-        pose.position.z = trans.getOrigin().z();
-        break;
-    }
-    return pose;
+void SeparateGoal::OnNewPose(const nav_msgs::OdometryConstPtr &msg){
+    my_pose = msg->pose.pose;
 }
 
 /** 
