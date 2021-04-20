@@ -99,10 +99,18 @@ int main(int argc, char **argv)
 //以下是功能
 RemoteControl::RemoteControl()
 {
+    nh_.param("/is_simulation",is_simulation,true);
     joystrick_drive_ = true;
     subJoy_   = nh_.subscribe("joy", 1000, &RemoteControl::joyCallback, this);
-    subTwist_ = nh_.subscribe("cmd_vel", 1000, &RemoteControl::twistCallback, this);
-    pubTwist_ = nh_.advertise<geometry_msgs::Twist>("komodo/cmd_vel", 1000);
+    if(is_simulation){
+        // subTwist_ = nh_.subscribe("cmd_vel", 1000, &RemoteControl::twistCallback, this);
+        pubTwist_ = nh_.advertise<geometry_msgs::Twist>("cmd_vel", 1000);
+    }
+    else{
+        subTwist_ = nh_.subscribe("cmd_vel", 1000, &RemoteControl::twistCallback, this);
+        pubTwist_ = nh_.advertise<geometry_msgs::Twist>("komodo/cmd_vel", 1000);
+    }
+    
 }
 //如果在手动模式下，就发布手柄控制命令
 void RemoteControl::joyCallback(const sensor_msgs::Joy::ConstPtr& msg)
@@ -118,8 +126,14 @@ void RemoteControl::joyCallback(const sensor_msgs::Joy::ConstPtr& msg)
     if (! joystrick_drive_)
         out_cmd_vel = in_cmd_vel_;
     else {
-        out_cmd_vel.angular.z = MAX_ANGULAR_VEL*msg->axes[0];
-        out_cmd_vel.linear.x = MAX_VEL*msg->axes[1];
+        out_cmd_vel.angular.z = -MAX_ANGULAR_VEL*msg->axes[0];
+        if(is_simulation){
+            out_cmd_vel.linear.x = MAX_VEL*msg->axes[1];
+        }
+        else{
+            out_cmd_vel.linear.x = -MAX_VEL*msg->axes[1];
+        }
+        
     }
     pubTwist_.publish(out_cmd_vel);
 }

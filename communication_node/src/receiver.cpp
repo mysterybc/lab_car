@@ -8,6 +8,7 @@
 #include "robot_msgs/RobotStates.h"
 #include "tf/transform_datatypes.h"
 #include "std_msgs/UInt8MultiArray.h"
+#include "std_msgs/Bool.h"
 //my lib
 #include "zmq_lib.h"
 #include "msgs.h"
@@ -100,8 +101,6 @@ int main(int argc, char** argv){
     ros::Publisher algomsg_pub = nh.advertise<std_msgs::UInt8MultiArray>("algomsg_others",10);
     ros::Publisher cmd_pub = nh.advertise<robot_msgs::HostCmdArray>("host_cmd",10);
 
-    
-
     ros::Rate loop(20);
     while(ros::ok()){
         robot_msgs.clear();
@@ -113,6 +112,14 @@ int main(int argc, char** argv){
             decodeHostMsg(host_msg,host_cmd);
             if(host_cmd.message_type == HostCmd::HostMessageType::SingleMission
                || host_cmd.message_type == HostCmd::HostMessageType::MultiMission){
+                pubHostCmd(host_cmd,cmd_pub);
+            }
+            else if(host_cmd.message_type == HostCmd::HostMessageType::RemoteCtrl && host_cmd.Has_Me(host_msg)){
+                robot_msgs::HostCmd remote_control_cmd;
+                remote_control_cmd.car_id.push_back(car_id);
+                remote_control_cmd.mission.mission = 4;
+                host_cmd.host_cmd_array.host_cmd_array.clear();
+                host_cmd.host_cmd_array.host_cmd_array.push_back(remote_control_cmd);
                 pubHostCmd(host_cmd,cmd_pub);
             }
         }

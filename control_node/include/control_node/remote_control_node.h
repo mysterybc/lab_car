@@ -12,6 +12,7 @@ public:
     RemoteControl();
     void twistCallback(const geometry_msgs::Twist::ConstPtr& msg);
     void joyCallback(const sensor_msgs::Joy::ConstPtr& msg);
+    bool is_simulation;
 private:
     ros::NodeHandle nh_;
     ros::Publisher  pubTwist_;

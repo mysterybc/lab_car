@@ -12,6 +12,7 @@ BlackBoard::BlackBoard()
     tag_pose_pub=nh.advertise<geometry_msgs::Pose>("tag_pose",10);
     group_state_sub=nh.subscribe("robot_states",10,&BlackBoard::GroupStateCallback,this);
     tag_detection_sub=nh.subscribe("/tag_detections",10,&BlackBoard::TagDetectionsCallback,this);
+    current_task_pub=nh.advertise<robot_msgs::CurrentTask>("current_task",10);
     std::string namespace_=nh.getNamespace();
     nh.getParam(namespace_+"/car_id",car_id);
     logger.init_logger(car_id);
@@ -172,6 +173,9 @@ void BlackBoard::PubDecisionState(){
     
 	state_.robot_states_enum = g_TaskRealizeAgent->fore_func_state;
 	decision_state_pub.publish(state_);
+    robot_msgs::CurrentTask current_task;
+    current_task.current_task = g_GroupAsBasicLogicAgent->CurrentTask;
+    current_task_pub.publish(current_task);
 }
 
 void BlackBoard::PubMembers(){

@@ -36,6 +36,10 @@ void GroupAsBasicLogic::ActionCancel()
 		logger.DEBUGINFO(g_BlackBoardAgent->car_id,"cancel Search goal");
 		g_TaskRealizeAgent->search_action->cancelGoal();
 		break;	
+    case Remote_Control:
+         g_GroupAsBasicLogicAgent->CurrentTask = TaskIndividual::NonTask;
+         g_TaskRealizeAgent->fore_func_state = ForeFuncState::Idle;
+         break;
 
 	default://其中含NonTask
 		break;
