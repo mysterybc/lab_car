@@ -212,3 +212,10 @@ void TaskRealize::Search_DoneCallback(const actionlib::SimpleClientGoalState &st
 }
 
 
+void TaskRealize::Remote_Control()
+{
+    logger.DEBUGINFO(g_BlackBoardAgent->car_id,"Remote_Control");
+
+}
+
+

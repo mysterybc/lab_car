@@ -10,6 +10,7 @@
 #include "my_param_server.h"
 #include "robot_msgs/SeparateArea.h"
 #include "nav_msgs/Odometry.h"
+#include "nav_msgs/GetMap.h"
 
 
 Debug::DebugLogger logger;
@@ -79,6 +80,7 @@ public:
     void SearchExcuteCB(const robot_msgs::SearchGoalConstPtr &goal);
     geometry_msgs::Pose GetStartPoint(const std::vector<geometry_msgs::PoseStamped> &area);
     void OnNewPose(const nav_msgs::OdometryConstPtr &odom);
+    geometry_msgs::Pose ObstracleAvoid(const std::vector<geometry_msgs::PoseStamped> &area, geometry_msgs::Pose start_pose);
     void PreemptCB();
 
     int car_id;
@@ -87,6 +89,7 @@ public:
     std::string tf_ns;
     ros::Subscriber robot_pose_sub;
     ros::Subscriber robots_state_sub;
+    ros::ServiceClient map_client;
     ros::ServiceClient path_coverage_client;
     ros::ServiceClient separate_area_client;
     actionlib::SimpleActionServer<robot_msgs::SearchAction> search_server;
@@ -94,6 +97,7 @@ public:
                       robot_msgs::PathFollowResultConstPtr,robot_msgs::PathFollowFeedbackConstPtr> path_follow_client;
     geometry_msgs::Pose robot_pose;
     bool cancel_goal;
+    nav_msgs::OccupancyGrid static_map;
 };
 
 /**
@@ -109,9 +113,19 @@ SearchAction::SearchAction():
     robot_pose_sub = nh.subscribe("odom",1,&SearchAction::OnNewPose,this);
     separate_area_client = nh.serviceClient<robot_msgs::SeparateArea>("separate_area");
     path_coverage_client = nh.serviceClient<robot_msgs::PathCoverage>("path_coverage");
+    map_client = nh.serviceClient<nav_msgs::GetMap>("/static_map");
     search_server.registerPreemptCallback(std::bind(&SearchAction::PreemptCB,this));
     //Debug info
     logger.init_logger(car_id);
+    nav_msgs::GetMap get_map;
+    if(map_client.call(get_map)){
+        logger.DEBUGINFO(car_id,"search task  get static map success");
+        static_map = get_map.response.map;
+    }
+    else{
+        logger.WARNINFO(car_id,"search task failed to  get static map!!");
+        ros::shutdown();
+    }
     cancel_goal = false;
     search_server.start();
 }
@@ -219,8 +233,8 @@ geometry_msgs::Pose SearchAction::GetStartPoint(const std::vector<geometry_msgs:
         min_y = std::min(point.pose.position.y,min_y);
     }
     //如果机器人在区域内
-    if(     robot_pose.position.x < max_x && robot_pose.position.x > max_x 
-        &&  robot_pose.position.y < max_y && robot_pose.position.y > max_y ){
+    if(     robot_pose.position.x < max_x && robot_pose.position.x > min_x 
+        &&  robot_pose.position.y < max_y && robot_pose.position.y > min_y ){
         return robot_pose;
     }
     //如果不在区域内
@@ -236,19 +250,53 @@ geometry_msgs::Pose SearchAction::GetStartPoint(const std::vector<geometry_msgs:
         }
         //起始点需要向内一些
         if(start_point.position.x > (min_x+max_x)/2){
-            start_point.position.x -= 0.5;
+            start_point.position.x -= 1;
         }else{
-            start_point.position.x += 0.5;
+            start_point.position.x += 1;
         }
         if(start_point.position.y > (min_y+max_y)/2){
-            start_point.position.y -= 0.5;
+            start_point.position.y -= 1;
         }else{
-            start_point.position.y += 0.5;
+            start_point.position.y += 1;
         }
         return start_point;
     }
     
 }
+
+
+// geometry_msgs::Pose SearchAction::ObstracleAvoid(
+//     const std::vector<geometry_msgs::PoseStamped> &area, 
+//     geometry_msgs::Pose start_pose){
+//     geometry_msgs::Pose pose;
+//     int index;
+//     double min_distance{1e4};
+//     for(int i = 0 ; i < 4; i++){
+//         double distance = fabs(area[i].pose.position.x-start_pose.position.x);
+//         distance += fabs(area[i].pose.position.y-start_pose.position.y);
+//         if(distance < min_distance){
+//             index = i;
+//             min_distance = distance;
+//         }
+//     }
+//     //xy in cell
+//     int cell_x = start_pose.position.x/static_map.info.resolution;
+//     int cell_y = start_pose.position.y/static_map.info.resolution;
+//     int direction_x = start_pose.position.x - area[index].pose.position.x > 0 ? 1 : -1;
+//     int direction_y = start_pose.position.y - area[index].pose.position.y > 0 ? 1 : -1;
+//     while(static_map.data[cell_x + cell_y * static_map.info.width] == 100){
+//         cell_x += direction_x;
+//         cell_y += direction_y;
+//         std::cout << "cell x is " << cell_x << std::endl;
+//         std::cout << "cell y is " << cell_y << std::endl;
+//     }
+//     cell_x += direction_x*10;
+//     cell_y += direction_y*10;
+//     pose.orientation = start_pose.orientation;
+//     pose.position.x = cell_x * static_map.info.resolution;
+//     pose.position.y = cell_y * static_map.info.resolution;
+//     return pose;
+// }
 
 void SearchAction::RobotStateCallback(const robot_msgs::RobotStatesConstPtr &msg){
     while(msg->online_robot_number > robots_info.size()){

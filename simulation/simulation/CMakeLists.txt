@@ -40,3 +40,6 @@ target_link_libraries(test_pathCoverage ${catkin_LIBRARIES})
 
 add_executable(test_search src/test_search.cpp)
 target_link_libraries(test_search ${catkin_LIBRARIES})
+
+add_executable(test_gridmap src/test.cpp)
+target_link_libraries(test_gridmap ${catkin_LIBRARIES})

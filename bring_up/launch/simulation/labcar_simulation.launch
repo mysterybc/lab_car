@@ -41,19 +41,19 @@
         <!-- task node -->
         <node pkg="task_node"           type="build_up_task_nohost" name="build_up_task_nohost"      />
         <node pkg="task_node"           name="gps_march_task"       type="gps_march_task"           />
-        <node pkg="task_node"           name="laser_march_task"     type="laser_march_task"    output="screen"       />
-        <node pkg="task_node"           name="search_task"          type="search_task"               />
+        <node pkg="task_node"           name="laser_march_task"     type="laser_march_task"   output="screen"        />
+        <node pkg="task_node"           name="search_task"          type="search_task"    output="screen"           />
         <!-- behavior tree -->
-        <node pkg="decision_node"       type="decision_node"        name="decision_node"    output="screen"       />
+        <node pkg="decision_node"       type="decision_node"        name="decision_node"   output="screen"         />
         <!-- service node -->
-        <node pkg="service_node"        type="separate_goal"        name="separate_goal"            />
+        <node pkg="service_node"        type="separate_goal"        name="separate_goal"   output="screen"         />
             <node pkg="service_node" type="path_coverage"      name="path_coverage"  clear_params="true"    >
         <rosparam file="$(find bring_up)/cfg/$(arg simulator)/$(arg robot_name)/path_coverage_param.yaml" command="load" />
         </node>
         <node pkg="service_node" type="path_follow"        name="path_follow"  />    
         <!-- send robot state -->
         <node pkg="communication_node"  name="receiver"             type="receiver"                 />
-        <node pkg="communication_node"  name="publisher"            type="publisher"                />        
+        <node pkg="communication_node"  name="publisher"            type="publisher"             />        
     </group>
 
 

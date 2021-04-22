@@ -12,6 +12,8 @@
 #include "robot_msgs/robot_states_enum.h"
 #include "tf/transform_listener.h"
 #include "sensor_msgs/LaserScan.h"
+#include "apriltag_ros/AprilTagDetectionArray.h"
+#include "std_msgs/Bool.h"
 //my lib
 #include "zmq_lib.h"
 #include "msgs.h"
@@ -40,8 +42,9 @@ void GroupSubCB(const std_msgs::Int8MultiArrayConstPtr &msg, StateMsg &state_msg
 }
 
 //接收状态信息
-void DecisionSubCB(const robot_msgs::robot_states_enumConstPtr &msg, StateMsg &state_msg){
+void DecisionSubCB(const robot_msgs::robot_states_enumConstPtr &msg, StateMsg &state_msg,RobotTaskMsg& robot_task_msg){
     state_msg.state = msg->robot_states_enum;
+    robot_task_msg.task_state_int = msg->robot_states_enum;
 }
 
 //send algo msg
@@ -131,6 +134,16 @@ void OnNewScan(const sensor_msgs::LaserScanConstPtr &msg, RobotPerceptionMsg& ro
     }
 }
 
+void OnNewDetections(const apriltag_ros::AprilTagDetectionArrayConstPtr& msg,RobotPerceptionMsg& robot_perception_msg){
+    if(msg->detections.size() != 0){
+        robot_perception_msg.has_target = true;
+        robot_perception_msg.target_coord.x = msg->detections[0].pose.pose.pose.position.x;
+        robot_perception_msg.target_coord.y = msg->detections[0].pose.pose.pose.position.y;
+    }
+    else{
+        robot_perception_msg.has_target = false;
+    }
+}
 
 
 int main(int argc,char **argv)
@@ -167,15 +180,16 @@ int main(int argc,char **argv)
     ros::Subscriber robot_pose_sub;
     ros::Subscriber robot_task_sub;
     ros::Subscriber laser_sub;
+    ros::Subscriber detection_sub;
     report_path_server = nh.advertiseService<robot_msgs::ReportPath::Request,robot_msgs::ReportPath::Response>\
                             ("report_path",boost::bind(&ReportPath,_1,_2,std::ref(path_msg),std::ref(sender)));
-    state_subs = nh.subscribe<robot_msgs::robot_states_enum>("decision_state",10,boost::bind(&DecisionSubCB,_1,std::ref(state_msg)));
+    state_subs = nh.subscribe<robot_msgs::robot_states_enum>("decision_state",10,boost::bind(&DecisionSubCB,_1,std::ref(state_msg),std::ref(robot_task_msg)));
     group_subs = nh.subscribe<std_msgs::Int8MultiArray>("my_group_member",10,boost::bind(&GroupSubCB,_1,std::ref(state_msg)));
     algomsg_subs = nh.subscribe<std_msgs::UInt8MultiArray>("algomsg_my",10,boost::bind(&OnNewAlgomsg,_1,std::ref(sender)));
     robot_pose_sub = nh.subscribe<nav_msgs::Odometry>("odom",1,boost::bind(OnNewRobotPose,_1,std::ref(robot_state_msg),std::ref(state_msg)));
     robot_task_sub = nh.subscribe<robot_msgs::CurrentTask>("current_task",1,boost::bind(OnNewTask,_1,std::ref(robot_task_msg)));
     laser_sub = nh.subscribe<sensor_msgs::LaserScan>("base_scan",1,boost::bind(OnNewScan,_1,std::ref(robot_perception_msg)));
-
+    detection_sub = nh.subscribe<apriltag_ros::AprilTagDetectionArray>("/tag_detections",5,boost::bind(OnNewDetections,_1,std::ref(robot_perception_msg)));
 
     //loop
     //in loop send state message
@@ -188,8 +202,11 @@ int main(int argc,char **argv)
         //old robot states
         if(count++==1){
             sender.sendMsg(robot_state_msg.fmtMsg());
+            // std::cout << robot_state_msg.fmtMsg() << std::endl;
             sender.sendMsg(robot_task_msg.fmtMsg());
+            std::cout << robot_task_msg.fmtMsg() << std::endl;
             sender.sendMsg(robot_perception_msg.fmtMsg());
+            // std::cout << robot_perception_msg.fmtMsg() << std::endl;
             count = 0;
         }
         ros::spinOnce();
