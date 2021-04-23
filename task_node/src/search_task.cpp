@@ -117,15 +117,15 @@ SearchAction::SearchAction():
     search_server.registerPreemptCallback(std::bind(&SearchAction::PreemptCB,this));
     //Debug info
     logger.init_logger(car_id);
-    nav_msgs::GetMap get_map;
-    if(map_client.call(get_map)){
-        logger.DEBUGINFO(car_id,"search task  get static map success");
-        static_map = get_map.response.map;
-    }
-    else{
-        logger.WARNINFO(car_id,"search task failed to  get static map!!");
-        ros::shutdown();
-    }
+    // nav_msgs::GetMap get_map;
+    // if(map_client.call(get_map)){
+    //     logger.DEBUGINFO(car_id,"search task  get static map success");
+    //     static_map = get_map.response.map;
+    // }
+    // else{
+    //     logger.WARNINFO(car_id,"search task failed to  get static map!!");
+    //     ros::shutdown();
+    // }
     cancel_goal = false;
     search_server.start();
 }
