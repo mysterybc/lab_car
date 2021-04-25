@@ -10,6 +10,7 @@ BlackBoard::BlackBoard()
     decision_state_pub = nh.advertise<robot_msgs::robot_states_enum>("decision_state",10);
     members_pub = nh.advertise<std_msgs::Int8MultiArray>("my_group_member",10);
     tag_pose_pub=nh.advertise<geometry_msgs::Pose>("tag_pose",10);
+    tag_id_pub=nh.advertise<std_msgs::Int8MultiArray>("tag_id",10);
     group_state_sub=nh.subscribe("robot_states",10,&BlackBoard::GroupStateCallback,this);
     tag_detection_sub=nh.subscribe("/tag_detections",10,&BlackBoard::TagDetectionsCallback,this);
     std::string namespace_=nh.getNamespace();
@@ -147,23 +148,18 @@ void BlackBoard::CmdCallback(const robot_msgs::HostCmdArrayConstPtr &msg){
 
 
 void BlackBoard::TagDetectionsCallback(const apriltag_ros::AprilTagDetectionArrayConstPtr &msg ){
-    if(msg->detections.size()!=0){
-        tag_pose=msg->detections[0].pose.pose.pose;
-        tag_id=msg->detections[0].id;
-        // logger.DEBUGINFO(car_id,"detected and size is %d",tag_id.size());
-    }
-    else
-    {
-        std::vector<int>().swap(tag_id);
-    }
-    
-        
+    std::vector<int>().swap(tag_id);
+    std::vector<geometry_msgs::Pose>().swap(tag_pose);//识别结束后不会再pub"tag_pose". 
 
+    for(auto i:msg->detections)
+    {
+        tag_pose.pushback(i.pose.pose.pose);
+        tag_id.pushback(i.id);
+    }
+       
 }
 
 void BlackBoard::PubDecisionState(){
-
-    // logger.DEBUGINFO(g_BlackBoardAgent->car_id,"pub!!!");
 	robot_msgs::robot_states_enum state_;
     if(g_GroupAsBasicLogicAgent->CurrentTask!=NonTask)
         g_TaskRealizeAgent->fore_func_state=ForeFuncState::Running;//本句可以被ActiveCB代替，但是目前没有ActiveCB所以暂时使用。
@@ -185,6 +181,7 @@ void BlackBoard::PubMembers(){
 
 void BlackBoard::PubTagPose(){
     tag_pose_pub.publish(tag_pose);
+    tag_id_pub.publish(tag_id);
 }
 
 std::vector<geometry_msgs::Pose> BlackBoard::GetGoal(){

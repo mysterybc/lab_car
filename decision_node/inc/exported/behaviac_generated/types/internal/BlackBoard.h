@@ -49,13 +49,14 @@ public:
 	public: std::vector<robot_msgs::HostCmd> msgs;//一次发布多个任务
     public: std::vector<robot_msgs::HostCmd> TaskList;
 	public: std::vector<geometry_msgs::Pose> goal;
-	public:  geometry_msgs::Pose tag_pose;
+	public:  std::vector<geometry_msgs::Pose> tag_pose;
 	private: ros::Subscriber group_state_sub;
 	private: ros::Subscriber cmd_sub;
 	private: ros::Subscriber tag_detection_sub;
 	private: ros::Publisher decision_state_pub;
 	private: ros::Publisher members_pub;
 	private: ros::Publisher tag_pose_pub;
+	private: ros::Publisher tag_id_pub;
 };
 
 #endif

@@ -47,6 +47,8 @@ public:
 	private: void Search_ActiveCallback(void);
 	private: void Search_DoneCallback(const actionlib::SimpleClientGoalState &state, const robot_msgs::SearchResultConstPtr &result);
 
+	public: void Remote_Control();
+	
 	public:actionlib::SimpleActionClient<robot_msgs::BuildUpAction>* build_up_action;
 	public:actionlib::SimpleActionClient<robot_msgs::MarchAction>* gps_march_action;
 	public:actionlib::SimpleActionClient<robot_msgs::MarchAction>* laser_march_action;

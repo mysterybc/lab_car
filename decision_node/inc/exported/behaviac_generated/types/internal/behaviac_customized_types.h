@@ -17,6 +17,7 @@ enum TaskIndividual
 	March_gps,
 	March_laser,
 	Search,
+	Remote_Control,
 	Assemble,
 	Stop,
 	Pause,
