@@ -1,4 +1,4 @@
-﻿#ifndef _BEHAVIAC_BLACKBOARD_H_
+#ifndef _BEHAVIAC_BLACKBOARD_H_
 #define _BEHAVIAC_BLACKBOARD_H_
 
 #include "behaviac_headers.h"
@@ -15,10 +15,10 @@
 #include "GroupAsBasicLogic.h"
 #include "TaskRealize.h"
 #include "std_msgs/Int8MultiArray.h"
+#include "std_msgs/Int32MultiArray.h"
 #include "algorithm"
 #include "vector"
 #include "my_debug_info.h"
-#include "robot_msgs/CurrentTask.h"
 #include<utility>
 
 
@@ -36,7 +36,6 @@ public:
 	BEHAVIAC_DECLARE_AGENTTYPE(BlackBoard, behaviac::Agent)
 
 	public: int car_id;
-	public: std::vector<int> tag_id;
 
     public:void BackgrdFuncProcessing(TaskIndividual backgrdfunc);
 
@@ -51,6 +50,7 @@ public:
     public: std::vector<robot_msgs::HostCmd> TaskList;
 	public: std::vector<geometry_msgs::Pose> goal;
 	public:  std::vector<geometry_msgs::Pose> tag_pose;
+	public: std::vector<int32_t> tag_id;
 	private: ros::Subscriber group_state_sub;
 	private: ros::Subscriber cmd_sub;
 	private: ros::Subscriber tag_detection_sub;

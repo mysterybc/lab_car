@@ -1,4 +1,4 @@
-﻿#include "TaskRealize.h"
+#include "TaskRealize.h"
 extern Debug::DebugLogger logger;
 
 #define _cancel  2

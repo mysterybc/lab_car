@@ -1,4 +1,4 @@
-﻿#include "BlackBoard.h"
+#include "BlackBoard.h"
 
 Debug::DebugLogger logger;
 
@@ -10,7 +10,7 @@ BlackBoard::BlackBoard()
     decision_state_pub = nh.advertise<robot_msgs::robot_states_enum>("decision_state",10);
     members_pub = nh.advertise<std_msgs::Int8MultiArray>("my_group_member",10);
     tag_pose_pub=nh.advertise<geometry_msgs::Pose>("tag_pose",10);
-    tag_id_pub=nh.advertise<std_msgs::Int8MultiArray>("tag_id",10);
+    tag_id_pub=nh.advertise<std_msgs::Int32MultiArray>("tag_id",10);
     group_state_sub=nh.subscribe("robot_states",10,&BlackBoard::GroupStateCallback,this);
     tag_detection_sub=nh.subscribe("/tag_detections",10,&BlackBoard::TagDetectionsCallback,this);
     current_task_pub=nh.advertise<robot_msgs::CurrentTask>("current_task",10);
@@ -151,16 +151,16 @@ void BlackBoard::CmdCallback(const robot_msgs::HostCmdArrayConstPtr &msg){
 void BlackBoard::TagDetectionsCallback(const apriltag_ros::AprilTagDetectionArrayConstPtr &msg ){
     std::vector<int>().swap(tag_id);
     std::vector<geometry_msgs::Pose>().swap(tag_pose);//识别结束后不会再pub"tag_pose". 
-
-    for(auto i:msg->detections)
-    {
-        tag_pose.push_back(i.pose.pose.pose);
-        tag_id.push_back(i.id);
+    if(msg->detections.size()!=0){
+        tag_pose.push_back(msg->detections[0].pose.pose.pose);
+     for(auto i:msg->detections[0].id)
+        tag_id.push_back(i);
     }
-       
 }
 
 void BlackBoard::PubDecisionState(){
+
+    // logger.DEBUGINFO(g_BlackBoardAgent->car_id,"pub!!!");
 	robot_msgs::robot_states_enum state_;
     if(g_GroupAsBasicLogicAgent->CurrentTask!=NonTask)
         g_TaskRealizeAgent->fore_func_state=ForeFuncState::Running;//本句可以被ActiveCB代替，但是目前没有ActiveCB所以暂时使用。
@@ -184,8 +184,13 @@ void BlackBoard::PubMembers(){
 
 
 void BlackBoard::PubTagPose(){
-    tag_pose_pub.publish(tag_pose);
-    tag_id_pub.publish(tag_id);
+    std_msgs::Int32MultiArray msg;
+for(auto i:tag_pose)
+    tag_pose_pub.publish(i);
+
+    for(auto i:tag_id)
+        msg.data.push_back(i);
+    tag_id_pub.publish(msg);
 }
 
 std::vector<geometry_msgs::Pose> BlackBoard::GetGoal(){
