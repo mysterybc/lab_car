@@ -152,7 +152,6 @@ void TaskRealize::Search_FeedbackCallback(const robot_msgs::SearchFeedbackConstP
     {
         if(i==ForeFuncState::Success)
         {
-            // logger.DEBUGINFO(g_BlackBoardAgent->car_id,"my friend or i success!!");
             tag_detected_from_group=true;
         }
 
@@ -164,13 +163,11 @@ void TaskRealize::Search_FeedbackCallback(const robot_msgs::SearchFeedbackConstP
         {
             g_GroupAsBasicLogicAgent->CurrentTask=TaskIndividual::NonTask;
             g_TaskRealizeAgent->fore_func_state=ForeFuncState::Success;
-            // logger.DEBUGINFO(g_BlackBoardAgent->car_id,"i am canceling!!!");
             g_TaskRealizeAgent->search_action->cancelGoal();//finish search behavior
             if(tag_detected_from_me)
             {
                 g_GroupAsBasicLogicAgent->CurrentTask=TaskIndividual::NonTask;
                 g_TaskRealizeAgent->fore_func_state=ForeFuncState::Success;
-                // logger.DEBUGINFO(g_BlackBoardAgent->car_id,"my state is %d!!!",g_TaskRealizeAgent->fore_func_state);
                 g_BlackBoardAgent->PubTagPose();//Pub tag pose
                 logger.DEBUGINFO(g_BlackBoardAgent->car_id,"Detect the tag,Search complete");
             }
@@ -200,7 +197,6 @@ void TaskRealize::Search_DoneCallback(const actionlib::SimpleClientGoalState &st
     if(result->succeed!=_cancel)
     {
         g_TaskRealizeAgent->fore_func_state=ForeFuncState::Success;
-        // logger.DEBUGINFO(g_BlackBoardAgent->car_id,"I success!!");
         g_GroupAsBasicLogicAgent->CurrentTask=TaskIndividual::NonTask;
     }
     else

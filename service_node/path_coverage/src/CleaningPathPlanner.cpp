@@ -54,16 +54,17 @@ CleaningPathPlanning::CleaningPathPlanning(costmap_2d::Costmap2DROS *costmap2d_r
     
     //gzx: 我把获取机器人当前位置放到了这里，
     //melodic devel
-    // geometry_msgs::PoseStamped pose;
-    // bool isok = costmap2d_ros_->getRobotPose(pose);
-    // tf::poseStampedMsgToTF(pose,initPose_);
+    geometry_msgs::PoseStamped pose;   
+    bool isok = costmap2d_ros_->getRobotPose(pose);   
+    tf::poseStampedMsgToTF(pose,initPose_);   
     //kinetic devel
-    bool isok = costmap2d_ros_->getRobotPose(initPose_);   
+    // bool isok = costmap2d_ros_->getRobotPose(initPose_)
     if(!isok)
     {
         ROS_INFO("Failed to get robot location! Please check where goes wrong!");
         return;
     }
+
    //initPoint.row = initPose_.getOrigin().y()
     unsigned int mx,my;
     double wx = initPose_.getOrigin().x();
