@@ -58,6 +58,7 @@ namespace behaviac
 	inline void FunctionPointer_TaskRealize_LogMessage(char* param0) { TaskRealize::LogMessage(param0); }
 	inline void FunctionPointer_TaskRealize_March_gps(Agent* self) { ((TaskRealize*)self)->March_gps(); }
 	inline void FunctionPointer_TaskRealize_March_laser(Agent* self) { ((TaskRealize*)self)->March_laser(); }
+	inline void FunctionPointer_TaskRealize_Remote_Control(Agent* self) { ((TaskRealize*)self)->Remote_Control(); }
 	inline void FunctionPointer_TaskRealize_Search(Agent* self) { ((TaskRealize*)self)->Search(); }
 }
 #endif // _BEHAVIAC_AGENT_PROPERTIES_H_

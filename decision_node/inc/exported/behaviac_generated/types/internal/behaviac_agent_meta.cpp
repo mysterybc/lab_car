@@ -279,7 +279,7 @@ namespace behaviac
 
 		virtual bool load()
 		{
-			AgentMeta::SetTotalSignature(664928379u);
+			AgentMeta::SetTotalSignature(2443172519u);
 
 			AgentMeta* meta = NULL;
 			BEHAVIAC_UNUSED_VAR(meta);
@@ -332,13 +332,14 @@ namespace behaviac
 			meta->RegisterMethod(502968959u, BEHAVIAC_NEW CMethod_behaviac_Agent_VectorRemove());
 
 			// TaskRealize
-			meta = BEHAVIAC_NEW AgentMeta(1596480875u);
+			meta = BEHAVIAC_NEW AgentMeta(385458823u);
 			AgentMeta::GetAgentMetas()[682816214u] = meta;
 			meta->RegisterMemberProperty(1476038657u, BEHAVIAC_NEW CMemberProperty< ForeFuncState >("fore_func_state", Set_TaskRealize_fore_func_state, Get_TaskRealize_fore_func_state));
 			meta->RegisterMethod(3496515545u, BEHAVIAC_NEW CAgentMethodVoid(FunctionPointer_TaskRealize_Assemble));
 			meta->RegisterMethod(1045109914u, BEHAVIAC_NEW CAgentStaticMethodVoid_1<char*>(FunctionPointer_TaskRealize_LogMessage));
 			meta->RegisterMethod(3106451133u, BEHAVIAC_NEW CAgentMethodVoid(FunctionPointer_TaskRealize_March_gps));
 			meta->RegisterMethod(2622773627u, BEHAVIAC_NEW CAgentMethodVoid(FunctionPointer_TaskRealize_March_laser));
+			meta->RegisterMethod(2307349957u, BEHAVIAC_NEW CAgentMethodVoid(FunctionPointer_TaskRealize_Remote_Control));
 			meta->RegisterMethod(1126517323u, BEHAVIAC_NEW CAgentMethodVoid(FunctionPointer_TaskRealize_Search));
 			meta->RegisterMethod(2521019022u, BEHAVIAC_NEW CMethod_behaviac_Agent_VectorAdd());
 			meta->RegisterMethod(2306090221u, BEHAVIAC_NEW CMethod_behaviac_Agent_VectorClear());

@@ -25,6 +25,7 @@
 #include "my_debug_info.h"
 #include "sensor_msgs/Imu.h"
 #include "my_param_server.h"
+#include "nav_msgs/Path.h"
 
 
 
@@ -32,6 +33,7 @@ inline double m2cm(double x) { return x * 100; }
 inline double cm2m(double x) { return x / 100; }
 inline double deg2rad(double x) { return x / 180 * 3.141592654; }
 inline double rad2deg(double x) { return x * 180 / 3.141592654; }
+ros::Publisher path_pub;
 
 
 //sub and pubs
@@ -141,7 +143,7 @@ void init_controller(const ConfigBIT& config, StateBIT& state) {
 	ControllerSetLogDir(config.log_dir.c_str());
 	ControllerInit(EXP_GENERAL, config.robotID);
 	//ControllerSetDebugInfo(config.debug_info, 1);
-	ControllerSetDebugInfo(DEBUG_INFO_ALL, 0);
+	ControllerSetDebugInfo(DEBUG_INFO_ALL, 1);
 
 	// ControllerSetDebugInfo(DEBUG_INFO_STATES, 0);
 	// ControllerSetDebugInfo(DEBUG_INFO_COMPUTE, 0);
@@ -261,21 +263,77 @@ StateInfo StateBIT::mean(const std::vector<int>& id_list) {
 	return info;
 }
 
+void PublishPath(){
+    nav_msgs::Path path;
+    path.header.frame_id = "map";
+
+    geometry_msgs::PoseStamped pose;
+    pose.header.frame_id = "map";
+    pose.pose.orientation.w = 1;
+    pose.pose.orientation.x = 0;
+    pose.pose.orientation.y = 0;
+    pose.pose.orientation.z = 0;
+
+    for(auto point:mydata.path){
+        pose.pose.position.x = cm2m(point.x);
+        pose.pose.position.y = cm2m(point.y);
+        pose.pose.position.z = 0;
+        path.poses.push_back(pose);
+    }
+
+    path_pub.publish(path);
+}
+
+//根据起点和终点设计sin函数曲线
+void Set_SinFunction(const PathPoint& start_point,const PathPoint& end_point, std::vector<PathPoint>& path){
+    //都是m为单位
+    float point_num_per_circle = 41;
+    float distance = sqrt(pow(end_point.x-start_point.x,2)+pow(end_point.y-start_point.y,2));
+    int circle_num = distance / (2*M_PI) + 0.3;  //周期数，四舍五入
+    int point_num = circle_num * point_num_per_circle; //一个sin周期25个点 包括起始和终止点
+    float circle_distance = distance / (float)circle_num; //一个周期长度
+    float x_increcement = distance / circle_num / point_num_per_circle;
+    float theta = atan2(end_point.y-start_point.y,end_point.x-start_point.x);
+    float cos_theta = cos(theta);
+    float sin_theta = sin(theta);
+    path.clear();
+
+    for(int i = 0 ; i <= point_num; i++){
+        float x = x_increcement * i;
+        float y = sin(x * 2*M_PI/circle_distance);
+        float x_ = cos_theta * x - sin_theta * y + start_point.x;
+        float y_ = sin_theta * x + cos_theta * y + start_point.y;
+        path.push_back(PathPoint{m2cm(x_),m2cm(y_),m2cm(myconfig.target_velocity)});
+    }
+}
+
 void on_new_goal(const geometry_msgs::Pose& goal) {
 	auto pos = goal.position;
 	
-	mydata.path.clear();  // currently, only one point
+	mydata.path.clear(); 
 	PathPoint start, target;
-	StateInfo center = mydata.mean(myconfig.idform);
-	start.x = center.x;
-	start.y = center.y;
-	start.v = m2cm(myconfig.target_velocity);
-	target.x = m2cm(pos.x);
-	target.y = m2cm(pos.y);
-	target.v = m2cm(myconfig.target_velocity);
-	mydata.path = {start, target};
+    //这个是走直线
+	// StateInfo center = mydata.mean(myconfig.idform);
+	// start.x = center.x;
+	// start.y = center.y;
+	// start.v = m2cm(myconfig.target_velocity);
+	// target.x = m2cm(pos.x);
+	// target.y = m2cm(pos.y);
+	// target.v = m2cm(myconfig.target_velocity);
+    // mydata.path = {start, target};
+    // mydata.new_path = true;
+
+    //这个是走sin曲线
+    StateInfo center = mydata.mean(myconfig.idform);
+	start.x = cm2m(center.x);
+	start.y = cm2m(center.y);
+	target.x = pos.x;
+	target.y = pos.y;
+    target.v = 0;
+    Set_SinFunction(start,target,mydata.path);
 	mydata.new_path = true;
-	
+
+    PublishPath();
 	
 	logger.DEBUGINFO(myconfig.robotID,"Get new goal  (x, y, z): %.2f, %.2f, %.2f\n", pos.x, pos.y, pos.z);
 	logger.DEBUGINFO(myconfig.robotID,"start pose is (x, y): %.2f, %.2f\n", start.x, start.y);
@@ -538,6 +596,7 @@ int main(int argc, char* argv[]) {
 	scan_sub = node.subscribe("base_scan", 2, &on_new_scan);
 	cmd_pub  = node.advertise<geometry_msgs::Twist>("cmd_vel", 1);
 	msg_pub  = node.advertise<std_msgs::UInt8MultiArray>("algomsg_my", 10);
+    path_pub = node.advertise<nav_msgs::Path>("march_path",10);
 	// Subscribe to data of the neighbours
 	mydata.others.subscribe(node);
 	

@@ -1,0 +1,78 @@
+define rplidar ranger
+(
+  sensor(
+    range [0.0 10.0]
+    fov 360
+    samples 360
+  )
+  # generic model properties
+  color "black"
+  size [ 0.050 0.050 0.100 ]
+)
+
+define car position
+(
+  size [0.600 0.450 0.460]
+  origin [0.000 0.000 0.000 0.000]
+  localization "gps"
+  rplidar(pose [ 0 0 -0.1 0 ])
+  localization_origin [0 0 0 0 ]
+  drive "diff"
+  # [ xmin xmax ymin ymax zmin zmax amin amax ]				
+  #velocity_bounds [-1 1 -1 1 -1 1 -90 90 ]					
+  #acceleration_bounds [-1 1 -1 1 -1 1 -90 90 ]
+)
+
+define floorplan model
+(
+  # sombre, sensible, artistic
+  color "gray30"
+
+  # most maps will need a bounding box
+  boundary 1
+
+  gui_nose 0
+  gui_grid 0
+  
+  gui_outline 0
+  gripper_return 0
+  fiducial_return 0
+  ranger_return 1.000
+)
+
+# set the resolution of the underlying raytrace model in meters
+resolution 0.01
+
+interval_sim 50#83  # simulation timestep in milliseconds
+interval_real 50#83
+
+window
+( 
+  size [ 796 845 ] 
+  rotate [ 0.000 0.000 ]
+  scale 29.000 
+)
+
+# load an environment bitmap
+floorplan
+( 
+  name "robot somulation Map"
+  bitmap "play_field.pgm"
+  size [25.000    25.400   1.000 ]
+  pose [12.500  12.700   0.000  0.000 ]
+)
+
+# throw in a robot
+# car(pose [ 3.000  3.000  0.000 0.000 ] name "car0" color "blue" )
+# car(pose [ 3.000  22.000 0.000 0.000 ] name "car3" color "yellow" )
+# car(pose [ 22.000 22.000 0.000 0.000 ] name "car2" color "red" )
+
+
+ car(pose [ 2 4  0.000 90 ] name "car1" color "blue" )
+ car(pose [ 4 4 0.000 90 ] name "car2" color "yellow" )
+ car(pose [ 4 2 0.000 90 ] name "car3" color "red" )
+ car(pose [ 2 2  0.000 90 ] name "car4" color "black" )
+ car(pose [ 6 2  0.000 90 ] name "car5" color "green" )
+ car(pose [ 6 4  0.000 90 ] name "car6" color "blown" )
+
+  

@@ -3,47 +3,58 @@
     <param name="use_sim_time" value="true"/>
     <param name="is_simulation" value="true"/>
     <rosparam>
-        total_robot_ip: ["192.168.0.171:6661","192.168.0.171:6662","192.168.0.171:6663","192.168.0.171:6664"]
+        total_robot_ip: ["192.168.137.13:6661","192.168.137.13:6662","192.168.137.13:6663","192.168.137.13:6664","192.168.137.13:6665","192.168.137.13:6666"]
     </rosparam>
     <rosparam>
-        debug_output_id: [1,2,3,4]
+        debug_output_id: [1,2,3,4,5,6]
     </rosparam>
     <arg name="simulator" value="stage"/>
-    <arg name="total_car_number" value="4" />
-    <arg name="host_ip_address" value="192.168.0.30:6666" />
+    <arg name="total_car_number" value="6" />
+    <arg name="host_ip_address" value="192.168.137.65:6666" />
     <!-- 第一辆车的参数 -->
     <arg name="car_id1" value="1"/>
     <arg name="robot_name1" value="robot_0"/>
-    <arg name="my_ip_address1" value="192.168.0.171:6661" />
+    <arg name="my_ip_address1" value="192.168.137.13:6661" />
     <!-- 第二辆车的参数 -->
     <arg name="car_id2" value="2"/>
     <arg name="robot_name2" value="robot_1"/>
-    <arg name="my_ip_address2" value="192.168.0.171:6662" />
+    <arg name="my_ip_address2" value="192.168.137.13:6662" />
     <!-- 第三辆车的参数 -->
     <arg name="car_id3" value="3"/>
     <arg name="robot_name3" value="robot_2"/>
-    <arg name="my_ip_address3" value="192.168.0.171:6663" />
+    <arg name="my_ip_address3" value="192.168.137.13:6663" />
     <!-- 第四辆车的参数 -->
     <arg name="car_id4" value="4"/>
     <arg name="robot_name4" value="robot_3"/>
-    <arg name="my_ip_address4" value="192.168.0.171:6664" />
+    <arg name="my_ip_address4" value="192.168.137.13:6664" />
+    <!-- 第五辆车的参数 -->
+    <arg name="car_id5" value="5"/>
+    <arg name="robot_name5" value="robot_4"/>
+    <arg name="my_ip_address5" value="192.168.137.13:6665" />
+    <!-- 第六辆车的参数 -->
+    <arg name="car_id6" value="6"/>
+    <arg name="robot_name6" value="robot_5"/>
+    <arg name="my_ip_address6" value="192.168.137.13:6666" />
 
     <!-- stage环境 -->
-    <node pkg="stage_ros" type="stageros" name="stageros" args="$(find simulation)/worlds/robot2020_fourcar.world" />
+    <node pkg="stage_ros" type="stageros" name="stageros" args="$(find simulation)/worlds/robot2020_sixcar.world" />
     <!-- 定位用tf -->
     <node pkg="tf" type="static_transform_publisher" name="map_to_base_link0" args="0 0 0 0 0 0 map robot_0/odom 100" />
     <node pkg="tf" type="static_transform_publisher" name="map_to_base_link1" args="0 0 0 0 0 0 map robot_1/odom 100" />
     <node pkg="tf" type="static_transform_publisher" name="map_to_base_link2" args="0 0 0 0 0 0 map robot_2/odom 100" />
     <node pkg="tf" type="static_transform_publisher" name="map_to_base_link3" args="0 0 0 0 0 0 map robot_3/odom 100" />
+    <node pkg="tf" type="static_transform_publisher" name="map_to_base_link4" args="0 0 0 0 0 0 map robot_4/odom 100" />
+    <node pkg="tf" type="static_transform_publisher" name="map_to_base_link5" args="0 0 0 0 0 0 map robot_5/odom 100" />
+
     <!-- mapserver -->
     <node name="map_server" pkg="map_server" type="map_server" args="$(find bring_up)/map/stage_map.yaml" respawn="false" />
     <!-- rviz -->
-    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find bring_up)/rviz/stage_multicar.rviz" />
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find bring_up)/rviz/stage_sixcar.rviz" />
 
 
     <!-- 我们的程序部分 -->
     <!-- camera -->
-        <node pkg="web_video_server"  type="web_video_server" name="web_video_server" />
+        <!-- <node pkg="web_video_server"  type="web_video_server" name="web_video_server" /> -->
         <include file="$(find realsense2_camera)/launch/rs_t265.launch" />
         <include file="$(find apriltag_ros)/launch/continuous_detection.launch" />
 
@@ -81,6 +92,24 @@
         <arg name="host_ip_address" value="$(arg host_ip_address)" />
         <arg name="robot_name" value="$(arg robot_name4)"/>
         <arg name="my_ip_address" value="$(arg my_ip_address4)" />
+        <arg name="simulator"  value="$(arg simulator)"/>
+    </include>
+
+    <include file="$(find bring_up)/launch/simulation/labcar_simulation.launch" >
+        <arg name="car_id" value="$(arg car_id5)" />
+        <arg name="total_car_number" value="$(arg total_car_number)" />
+        <arg name="host_ip_address" value="$(arg host_ip_address)" />
+        <arg name="robot_name" value="$(arg robot_name5)"/>
+        <arg name="my_ip_address" value="$(arg my_ip_address5)" />
+        <arg name="simulator"  value="$(arg simulator)"/>
+    </include>
+
+    <include file="$(find bring_up)/launch/simulation/labcar_simulation.launch" >
+        <arg name="car_id" value="$(arg car_id6)" />
+        <arg name="total_car_number" value="$(arg total_car_number)" />
+        <arg name="host_ip_address" value="$(arg host_ip_address)" />
+        <arg name="robot_name" value="$(arg robot_name6)"/>
+        <arg name="my_ip_address" value="$(arg my_ip_address6)" />
         <arg name="simulator"  value="$(arg simulator)"/>
     </include>
 

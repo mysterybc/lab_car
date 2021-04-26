@@ -84,25 +84,38 @@ struct RobotTaskMsg{
         msg["message_id"] = message_type;
         msg["id"] = id;
         switch(current_task_int){
-            case 0: msg["current_task"] = "NONE TASK!!!";break;
-            case 1: msg["current_task"] = "GPS March!!!";break;
-            case 2: msg["current_task"] = "Laser March!!!";break;
-            case 3: msg["current_task"] = "Search Task!!!";break;
-            case 4: msg["current_task"] = "ASSEMBLE TASK!!!";break;
-            case 5:	msg["current_task"] = "STOP TASK!!!";break;
-            case 6:	msg["current_task"] = "Pause TASK!!!";break;
-            case 7:	msg["current_task"] = "Resume TASK!!!";break;
+            case 0: msg["current_task_str"] = "NONE TASK!!!";break;
+            case 1: msg["current_task_str"] = "GPS March!!!";break;
+            case 2: msg["current_task_str"] = "Laser March!!!";break;
+            case 3: msg["current_task_str"] = "Search Task!!!";break;
+            case 4:	msg["current_task_str"] = "Remote Control TASK!!!";break;
+            case 5: msg["current_task_str"] = "ASSEMBLE TASK!!!";break;
+            case 6:	msg["current_task_str"] = "STOP TASK!!!";break;
+            case 7:	msg["current_task_str"] = "Pause TASK!!!";break;
+            case 8:	msg["current_task_str"] = "Resume TASK!!!";break;
         }
+        switch(task_state_int){
+            case 0: msg["task_state_str"] = "Running";break;
+            case 1: msg["task_state_str"] = "Success";break;
+            case 2: msg["task_state_str"] = "Failure";break;
+            case 3: msg["task_state_str"] = "Idle";break;
+        }
+        msg["current_task_int"] = current_task_int;
         return msg.toStyledString();
     }
     void GetDataFromMsg(Json::Value msg){
         id = msg["id"].asInt();
-        current_task_str = msg["current_task"].asString();
+        current_task_str = msg["current_task_str"].asString();
+        task_state_str = msg["task_state_str"].asString();
+        current_task_int = msg["current_task_int"].asInt();
     }
     int message_type;
     int id;
+    int task_state_int;
+    std::string task_state_str;
     uint8_t current_task_int;
     std::string current_task_str;
+
 };
 
 struct Point{
@@ -120,17 +133,41 @@ struct RobotPerceptionMsg{
         message_type = ROBOT_PERCEPTION;
         id = car_id;
         has_obstracle = false;
+        has_target = false;
     }
     std::string fmtMsg(){
         Json::Value msg;
         msg["message_id"] = message_type;
         msg["id"] = id;
-        msg["obstracle_number"] = (int)points.size();
+        if(points.size() >= 5){
+            msg["obstracle_number"] = 5;
+        }
+        else{
+            msg["obstracle_number"] = (int)points.size();
+        }
+        if(points.size() > 0){
+            msg["has_obstracle"] = true;
+        }
+        else{
+            msg["has_obstracle"] = false;
+        }
+        int count = 0;
         for(auto point:points){
+            if(count > 4){
+                break;
+            }
             Json::Value json_point;
-            json_point["x"].append(point.x);
-            json_point["y"].append(point.y);
+            json_point["x"] = point.x;
+            json_point["y"] = point.y;
             msg["points"].append(json_point);
+            count++;
+        }
+        msg["has_target"] = has_target;
+        if(has_target){
+            Json::Value json_point;
+            json_point["x"] = target_coord.x;
+            json_point["y"] = target_coord.y;
+            msg["target_coord"] = json_point;
         }
         return msg.toStyledString();
     }
@@ -139,13 +176,23 @@ struct RobotPerceptionMsg{
         obstracle_number = json["obstracle_number"].size();
         for(int i = 0 ; i < json["points"].size(); i++){
             Point point;
-            point.x = json["points"][i][0].asDouble();
-            point.y = json["points"][i][1].asDouble();
+            point.x = json["points"][i]["x"].asDouble();
+            point.y = json["points"][i]["y"].asDouble();
             points.push_back(point);
+        }
+        obstracle_number = json["obstracle_number"].asInt();
+        has_obstracle = json["has_obstracle"].asBool();
+        has_target = json["has_target"].asBool();
+        if(has_target){
+            Point point;
+            point.x = json["target_coord"]["x"].asDouble();
+            point.y = json["target_coord"]["y"].asDouble();
         }
     }
     int message_type;
     int id;
+    bool has_target;
+    Point target_coord;
     bool has_obstracle;
     int obstracle_number;
     std::vector<Point> points;
@@ -186,7 +233,7 @@ struct StateMsg{
 //上报path消息
 struct PathMsg{
     PathMsg(const int car_id){
-        message_type = "state";
+        message_type = "path";
         id = car_id;
     }
     std::string fmtMsg(const nav_msgs::Path path){
@@ -293,10 +340,12 @@ struct HostCmd{
         NonTask = 0,
         March_gps = 1,
         March_laser = 2,
-        Assemble = 3,
-        STOP = 4,
-        Pause = 5,
-        Resume = 6
+        Search_Task = 3,
+        Remote_Control = 4,
+        Assemble = 5,
+        STOP = 6,
+        Pause = 7,
+        Resume = 8
     };
 
     //任务类型 
@@ -406,6 +455,21 @@ struct HostCmd{
     //TODO 如果尚未及发送过来的消息不是按顺序的，则需要排序
     void sortMission(){
 
+    }
+
+    bool Has_Me(std::string msg){
+        Json::Value json;
+        Json::Reader reader;
+        reader.parse(msg.c_str(),json);
+        if(json["mission_array"][0]["id"].isArray()){
+            Json::Value json_id = json["mission_array"][0]["id"];
+            for(int i = 0; i < json_id.size(); i++){
+                if(json_id[i].asInt() == robot_id){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     HostMessageType json2Msg(std::string msg){

@@ -18,6 +18,7 @@
 #include "algorithm"
 #include "vector"
 #include "my_debug_info.h"
+#include "robot_msgs/CurrentTask.h"
 #include<utility>
 
 
@@ -56,6 +57,7 @@ public:
 	private: ros::Publisher decision_state_pub;
 	private: ros::Publisher members_pub;
 	private: ros::Publisher tag_pose_pub;
+    private: ros::Publisher current_task_pub;
 };
 
 #endif

@@ -1,4 +1,4 @@
-﻿########################
+########################
 # Global Config
 ref_lat 39.95874432
 ref_lon 116.3048345
@@ -9,8 +9,8 @@ a
 ref_th 0
 
 # Base Config    
-vmax    50           # cm/s 
-wmax    25           # deg/s
+vmax    100           # cm/s 
+wmax    60           # deg/s
 lin_dis 20           # linear distance in cm
 #avoid_min  60       # minimum distance to avoid a point obstacle, i.e. robot_radius
 #avoid_safe 100      # safe distance to avoid a point obstacle

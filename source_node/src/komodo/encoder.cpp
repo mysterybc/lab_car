@@ -6,17 +6,17 @@ Encoder::Encoder(){
     if(car_id == 1){
         turn_radius = 0.26;
         twist_flag = -1;
-        linear_fb_factor = 1;
-        angular_fb_factor = 3.7;
-        linear_cmd_factor = 0.7;
+        linear_fb_factor = 1.0;
+        angular_fb_factor = 3.5;
+        linear_cmd_factor = 0.74;
         angular_cmd_factor = 1.2;
     }
     else{
         turn_radius = 0.29;
         twist_flag = 1;
         linear_fb_factor = 1;
-        angular_fb_factor = 3.7;
-        linear_cmd_factor = 0.7;
+        angular_fb_factor = 2.71;
+        linear_cmd_factor = 0.525;
         angular_cmd_factor = 0.7;
     }
     
