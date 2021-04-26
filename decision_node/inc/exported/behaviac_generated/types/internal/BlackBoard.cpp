@@ -185,11 +185,12 @@ void BlackBoard::PubMembers(){
 
 void BlackBoard::PubTagPose(){
     std_msgs::Int32MultiArray msg;
-for(auto i:tag_pose)
-    tag_pose_pub.publish(i);
+    for(auto i:tag_pose)
+        tag_pose_pub.publish(i);
 
     for(auto i:tag_id)
         msg.data.push_back(i);
+        
     tag_id_pub.publish(msg);
 }
 

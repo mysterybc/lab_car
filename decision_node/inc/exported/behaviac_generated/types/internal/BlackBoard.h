@@ -16,6 +16,7 @@
 #include "TaskRealize.h"
 #include "std_msgs/Int8MultiArray.h"
 #include "std_msgs/Int32MultiArray.h"
+#include "robot_msgs/CurrentTask.h"
 #include "algorithm"
 #include "vector"
 #include "my_debug_info.h"

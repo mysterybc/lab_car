@@ -3,30 +3,30 @@
     <param name="use_sim_time" value="true"/>
     <param name="is_simulation" value="true"/>
     <rosparam>
-        total_robot_ip: ["192.168.0.171:6661","192.168.0.171:6662","192.168.0.171:6663","192.168.0.171:6664"]
+        total_robot_ip: ["127.0.0.1:6661","127.0.0.1:6662","127.0.0.1:6663","127.0.0.1:6664"]
     </rosparam>
     <rosparam>
         debug_output_id: [1,2,3,4]
     </rosparam>
     <arg name="simulator" value="stage"/>
     <arg name="total_car_number" value="4" />
-    <arg name="host_ip_address" value="192.168.0.30:6666" />
+    <arg name="host_ip_address" value="127.0.0.1:6666" />
     <!-- 第一辆车的参数 -->
     <arg name="car_id1" value="1"/>
     <arg name="robot_name1" value="robot_0"/>
-    <arg name="my_ip_address1" value="192.168.0.171:6661" />
+    <arg name="my_ip_address1" value="127.0.0.1:6661" />
     <!-- 第二辆车的参数 -->
     <arg name="car_id2" value="2"/>
     <arg name="robot_name2" value="robot_1"/>
-    <arg name="my_ip_address2" value="192.168.0.171:6662" />
+    <arg name="my_ip_address2" value="127.0.0.1:6662" />
     <!-- 第三辆车的参数 -->
     <arg name="car_id3" value="3"/>
     <arg name="robot_name3" value="robot_2"/>
-    <arg name="my_ip_address3" value="192.168.0.171:6663" />
+    <arg name="my_ip_address3" value="127.0.0.1:6663" />
     <!-- 第四辆车的参数 -->
     <arg name="car_id4" value="4"/>
     <arg name="robot_name4" value="robot_3"/>
-    <arg name="my_ip_address4" value="192.168.0.171:6664" />
+    <arg name="my_ip_address4" value="127.0.0.1:6664" />
 
     <!-- stage环境 -->
     <node pkg="stage_ros" type="stageros" name="stageros" args="$(find simulation)/worlds/robot2020_fourcar.world" />
