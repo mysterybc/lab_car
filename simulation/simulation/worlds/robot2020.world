@@ -65,12 +65,13 @@ window
 floorplan
 ( 
   name "robot somulation Map"
-  bitmap "play_field.pgm"
-  size [25.000    25.400   2.00]
-  pose [12.500  12.700   0.000  0.000 ]
+  bitmap "1.pgm"
+  size [276.35    230.05   2.00]
+  pose [100.673  49.4500   0.000  0.000 ]
+  #pose [138.173  115.02500   0.000  0.000 ]
 )
 
 # throw in a robot
- car(pose [ 3.000 3.000 0.000 0.000 ] name "car0" color "blue" )
+ car(pose [ 0.000 0.000 0.000 0.000 ] name "car0" color "blue" )
 # throw in a block for test
  #block(pose [ 7.79 3.45 0 0.3 ] color "red"  )
