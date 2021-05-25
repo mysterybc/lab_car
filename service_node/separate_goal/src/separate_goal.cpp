@@ -2,6 +2,7 @@
 #include "tf/transform_listener.h"
 #include "algorithm"
 #include "my_param_server.h"
+#include "algorithm"
 
 Debug::DebugLogger logger;
 
@@ -40,26 +41,67 @@ bool SeparateGoal::CalArea( robot_msgs::SeparateArea::Request &req,
             y_flag++;
         }
     }
+    //对目标区域边缘点进行排序
+    //先对y进行排序
+    std::sort(req.area.begin(),req.area.end(),[](geometry_msgs::PoseStamped a,geometry_msgs::PoseStamped b){
+        return a.pose.position.y > b.pose.position.y; 
+    });
+    //第一个点x最小y最大，第二个点x最大y最大
+    if(req.area[0].pose.position.x > req.area[1].pose.position.x){
+        geometry_msgs::PoseStamped temp = req.area[1];
+        req.area[1] = req.area[0];
+        req.area[0] = temp;
+    }
+    //第三个点x最小y最小，第四个点x最大y最小
+    if(req.area[2].pose.position.x > req.area[3].pose.position.x){
+        geometry_msgs::PoseStamped temp = req.area[3];
+        req.area[3] = req.area[2];
+        req.area[2] = temp;
+    }
+    // for(auto pose:req.area){
+    //     std::cout << "pose x is " << pose.pose.position.x << " pose y is " << pose.pose.position.y << std::endl;
+    // }
+    double delta_x = req.area[1].pose.position.x - req.area[0].pose.position.x;
+    double delta_y = req.area[0].pose.position.y - req.area[2].pose.position.y;
     switch(online_car){
         case 1: res.area = req.area; break;
         case 2:
         {
             geometry_msgs::PoseStamped mid_pose1,mid_pose2;
-            mid_pose1.pose.position.x = (req.area[0].pose.position.x+req.area[1].pose.position.x)/2;
-            mid_pose1.pose.position.y = (req.area[0].pose.position.y+req.area[1].pose.position.y)/2;
-            mid_pose2.pose.position.x = (req.area[2].pose.position.x+req.area[3].pose.position.x)/2;
-            mid_pose2.pose.position.y = (req.area[2].pose.position.y+req.area[3].pose.position.y)/2;
 
-            if(x_flag < 1){
-                res.area.push_back(req.area[0]);
-                res.area.push_back(mid_pose1);
-                res.area.push_back(req.area[2]);
-                res.area.push_back(mid_pose2);
-            }else{
-                res.area.push_back(mid_pose1);
-                res.area.push_back(req.area[1]);
-                res.area.push_back(mid_pose2);
-                res.area.push_back(req.area[3]);
+            if(delta_x < 10){
+                mid_pose1.pose.position.x = (req.area[0].pose.position.x+req.area[2].pose.position.x)/2;
+                mid_pose1.pose.position.y = (req.area[0].pose.position.y+req.area[2].pose.position.y)/2;
+                mid_pose2.pose.position.x = (req.area[1].pose.position.x+req.area[3].pose.position.x)/2;
+                mid_pose2.pose.position.y = (req.area[1].pose.position.y+req.area[3].pose.position.y)/2;
+                if(y_flag < 1){
+                    res.area.push_back(req.area[0]);
+                    res.area.push_back(req.area[1]);
+                    res.area.push_back(mid_pose1);
+                    res.area.push_back(mid_pose2);
+                }else{
+                    res.area.push_back(mid_pose1);
+                    res.area.push_back(mid_pose2);
+                    res.area.push_back(req.area[2]);
+                    res.area.push_back(req.area[3]);
+                }
+            }
+            else{
+                mid_pose1.pose.position.x = (req.area[0].pose.position.x+req.area[1].pose.position.x)/2;
+                mid_pose1.pose.position.y = (req.area[0].pose.position.y+req.area[1].pose.position.y)/2;
+                mid_pose2.pose.position.x = (req.area[2].pose.position.x+req.area[3].pose.position.x)/2;
+                mid_pose2.pose.position.y = (req.area[2].pose.position.y+req.area[3].pose.position.y)/2;
+                if(x_flag < 1){
+                    res.area.push_back(req.area[0]);
+                    res.area.push_back(mid_pose1);
+                    res.area.push_back(req.area[2]);
+                    res.area.push_back(mid_pose2);
+                }else{
+                    res.area.push_back(mid_pose1);
+                    res.area.push_back(req.area[1]);
+                    res.area.push_back(mid_pose2);
+                    res.area.push_back(req.area[3]);
+                }
             }
             break;
         }

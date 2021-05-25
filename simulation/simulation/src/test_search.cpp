@@ -25,8 +25,8 @@ public:
 TaskRealize::TaskRealize(std::string ns){
     search_action_client = new actionlib::SimpleActionClient<robot_msgs::SearchAction>(nh,ns+"search_action",true);
     logger.init_logger(1);
-    search_goal.idList.push_back(3);
-    search_goal.idList.push_back(4);
+    search_goal.idList.push_back(1);
+    search_goal.idList.push_back(2);
     point_sub = nh.subscribe("/clicked_point",10,&TaskRealize::OnNewPoint,this);
 }
 
@@ -69,7 +69,7 @@ void TaskRealize::OnNewPoint(const geometry_msgs::PointStampedConstPtr &point){
     pose.pose.position.y = point->point.y;
     pose.pose.position.z = point->point.z;
     search_goal.area.push_back(pose);
-    // logger.DEBUGINFO("get new point!!!");
+    logger.DEBUGINFO("get new point!!!");
 }
 
 int main(int argc,char** argv){
@@ -82,14 +82,14 @@ int main(int argc,char** argv){
     ros::Rate loop(20);
     while(ros::ok()){
         if(task_realize1.search_goal.area.size() == 4){
-            // task_realize1.Search();
-            // task_realize2.Search();
-            task_realize3.Search();
-            task_realize4.Search();
-            // task_realize1.search_goal.area.clear();
-            // task_realize2.search_goal.area.clear();
-            task_realize3.search_goal.area.clear();
-            task_realize4.search_goal.area.clear();
+            task_realize1.Search();
+            task_realize2.Search();
+            // task_realize3.Search();
+            // task_realize4.Search();
+            task_realize1.search_goal.area.clear();
+            task_realize2.search_goal.area.clear();
+            // task_realize3.search_goal.area.clear();
+            // task_realize4.search_goal.area.clear();
         }
         ros::spinOnce();
         loop.sleep();

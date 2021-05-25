@@ -69,10 +69,9 @@ floorplan
 
 
  car(pose [ 2 4  0.000 90 ] name "car1" color "blue" )
- car(pose [ 4 4 0.000 90 ] name "car2" color "yellow" )
+ car(pose [ 4.1 4.1 0.000 90 ] name "car2" color "yellow" )
  car(pose [ 4 2 0.000 90 ] name "car3" color "red" )
  car(pose [ 2 2  0.000 90 ] name "car4" color "black" )
 
- car(pose [ 10 10  0.000 90 ] name "car5" color "green" )
 
   
