@@ -28,29 +28,38 @@
     <arg name="robot_name4" value="robot_3"/>
     <arg name="my_ip_address4" value="127.0.0.1:6664" />
 
+    <!-- select which map to use, default is simulation map-->
+    <arg name="map_name" value="stage_map.yaml"  />
+    <arg name="rviz_name" value="stage_multicar.rviz" />
+    <arg name="stage_name" value="robot2020_fourcar.world" />
+    <!-- <arg name="map_name" value="map0611.yaml" />
+    <arg name="rviz_name" value="stage_sixcar_simulationmap.rviz" />
+    <arg name="stage_name" value="robot2020_yuanqu.world" /> -->
+
     <!-- stage环境 -->
-    <node pkg="stage_ros" type="stageros" name="stageros" args="$(find simulation)/worlds/robot2020_fourcar.world" />
-    <!-- 定位用tf -->
-    <node pkg="tf" type="static_transform_publisher" name="map_to_base_link0" args="0 0 0 0 0 0 map robot_0/odom 100" />
-    <node pkg="tf" type="static_transform_publisher" name="map_to_base_link1" args="0 0 0 0 0 0 map robot_1/odom 100" />
-    <node pkg="tf" type="static_transform_publisher" name="map_to_base_link2" args="0 0 0 0 0 0 map robot_2/odom 100" />
-    <node pkg="tf" type="static_transform_publisher" name="map_to_base_link3" args="0 0 0 0 0 0 map robot_3/odom 100" />
+    <node pkg="stage_ros" type="stageros" name="stageros" args="$(find simulation)/worlds/$(arg stage_name)" />
     <!-- mapserver -->
-    <node name="map_server" pkg="map_server" type="map_server" args="$(find bring_up)/map/stage_map.yaml" respawn="false" />
-    <node name="map_server_0" pkg="map_server" type="map_server" args="$(find bring_up)/map/stage_map.yaml" respawn="false" >
+    <node name="map_server" pkg="map_server" type="map_server" args="$(find bring_up)/map/$(arg map_name)" respawn="false" />
+    <node name="map_server_0" pkg="map_server" type="map_server" args="$(find bring_up)/map/$(arg map_name)" respawn="false" >
         <remap from="/map" to="/robot_0/map" />
     </node>
-    <node name="map_server_1" pkg="map_server" type="map_server" args="$(find bring_up)/map/stage_map.yaml" respawn="false" >
+    <node name="map_server_1" pkg="map_server" type="map_server" args="$(find bring_up)/map/$(arg map_name)" respawn="false" >
         <remap from="/map" to="/robot_1/map" />
     </node>
-    <node name="map_server_2" pkg="map_server" type="map_server" args="$(find bring_up)/map/stage_map.yaml" respawn="false" >
+    <node name="map_server_2" pkg="map_server" type="map_server" args="$(find bring_up)/map/$(arg map_name)" respawn="false" >
         <remap from="/map" to="/robot_2/map" />
     </node>
-    <node name="map_server_3" pkg="map_server" type="map_server" args="$(find bring_up)/map/stage_map.yaml" respawn="false" >
+    <node name="map_server_3" pkg="map_server" type="map_server" args="$(find bring_up)/map/$(arg map_name)" respawn="false" >
         <remap from="/map" to="/robot_3/map" />
     </node>
     <!-- rviz -->
-    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find bring_up)/rviz/stage_multicar.rviz" />
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find bring_up)/rviz/$(arg rviz_name)" />
+
+    <!-- 定位用tf -->
+    <!-- <node pkg="tf" type="static_transform_publisher" name="map_to_base_link0" args="0 0 0 0 0 0 map robot_0/odom 100" /> -->
+    <node pkg="tf" type="static_transform_publisher" name="map_to_base_link1" args="0 0 0 0 0 0 robot_0/odom robot_1/odom 100" />
+    <node pkg="tf" type="static_transform_publisher" name="map_to_base_link2" args="0 0 0 0 0 0 robot_0/odom robot_2/odom 100" />
+    <node pkg="tf" type="static_transform_publisher" name="map_to_base_link3" args="0 0 0 0 0 0 robot_0/odom robot_3/odom 100" />
 
 
     <!-- 我们的程序部分 -->

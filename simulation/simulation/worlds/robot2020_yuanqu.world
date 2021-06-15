@@ -56,17 +56,16 @@ window
 # load an environment bitmap
 floorplan
 ( 
-  name "robot somulation Map"
-  bitmap "map0611.pgm"
+  name "robot simulation Map"
+  bitmap "1.pgm"
   size [276.35    230.05   1.000 ]
-  pose [138.175  115.025   0.000  0.000 ]
+  pose [100.673  49.45   0.000  0.000 ]
 )
 
-
- car(pose [ 96 -20  0.000 90 ] name "car1" color "blue" )
- car(pose [ 96 -22 0.000 90 ] name "car2" color "yellow" )
- car(pose [ 98 -20 0.000 90 ] name "car3" color "red" )
- car(pose [ 98 -22  0.000 90 ] name "car4" color "black" )
-
-
+ car(pose [ 83 58  0.000 90 ] name "car1" color "blue" )
+ car(pose [ 85 58 0.000 90 ] name "car2" color "yellow" )
+ car(pose [ 83 60 0.000 90 ] name "car3" color "red" )
+ car(pose [ 85 60  0.000 90 ] name "car4" color "black" )
+# car(pose [ 83 62  0.000 90 ] name "car5" color "green" )
+# car(pose [ 85 62  0.000 90 ] name "car6" color "blown" )
   

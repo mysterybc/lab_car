@@ -1,50 +1,11 @@
-<!-- 
-    全局参数包括：
-        1、全部车辆数量
-        2、车辆id（从1开始）
-        3、车辆ip地址、hostip地址
-        4、硬件端口号
-
-    运行的节点包括：
-        1、坐标系变换：static tf
-        2、资源节点：driver_source_node
-        3、控制节点：remote_control_node
-        4、遥控接收：joy_node（库）
-        5、地图：    map_server（库）
-        6、定位节点：ndt_localization
-        7、决策树：  decision_node
-        8、任务节点：task_node
-        9、规划节点：move_base（库）
-        10、激光driver
-        11、pointcloud 2 laserscan
-        12、服务节点:散点
-        14、通讯节点:
-        15、可视化:  rviz（库）
- -->
-
 <launch>
-    <!-- 全局参数 -->
-    <param name="is_simulation" value="false"/>
-    <param name="use_sim_time"  value="true" />
-    <!-- ip只有通讯节点使用 -->
-    <arg name="car_id" value="2"/>
-    <param name="total_car_number" type="int" value="2" />
-    <param name="car_id" type="int" value="$(arg car_id)" />
-    <param name="host_ip_address" type="string" value="192.168.0.30:6666" />
-    <param name="my_ip_address" type="string" value="192.168.0.14:6666" />
+    <!-- <arg name="stage_name" value="robot2020_yuanqu.world" /> -->
+    <arg name="stage_name" value="robot2020_sixcar.world" /> 
+    <node pkg="stage_ros" type="stageros" name="stageros" args="$(find simulation)/worlds/$(arg stage_name)" />
 
-    <node pkg="tf" type="static_transform_publisher" name="world_map_broadcaster" args="0 0 -0.4 0 0 0 /world /map 100" />
-    <node pkg="tf" type="static_transform_publisher" name="lidar_base_broadcaster" args="-0.2 0 -0.4 0 0 0 /lidar_link /base_link 100" />
-    <node pkg="tf" type="static_transform_publisher" name="lidar_velodyne_broadcaster" args="0 0 0 0 0 0 /lidar_link /velodyne 100" />
-    <node name="map_server" pkg="map_server" type="map_server"  args="$(find bring_up)/map/map0611.yaml"/>
-    <node name="scan_to_submap_imu_node" pkg="ndt_localization" type="scan_to_submap_imu_node" output="screen" >
-        <param name="score_threshold" type = "double" value="3.00" />
-        <param name="imu_enable" type = "bool" value="false" />
-        <param name="initial_x " type = "double" value="113.0" />
-        <param name="initial_y" type = "double" value="88.0" />
-        <param name="initial_yaw" type = "double" value="0.0" />
-    </node>
-    <!-- 14 -->
-    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find bring_up)/rviz/single_car_real_world.rviz" />
+ 
 
-</launch>
+
+
+
+    </launch>
