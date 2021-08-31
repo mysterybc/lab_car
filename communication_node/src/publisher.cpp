@@ -204,7 +204,7 @@ int main(int argc,char **argv)
             sender.sendMsg(robot_state_msg.fmtMsg());
             // std::cout << robot_state_msg.fmtMsg() << std::endl;
             sender.sendMsg(robot_task_msg.fmtMsg());
-            std::cout << robot_task_msg.fmtMsg() << std::endl;
+            // std::cout << robot_task_msg.fmtMsg() << std::endl;
             sender.sendMsg(robot_perception_msg.fmtMsg());
             // std::cout << robot_perception_msg.fmtMsg() << std::endl;
             count = 0;

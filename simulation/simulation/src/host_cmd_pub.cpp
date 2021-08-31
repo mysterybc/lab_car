@@ -10,8 +10,8 @@ void SetId(robot_msgs::HostCmd &cmd);
 struct RosPubs{
     RosPubs(int total_car_number){
         ros::NodeHandle nh;
-        for(int i = 0 ; i < total_car_number ; i++){
-            std::string topic_name = "/robot_" + std::to_string(i) + "/host_cmd";
+        for(int i = 1 ; i <= total_car_number ; i++){
+            std::string topic_name = "/robot" + std::to_string(i) + "/host_cmd";
             ros::Publisher pub = nh.advertise<robot_msgs::HostCmdArray>(topic_name,10);
             pubs.push_back(pub);
         }

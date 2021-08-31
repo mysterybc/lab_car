@@ -5,7 +5,7 @@
 - 代码为实验室项目无人车部分代码，不包含上位机。
 - 仿真包含stage环境和gazebo环境。
 
-### 2、运行方法
+### 2、安装依赖
 
 - 安装ZeroMQ
 
@@ -25,23 +25,62 @@
 - 安装ros依赖
 
   ```bash
-  sudo apt-get install -y ros-kinetic-move-base \
-  						ros-kinetic-move-base-msgs \
-  						ros-kinetic-global-planner \
-  						ros-kinetic-teb-local-planner \
-  						ros-kinetic-serial \
-  						ros-kinetic-map-server \
-  						ros-kinetic-pointcloud-to-laserscan \
-  						ros-kinetic-joy \
-  						ros-kinetic-octomap-ros\
-  						ros-kinetic-amcl
+  sudo apt-get install -y ros-${ROS_DISTRO}-move-base \
+  						ros-${ROS_DISTRO}-move-base-msgs \
+  						ros-${ROS_DISTRO}-global-planner \
+  						ros-${ROS_DISTRO}-teb-local-planner \
+  						ros-${ROS_DISTRO}-serial \
+  						ros-${ROS_DISTRO}-map-server \
+  						ros-${ROS_DISTRO}-pointcloud-to-laserscan \
+  						ros-${ROS_DISTRO}-joy \
+  						ros-${ROS_DISTRO}-octomap-ros\
+  						ros-${ROS_DISTRO}-amcl
   ```
+
+- 安装Realsense驱动
+
+  [安装链接](https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md)
+
+- 安装apriltag
+
+  ```bash
+cd {YOUR_LIB_PATH}
+  git clone https://github.com/AprilRobotics/apriltag.git
+cd apriltag
+  mkdir build && cd build
+cmake ..
+  sudo make install
+```
+
+### 3、编译程序
+
+- 首先编译依赖（请在工作空间中运行）
+
+  `catkin_make -DCATKIN_WHITELIST_PACKAGES="robot_msgs;robot_library;apriltag_ros" -DCATKIN_BLACKLIST_PACKAGES=""`
+
+- 再编译全部文件，注意kinetic和melodic有一些区别
+
+  目前change_ros_version包有bug，需要手动修改，搜索所有kinetic devel注释，修改为对应版本
+
+  - service_node/path_coverage/src/CleaningPathPlanner.cpp  56-61行
+  - service_node/path_coverage/src/LocalGridVelocityComputer.cpp 52-57行
+  - service_node/path_coverage/src/PathPlanningNode.cpp 145-149行
+
+- Kinetic
+
+  `catkin_make -DCATKIN_WHITELIST_PACKAGES="" -DCATKIN_BLACKLIST_PACKAGES="apriltag_ros"`
+
+- melodic (costmap2d是kinetic版本的)
+
+  `catkin_make -DCATKIN_WHITELIST_PACKAGES="" -DCATKIN_BLACKLIST_PACKAGES="apriltag_ros;costmap_2d;"`
+
+### 4、运行程序
 
 - 实车：
 
   - 遥控： 
 
-    **首先**确认遥控器输入通道正确。
+    确认遥控器输入通道正确。
 
     `roslaunch bring_up remote_control.launch` 
 
@@ -51,13 +90,29 @@
 
     `roslaunch bring_up single_car.launch`
 
-- 仿真：调试使用，需要将 `simulation/simulation/worlds/robot2020.world` 中第62行
+- 仿真：
 
-  ​			`bitmap "/home/lovezy/catkin_car/src/bring_up/map/play_field.pgm"`改成
+  - 单车stage：
 
-  ​            自己的  map路径。
+    `roslaunch bring_up stage_singlecar.launch `
 
-### 3、文件结构
+  - 四车stage：
+
+    `roslaunch bring_up stage_fourcar.launch `
+
+  - 单车Gazebo：
+
+    `roslaunch bring_up gazebo_singlecar.launch`
+
+  - 两车Gazebo：
+
+    `roslaunch bring_up gazebo_multicar.launch`
+
+  - 运行控制程序
+
+    `rosrun simulation host_cmd_pub`
+
+### 4、文件结构
 
 - 目前完成的内容包含了7种节点，仿真环境以及需要的消息类型。
 
@@ -67,9 +122,9 @@
 
 - robot_msgs包含通讯所需msg，service and action三种通讯消息。
 
-### 4、目前可实现功能
+### 5、目前可实现功能
 
-- 可以运行决策树，结合规划服务、路径跟随以及方针，能够实现四车的集结调度。
+- 可以运行决策树，结合规划服务、路径跟随以及方针，能够实现四车的集结、编队和搜索。
 
 ### 5、节点情况
 

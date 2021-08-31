@@ -56,10 +56,10 @@
     <node name="rviz" pkg="rviz" type="rviz" args="-d $(find bring_up)/rviz/$(arg rviz_name)" />
 
     <!-- 定位用tf -->
-    <!-- <node pkg="tf" type="static_transform_publisher" name="map_to_base_link0" args="0 0 0 0 0 0 map robot_0/odom 100" /> -->
-    <node pkg="tf" type="static_transform_publisher" name="map_to_base_link1" args="0 0 0 0 0 0 robot_0/odom robot_1/odom 100" />
-    <node pkg="tf" type="static_transform_publisher" name="map_to_base_link2" args="0 0 0 0 0 0 robot_0/odom robot_2/odom 100" />
-    <node pkg="tf" type="static_transform_publisher" name="map_to_base_link3" args="0 0 0 0 0 0 robot_0/odom robot_3/odom 100" />
+    <node pkg="tf" type="static_transform_publisher" name="map_to_base_link0" args="0 0 0 0 0 0 map robot_0/odom 100" />
+    <node pkg="tf" type="static_transform_publisher" name="map_to_base_link1" args="0 0 0 0 0 0 map robot_1/odom 100" />
+    <node pkg="tf" type="static_transform_publisher" name="map_to_base_link2" args="0 0 0 0 0 0 map robot_2/odom 100" />
+    <node pkg="tf" type="static_transform_publisher" name="map_to_base_link3" args="0 0 0 0 0 0 map robot_3/odom 100" />
 
 
     <!-- 我们的程序部分 -->
