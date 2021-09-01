@@ -581,7 +581,6 @@ int main(int argc, char* argv[]) {
 	my_lib::GetParam("path_follow",&myID,NULL,NULL,NULL,NULL,NULL,&myconfig.is_simulation);	
 	std::cout << "issimulation" << myconfig.is_simulation << std::endl;
 	myconfig.robotID = myID;
-	// printf("This is Robot %d\n", myID);
 	logger.init_logger(myID);
 	
 	

@@ -6,7 +6,7 @@ BlackBoard::BlackBoard()
 {
     ros::NodeHandle nh;
     car_id = 0;
-    cmd_sub = nh.subscribe("host_cmd",10,&BlackBoard::CmdCallback,this);                                                            //1、2
+    cmd_sub = nh.subscribe("/host_cmd",10,&BlackBoard::CmdCallback,this);                                                            //1、2
     decision_state_pub = nh.advertise<robot_msgs::robot_states_enum>("decision_state",10);
     members_pub = nh.advertise<std_msgs::Int8MultiArray>("my_group_member",10);
     tag_pose_pub=nh.advertise<geometry_msgs::Pose>("tag_pose",10);

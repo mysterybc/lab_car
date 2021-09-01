@@ -15,6 +15,10 @@
     <arg name="robot_name" value="robot$(arg car_id)"/>
     <arg name="my_ip_address" value="127.0.0.1:6661" />
 
+    <param name="car_id" value="$(arg car_id)"/>
+    <param name="my_ip_address" value="$(arg my_ip_address)"/>
+    <param name="host_ip_address" value="$(arg host_ip_address)"/>
+
     <!-- stage环境 -->
     <node pkg="stage_ros" type="stageros" name="stageros" args="$(find simulation)/worlds/robot2020.world" />
     <!-- 定位用tf -->
@@ -25,9 +29,6 @@
     <node name="rviz" pkg="rviz" type="rviz" args="-d $(find bring_up)/rviz/stage_singlecar.rviz" />
 
     <!-- 我们的程序部分 -->
-    <param name="car_id" value="$(arg car_id)"/>
-    <param name="my_ip_address" value="$(arg my_ip_address)"/>
-    <param name="host_ip_address" value="$(arg host_ip_address)"/>
 
     <!-- tf用到的frame前缀 -->
     <param name="tf_ns" value=""/>
@@ -67,7 +68,6 @@
 
 
     <!-- communication 1、send robot state  2、receive other robot state -->
-    <!-- TODO 有bug 猜测是参数有问题，需要进一步修改 -->
     <node pkg="communication_node" name="publisher" type="publisher" output="screen"/>
     <node pkg="communication_node" name="receiver" type="receiver" output="screen" />
     

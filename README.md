@@ -44,13 +44,12 @@
 - 安装apriltag
 
   ```bash
-cd {YOUR_LIB_PATH}
+  cd {YOUR_LIB_PATH}
   git clone https://github.com/AprilRobotics/apriltag.git
-cd apriltag
+  cd apriltag
   mkdir build && cd build
-cmake ..
+  cmake ..
   sudo make install
-```
 
 ### 3、编译程序
 
@@ -112,7 +111,12 @@ cmake ..
 
     `rosrun simulation host_cmd_pub`
 
-### 4、文件结构
+### 4、说明
+
+- 目前imu只通过角速度积分的方式接入了path_follow和laser march，move_base没有使用
+- 
+
+### 5、文件结构
 
 - 目前完成的内容包含了7种节点，仿真环境以及需要的消息类型。
 
@@ -122,11 +126,11 @@ cmake ..
 
 - robot_msgs包含通讯所需msg，service and action三种通讯消息。
 
-### 5、目前可实现功能
+### 6、目前可实现功能
 
 - 可以运行决策树，结合规划服务、路径跟随以及方针，能够实现四车的集结、编队和搜索。
 
-### 5、节点情况
+### 7、节点情况
 
 ###### （1）资源节点： 已经完成资源节点编写，实车均已测试。
 
@@ -146,7 +150,7 @@ cmake ..
 
 ###### （9）bitrobot：行军控制库
 
-### 6、提交记录
+### 8、提交记录
 
 ###### 2020年9月11日提交     
 
@@ -193,10 +197,4 @@ cmake ..
 （3）测试了gps和imu节点，可以使用gps进行定位，将imu融合到了lidar定位中
 
 （4）添加了Debug专用格式  （5）修改了很多bug 。。。
-
-### 7、下一步工作
-
-###### （1）未定
-
-
 
