@@ -1,3 +1,0 @@
-[submodule "robot_library/my_lib"]
-	path = robot_library/my_lib
-	url = https://github.com/mysterybc/my_lib.git
