@@ -149,7 +149,7 @@ int main(int argc, char** argv){
     tf::TransformListener tf(ros::Duration(10));
 
     //创建costmap cleaning path需要
-    costmap_2d::Costmap2DROS lcr("cleaning_costmap", tf);
+    costmap_2d::Costmap2DROS lcr("cleaning_costmap", buffer);
 
     PathCoverageNode path_coverage_node(&lcr);
 

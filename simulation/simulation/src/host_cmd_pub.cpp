@@ -82,46 +82,46 @@ void GetMission(robot_msgs::HostCmd &cmd, int mission){
     {
         geometry_msgs::PoseStamped goal;
         yaw = 0;
-        // goal.pose.position.x = 3;
-        // goal.pose.position.y = 15;
-        // goal.pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
-        // cmd.goal.push_back(goal);
+        goal.pose.position.x = 3;
+        goal.pose.position.y = 15;
+        goal.pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
+        cmd.goal.push_back(goal);
 
-        // goal.pose.position.x = 22;
-        // goal.pose.position.y = 15;
-        // goal.pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
-        // cmd.goal.push_back(goal);
+        goal.pose.position.x = 22;
+        goal.pose.position.y = 15;
+        goal.pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
+        cmd.goal.push_back(goal);
 
-        // goal.pose.position.x = 3;
-        // goal.pose.position.y = 6;
-        // goal.pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
-        // cmd.goal.push_back(goal);
+        goal.pose.position.x = 3;
+        goal.pose.position.y = 6;
+        goal.pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
+        cmd.goal.push_back(goal);
 
-        // goal.pose.position.x = 22;
-        // goal.pose.position.y = 6;
-        // goal.pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
-        // cmd.goal.push_back(goal);
+        goal.pose.position.x = 22;
+        goal.pose.position.y = 6;
+        goal.pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
+        cmd.goal.push_back(goal);
 
         // real world size
-        goal.pose.position.x = 96;
-        goal.pose.position.y = -20;
-        goal.pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
-        cmd.goal.push_back(goal);
+        // goal.pose.position.x = 96;
+        // goal.pose.position.y = -20;
+        // goal.pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
+        // cmd.goal.push_back(goal);
 
-        goal.pose.position.x = 96;
-        goal.pose.position.y = -34;
-        goal.pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
-        cmd.goal.push_back(goal);
+        // goal.pose.position.x = 96;
+        // goal.pose.position.y = -34;
+        // goal.pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
+        // cmd.goal.push_back(goal);
 
-        goal.pose.position.x = 112;
-        goal.pose.position.y = -20;
-        goal.pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
-        cmd.goal.push_back(goal);
+        // goal.pose.position.x = 112;
+        // goal.pose.position.y = -20;
+        // goal.pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
+        // cmd.goal.push_back(goal);
 
-        goal.pose.position.x = 112;
-        goal.pose.position.y = -34;
-        goal.pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
-        cmd.goal.push_back(goal);
+        // goal.pose.position.x = 112;
+        // goal.pose.position.y = -34;
+        // goal.pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
+        // cmd.goal.push_back(goal);
 
         // geometry_msgs::PoseStamped goal;
         // std::cout << "please input first x :" << std::endl;

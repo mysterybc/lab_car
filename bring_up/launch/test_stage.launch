@@ -1,0 +1,28 @@
+<launch>
+    <!-- 全局参数 -->
+    <param name="use_sim_time" value="true"/>
+    <rosparam>
+        total_robot_ip: ["tcp://127.0.0.1:6661"]
+    </rosparam>
+    <rosparam>
+        debug_output_id: [1]
+    </rosparam>
+    <arg name="total_car_number" value="1" />
+    <arg name="host_ip_address" value="127.0.0.1:6666" />
+    <arg name="simulator" value="stage"/>
+    <!-- 第一辆车的参数 -->
+    <arg name="car_id" value="1"/>
+    <arg name="robot_name" value="robot$(arg car_id)"/>
+    <arg name="my_ip_address" value="127.0.0.1:6661" />
+
+    <!-- stage环境 -->
+    <node pkg="stage_ros" type="stageros" name="stageros" args="$(find simulation)/worlds/robot2020.world" />
+    <!-- 定位用tf -->
+    <node pkg="tf" type="static_transform_publisher" name="map_to_base_link" args="0 0 0 0 0 0 map odom 100" />
+    <!-- mapserver -->
+    <node name="map_server" pkg="map_server" type="map_server" args="$(find bring_up)/map/map0611.yaml" respawn="false" />
+    <!-- rviz -->
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find bring_up)/rviz/stage_singlecar.rviz" />
+    
+
+</launch>

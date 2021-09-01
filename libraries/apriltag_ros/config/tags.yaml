@@ -14,8 +14,11 @@
 #
  standalone_tags:
    [
-     {id: 0, size: 0.19, name: tag_first},
-#     {id: 1, size: 0.145, name: tag_second},
+     {id: 0, size: 0.190, name: tag_first},
+     {id: 1, size: 0.191, name: tag_second},
+     {id: 2, size: 0.192, name: tag_third},
+     {id: 3, size: 0.193, name: tag_fourth},
+     {id: 4, size: 0.194, name: tag_fifth},
    ]
 #standalone_tags:
 #  [

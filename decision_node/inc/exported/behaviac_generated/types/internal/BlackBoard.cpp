@@ -1,4 +1,4 @@
-﻿#include "BlackBoard.h"
+#include "BlackBoard.h"
 
 Debug::DebugLogger logger;
 
@@ -10,6 +10,7 @@ BlackBoard::BlackBoard()
     decision_state_pub = nh.advertise<robot_msgs::robot_states_enum>("decision_state",10);
     members_pub = nh.advertise<std_msgs::Int8MultiArray>("my_group_member",10);
     tag_pose_pub=nh.advertise<geometry_msgs::Pose>("tag_pose",10);
+    tag_id_pub=nh.advertise<std_msgs::Int32MultiArray>("tag_id",10);
     group_state_sub=nh.subscribe("robot_states",10,&BlackBoard::GroupStateCallback,this);
     tag_detection_sub=nh.subscribe("/tag_detections",10,&BlackBoard::TagDetectionsCallback,this);
     current_task_pub=nh.advertise<robot_msgs::CurrentTask>("current_task",10);
@@ -148,18 +149,13 @@ void BlackBoard::CmdCallback(const robot_msgs::HostCmdArrayConstPtr &msg){
 
 
 void BlackBoard::TagDetectionsCallback(const apriltag_ros::AprilTagDetectionArrayConstPtr &msg ){
+    std::vector<int>().swap(tag_id);
+    std::vector<geometry_msgs::Pose>().swap(tag_pose);//识别结束后不会再pub"tag_pose". 
     if(msg->detections.size()!=0){
-        tag_pose=msg->detections[0].pose.pose.pose;
-        tag_id=msg->detections[0].id;
-        // logger.DEBUGINFO(car_id,"detected and size is %d",tag_id.size());
+        tag_pose.push_back(msg->detections[0].pose.pose.pose);
+     for(auto i:msg->detections[0].id)
+        tag_id.push_back(i);
     }
-    else
-    {
-        std::vector<int>().swap(tag_id);
-    }
-    
-        
-
 }
 
 void BlackBoard::PubDecisionState(){
@@ -188,7 +184,14 @@ void BlackBoard::PubMembers(){
 
 
 void BlackBoard::PubTagPose(){
-    tag_pose_pub.publish(tag_pose);
+    std_msgs::Int32MultiArray msg;
+    for(auto i:tag_pose)
+        tag_pose_pub.publish(i);
+
+    for(auto i:tag_id)
+        msg.data.push_back(i);
+        
+    tag_id_pub.publish(msg);
 }
 
 std::vector<geometry_msgs::Pose> BlackBoard::GetGoal(){
