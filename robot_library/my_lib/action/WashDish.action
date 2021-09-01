@@ -1,0 +1,8 @@
+#Goal
+int8 dish_num
+---
+#feedback
+actionlib_msgs/GoalStatus action_state
+---
+#result
+actionlib_msgs/GoalStatus action_state

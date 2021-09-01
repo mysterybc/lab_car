@@ -1,0 +1,7 @@
+#Request
+uint8 num1
+uint8 num2
+
+---
+#Reponse
+uint8 sum
